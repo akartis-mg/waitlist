@@ -24,7 +24,7 @@
   font-size: 33px;
   font-weight: 600;
   margin-bottom: 35px;
-  color: white;
+  color: var(--text-color);
 }
 .field {
   height: 50px;
@@ -44,7 +44,7 @@
   /* font-size: 18px; */
   background: #333333;
   /* color: #595959; */
-  color: #edf2f4;
+  color: var(--text-color);
   border-radius: 5px;
   /* box-shadow: inset 2px 2px 5px #babecc, inset -5px -5px 10px #ffffff73; */
 }
@@ -74,7 +74,7 @@
 }
 .forgot-pass a {
   font-size: 0.8rem;
-  color: #3499fe;
+  color: var(--first-color);
   text-decoration: none;
 }
 .forgot-pass:hover a {
@@ -87,7 +87,7 @@ button {
   font-size: 18px;
   line-height: 50px;
   font-weight: 400;
-  background: #3499fe;
+  background: var(--first-color);
   border-radius: 5px;
   border: none;
   outline: none;

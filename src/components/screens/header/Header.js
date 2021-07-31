@@ -1,11 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Header.css'
 import logo from './177838.png'
 import {
 
     Link
 } from "react-router-dom";
+//translation
+import { useTranslation } from "react-i18next";
+
 function Header() {
+
+    const { t, i18n } = useTranslation("");
     const [open, setOpen] = useState(true);
 
 
@@ -21,6 +26,14 @@ function Header() {
 
     }
 
+    useEffect(() => {
+        const navbar = document.querySelector(".navbars");
+        window.addEventListener("scroll", () => {
+            // setScroll(window.scrollY > 20);
+            window.scrollY > 50 ? navbar.classList.add("sticky") : navbar.classList.remove("sticky");
+        });
+    }, [])
+
     return (
         <nav className={`${open ? "navbars" : "navbars show"} container-fluid`}>
             <div className="content">
@@ -34,11 +47,11 @@ function Header() {
                         <div className={open ? "icon cancel-btn hide " : "icon cancel-btn"} onClick={() => { setOpen(!open); removestyle() }}>
                             <i className="fas fa-times"></i>
                         </div>
-                        <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>Home</Link></li>
+                        <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>{t("header.menu.home")}</Link></li>
                         <li><a href="#">Menu </a></li>
-                        <li><a href="#">Features</a></li>
-                        <li><a href="#">Princing </a></li>
-                        <li><Link to="/contact" onClick={() => { setOpen(true); removestyle() }}>Contact</Link></li>
+                        <li><a href="#">{t("header.menu.features")}</a></li>
+                        <li><a href="#">{t("header.menu.pricing")} </a></li>
+                        <li><Link to="/contact" onClick={() => { setOpen(true); removestyle() }}>{t("header.menu.contact")}</Link></li>
                         <li><Link to="/login" onClick={() => { setOpen(true); removestyle() }}>Login</Link></li>
                     </ul>
                 </div>

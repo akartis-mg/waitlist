@@ -1,0 +1,11 @@
+{
+    "header":{
+        "menu":{
+            "home":"Home",
+            "menu":"Menu",
+            "features":"Features",
+            "pricing":"Pricing",
+            "contact":"Contact"
+        }
+    }
+}

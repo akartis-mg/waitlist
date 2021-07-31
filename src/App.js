@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { ThemeProvider } from 'styled-components';
-import { lightTheme, darkTheme } from './theme';
-import { GlobalStyles } from './global';
 import Header from './components/screens/header/Header';
 
 import {
@@ -14,6 +11,7 @@ import {
 import Home from './components/screens/home/Home';
 import Login from './components/screens/login/Login';
 import Contact from './components/screens/contact/Contact';
+import Register from './components/screens/register/Register'
 function App() {
 
   // App.js
@@ -30,25 +28,30 @@ function App() {
     }
   }
   return (
-    <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-      <>
-        <GlobalStyles />
-        <Router>
-          <Switch>
-            <Route path="/contact">
-              <Header />
-              <Contact />
-            </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/">
-              <Header />
-              <Home />
-            </Route>
-          </Switch>
-        </Router>
-        {/* // Pass the toggle functionality to the button
+
+    <div>
+
+      <Router>
+        <Switch>
+
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/contact">
+            <Header />
+            <Contact />
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/">
+            <Header />
+            <Home />
+            <Contact />
+          </Route>
+        </Switch>
+      </Router>
+      {/* // Pass the toggle functionality to the button
         <button onClick={toggleTheme}>Toggle theme</button>
         <h1>It's a light theme!</h1>
         <footer>
@@ -56,8 +59,8 @@ function App() {
 
 
 
-      </>
-    </ThemeProvider>
+    </div>
+
   );
 }
 
