@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,12 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import PhoneInput from 'react-phone-input-2'
+import { connect } from 'react-redux';
+
+import { register } from '../../../actions/authActions';
+
+import 'react-phone-input-2/lib/material.css'
 
 function Copyright() {
     return (
@@ -46,7 +52,50 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Register() {
+function Register({ register }) {
+    const [user, setUser] = useState({
+        firstname: "",
+        lastname: "",
+        phone: "",
+        email: "",
+        password: "",
+    });
+    const [confirmpassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState("");
+
+    console.log(user);
+
+    const registerHandler = (e) => {
+        e.preventDefault();
+
+        if (user.password !== confirmpassword) {
+
+            setUser({ ...user, password: "" });
+            setConfirmPassword("");
+            setTimeout(() => {
+                setError("");
+            }, 5000);
+            return setError("Passwords do not match");
+        }
+
+        setUser({
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            phone: user.phone,
+            password: user.password
+        })
+
+        register(user);
+
+        setUser({
+            firstname: "",
+            lastname: "",
+            email: "",
+            phone: "",
+            password: ""
+        })
+    };
 
     const classes = useStyles();
 
@@ -61,7 +110,7 @@ function Register() {
                     <Typography component="h1" variant="h5">
                         Sign up
                     </Typography>
-                    <form className={classes.form} noValidate>
+                    <form className={classes.form} >
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -72,6 +121,8 @@ function Register() {
                                     fullWidth
                                     id="firstName"
                                     label="First Name"
+                                    value={user.firstname}
+                                    onChange={(e) => setUser({ ...user, firstname: e.target.value })}
                                     autoFocus
                                 />
                             </Grid>
@@ -83,7 +134,17 @@ function Register() {
                                     id="lastName"
                                     label="Last Name"
                                     name="lastName"
+                                    value={user.lastname}
+                                    onChange={(e) => setUser({ ...user, lastname: e.target.value })}
                                     autoComplete="lname"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <PhoneInput
+                                    required
+                                    country={'mu'}
+                                    value={user.phone}
+                                    onChange={(phone) => setUser({ ...user, phone: phone })}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -94,6 +155,8 @@ function Register() {
                                     id="email"
                                     label="Email Address"
                                     name="email"
+                                    value={user.email}
+                                    onChange={(e) => setUser({ ...user, email: e.target.value })}
                                     autoComplete="email"
                                 />
                             </Grid>
@@ -105,11 +168,24 @@ function Register() {
                                     name="password"
                                     label="Password"
                                     type="password"
+                                    value={user.password}
+                                    onChange={(e) => setUser({ ...user, password: e.target.value })}
                                     id="password"
-                                    autoComplete="current-password"
                                 />
                             </Grid>
-
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    name="confirmpassword"
+                                    label="Confirm Password"
+                                    type="password"
+                                    value={confirmpassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    id="confirmpassword"
+                                />
+                            </Grid>
                         </Grid>
                         <Button
                             type="submit"
@@ -117,6 +193,7 @@ function Register() {
                             variant="contained"
                             color="primary "
                             className={`${classes.submit} button`}
+                            onClick={registerHandler}
                         >
                             Sign Up
                         </Button>
@@ -137,4 +214,4 @@ function Register() {
     )
 }
 
-export default Register
+export default connect(null, { register })(Register);

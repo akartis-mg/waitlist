@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,6 +14,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import BGlogin from './img/bglogin.jpeg'
+import { connect } from 'react-redux';
+import { login } from '../../../actions/authActions';
 
 function Copyright() {
     return (
@@ -59,7 +61,31 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function SignIn() {
+function SignIn({ login }) {
+    const [credentials, setCredentials] = useState({
+        email: "",
+        password: ""
+    });
+    const [error, setError] = useState("");
+
+    const loginHandler = async (e) => {
+        console.log("ETO NDRAY")
+        e.preventDefault();
+
+        setCredentials({
+            email: credentials.email,
+            password: credentials.password
+        });
+
+        login(credentials);
+
+        setCredentials({
+            email: "",
+            password: ""
+        });
+    };
+
+
     const classes = useStyles();
 
     return (
@@ -75,7 +101,7 @@ function SignIn() {
                         <Typography component="h1" variant="h5">
                             Sign in
                         </Typography>
-                        <form className={classes.form} noValidate>
+                        <form onSubmit={loginHandler} className={classes.form} noValidate>
                             <TextField
                                 variant="outlined"
                                 margin="normal"
@@ -85,6 +111,8 @@ function SignIn() {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
+                                value={credentials.email}
+                                onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                                 autoFocus
                             />
                             <TextField
@@ -96,6 +124,8 @@ function SignIn() {
                                 label="Password"
                                 type="password"
                                 id="password"
+                                value={credentials.password}
+                                onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
                                 autoComplete="current-password"
                             />
                             <FormControlLabel
@@ -118,7 +148,7 @@ function SignIn() {
                                     </Link>
                                 </Grid>
                                 <Grid item>
-                                    <Link href="#" variant="body2">
+                                    <Link href="/register" variant="body2">
                                         {"Don't have an account? Sign Up"}
                                     </Link>
                                 </Grid>
@@ -134,4 +164,4 @@ function SignIn() {
     )
 }
 
-export default SignIn
+export default connect(null, { login })(SignIn);
