@@ -4,16 +4,22 @@ import './index.css';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import { store, persistor } from './store';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react'
 
 import './i18next'
 
 ReactDOM.render(
   <React.StrictMode>
-    <Suspense fallback="Loading">
-      <App />
-    </Suspense>
-
-  </React.StrictMode>,
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <Suspense fallback="loading">
+          <App />
+        </Suspense>
+      </PersistGate>
+    </Provider>
+  </React.StrictMode >,
   document.getElementById('root')
 );
 
