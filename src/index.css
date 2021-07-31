@@ -323,15 +323,15 @@ img {
 /*==================== BUTTONS ====================*/
 
 .button {
-  display: inline-block;
-  background-color: var(--first-color);
-  color: #fff;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  font-weight: var(--font-medium);
+  display: inline-block !important;
+  background-color: var(--first-color) !important;
+  color: #fff !important;
+  padding: 1rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: var(--font-medium) !important;
 }
 .button:hover {
-  background-color: var(--first-color-alt);
+  background-color: var(--first-color-alt) !important;
 }
 .button__icon {
   font-size: 1.25rem !important;

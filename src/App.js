@@ -10,6 +10,8 @@ import {
 } from "react-router-dom";
 import Home from './components/screens/home/Home';
 import Login from './components/screens/login/Login';
+import SignIn from './components/screens/login/SignIn';
+
 import Contact from './components/screens/contact/Contact';
 import Register from './components/screens/register/Register'
 function App() {
@@ -42,7 +44,7 @@ function App() {
             <Contact />
           </Route>
           <Route path="/login">
-            <Login />
+            <SignIn />
           </Route>
           <Route path="/">
             <Header />
