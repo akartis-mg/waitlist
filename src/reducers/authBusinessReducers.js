@@ -1,46 +1,50 @@
 import { toast } from 'react-toastify';
 
 const initialState = {
-    user: {
+    userBusiness: {
         token: null,
         firstname: null,
         lastname: null,
         email: null,
         phone: null,
         _id: null,
-        type: null
+        type: null,
+        bid: null,
     }
 }
 
-const authReducer = (state = initialState, action) => {
+const authBusinessReducer = (state = initialState, action) => {
     switch (action.type) {
-        case "LOGIN":
-        case "REGISTER":
+        case "LOGIN_BUSINESS":
             toast.success("Welcome...", {
                 position: toast.POSITION.BOTTOM_RIGHT
             })
 
             return {
                 ...state,
-                user: {
+                userBusiness: {
                     token: action.user.token,
                     firstname: action.user.user.firstname,
                     lastname: action.user.user.lastname,
                     email: action.user.user.email,
                     phone: action.user.user.phone,
                     _id: action.user.user._id,
-                    type: action.user.user.type
+                    type: action.user.user.type,
+                    bid: action.user.user.bid,
                 }
             };
-        case "LOGOUT":
+        case "REGISTER_BUSINESS":
+            return state
+        case "LOGOUT_BUSINESS":
             return {
-                user: {
+                userBusiness: {
                     token: null,
                     firstname: null,
                     lastname: null,
                     email: null,
                     _id: null,
-                    type: null
+                    type: null,
+                    bid: null,
                 }
             }
         default:
@@ -48,4 +52,4 @@ const authReducer = (state = initialState, action) => {
     }
 }
 
-export default authReducer;
+export default authBusinessReducer;

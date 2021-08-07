@@ -2,12 +2,12 @@ import axios from 'axios';
 import { toast } from 'react-toastify'
 
 // Login
-export const login = (credentials) => async (dispatch) => {
-    console.log("LOGIN SIMPLE");
-    await axios.post('/api/auth/login', credentials)
+export const loginBusiness = (credentials) => async (dispatch) => {
+    console.log("LOGIN BUSINESS")
+    await axios.post('/api/authBusiness/login', credentials)
         .then(token => {
             dispatch({
-                type: "LOGIN",
+                type: "LOGIN_BUSINESS",
                 user: {
                     token: token.data.token,
                     user: token.data.user,
@@ -22,11 +22,11 @@ export const login = (credentials) => async (dispatch) => {
 }
 
 // Register
-export const register = (user) => async (dispatch) => {
-    axios.post('/api/auth/register', user)
+export const registerBusiness = (user) => async (dispatch) => {
+    axios.post('/api/authBusiness/register', user)
         .then(token => {
             dispatch({
-                type: "REGISTER",
+                type: "REGISTER_BUSINESS",
                 user: {
                     token: token.data.token,
                     user: token.data.user,
@@ -42,10 +42,10 @@ export const register = (user) => async (dispatch) => {
 
 
 // Logout
-export const logout = () => {
+export const logoutBusiness = () => {
     return (dispatch) => {
         dispatch({
-            type: "LOGOUT",
+            type: "LOGOUT_BUSINESS",
         })
     }
 }
