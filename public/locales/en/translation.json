@@ -5,7 +5,16 @@
             "menu":"Menu",
             "features":"Features",
             "pricing":"Pricing",
-            "contact":"Contact"
+            "contact":"Contact",
+            "list":"List"
+
         }
+    }
+    ,
+    "buttons":{
+        "send":"Send",
+        "confirm":"Confirm",
+        "cancel":"Cancel",
+        "book":"Book"
     }
 }

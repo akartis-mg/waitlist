@@ -1,0 +1,8 @@
+.card__logo {
+  height: 140px;
+  background-size: cover;
+  background-position: center center;
+}
+.card__details {
+  padding-top: 10px !important;
+}

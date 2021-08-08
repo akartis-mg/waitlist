@@ -14,6 +14,8 @@ import SignIn from './components/screens/login/SignIn';
 
 import Contact from './components/screens/contact/Contact';
 import Register from './components/screens/register/Register'
+import Companies from './components/screens/companies/Companies';
+import CalendarTest from './components/calendars/Calendar'
 function App() {
 
   // App.js
@@ -35,6 +37,15 @@ function App() {
 
       <Router>
         <Switch>
+          <Route path="/calendar">
+
+            <CalendarTest />
+          </Route>
+
+          <Route path="/companies">
+            <Header />
+            <Companies />
+          </Route>
 
           <Route path="/register">
             <Register />
