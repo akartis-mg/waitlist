@@ -54,7 +54,7 @@ function ReservationModal({ title, contents, open, setOpen }) {
       >
         <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent>
-          {contents.names}
+          {contents.name}
 
           <div className="reservation__content ">
             <form className="reservation__inputs grid" noValidate>

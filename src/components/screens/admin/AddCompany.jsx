@@ -18,25 +18,24 @@ const useStyles = makeStyles((theme) => ({
 function AddCompany({ newCompany, setNewCompany }) {
   const classes = useStyles();
 
-  const handleChange = (event) => {
-    setNewCompany(event.target.value);
+  const onChange = (e) => {
+    setNewCompany({ ...newCompany, [e.target.id]: e.target.value });
   };
-
-  const handleSubmit = ()=>{
-      
-  }
+  const handleSubmit = () => {};
   return (
     <div>
-      <form className="reservation__inputs grid" noValidate onSubmit={handleSubmit}>
+      <form
+        className="reservation__inputs grid"
+        noValidate
+        onSubmit={handleSubmit}
+      >
         <TextField
           id="name"
           label="Company Name"
           type="text"
           defaultValue={newCompany.name}
           className="reservation__input"
-          onChange={(e) =>
-            setNewCompany({ ...newCompany, name: e.target.value })
-          }
+          onChange={() => onChange}
         />
         <div>
           <InputLabel id="demo-simple-select-label">Type</InputLabel>
@@ -45,9 +44,7 @@ function AddCompany({ newCompany, setNewCompany }) {
             id="type"
             value={newCompany.type}
             className="reservation__input"
-            onChange={(e) =>
-              setNewCompany({ ...newCompany, type: e.target.value })
-            }
+            onChange={() => onChange}
           >
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>

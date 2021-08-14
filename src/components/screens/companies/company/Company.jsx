@@ -25,11 +25,18 @@ import { FixedSizeList } from "react-window";
 
 //icons
 import StarIcon from "@material-ui/icons/Star";
+import EditIcon from "@material-ui/icons/Edit";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import "./Company.css";
 
 //modal
 import ReservationModal from "../../reservation/ReservationModal";
+import MyModal from "../../../dialog/myModal";
+
+//admin edit
+import AddCompany from "../../admin/AddCompany";
+import AddBranch from "../../admin/AddBranch";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,52 +66,161 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
 }));
-function Company({ logo, name }) {
+function Company({ company }) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
-  const [branchDetails, setBranchDetails] = useState([]);
+  const [branchDetails, setBranchDetails] = useState({});
 
   const list = [
     {
-      id: 1,
-      names: "branch1",
-    },
-    {
-      id: 2,
-      names: "branch2",
-    },
-    {
-      id: 3,
-      names: "branch3",
-    },
-    {
-      id: 4,
-      names: "branch4",
-    },
-    {
-      id: 5,
-      names: "branch5",
+      cid: 1,
+      name: "branch1",
+      average_duration: 30,
+      address: {
+        street: "14",
+        city: "Qb",
+        postal_code: 31,
+        longitude: 45,
+        latitude: 5765,
+      },
+    },{
+      cid: 2,
+      name: "branch1",
+      average_duration: 30,
+      address: {
+        street: "14",
+        city: "Qb",
+        postal_code: 31,
+        longitude: 45,
+        latitude: 5765,
+      },
     },
   ];
 
+  //expand branches
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
+  //edit company
+  const [openModalEditCompany, setOpenModalEditCompany] = useState(false);
+
+  //branch management
+  const [openModalBranch, setOpenModalBranch] = useState(false);
+
+  const [branch, setBranch] = useState({
+    cid: "",
+    name: "",
+    average_duration: 0,
+    address: {
+      street: "",
+      city: "",
+      postal_code: 0,
+      longitude: 0,
+      latitude: 0,
+    },
+
+    info: {
+      opening_days: {
+        monday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        tuesday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        wednesday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        thursday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        friday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        saturday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        sunday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+      },
+      phone: 0,
+      website: "",
+    },
+
+    spots: {
+      available: 0,
+      not_available: 0,
+    },
+  });
+
   return (
     <div>
+      {/* modal for reservation */}
       <ReservationModal
         open={open}
         setOpen={setOpen}
-        title={name}
+        title={company.name}
         contents={branchDetails}
       />
+      {/* modal for edit company */}
+      <MyModal
+        open={openModalEditCompany}
+        setOpenMyModal={setOpenModalEditCompany}
+        title="Edit Company"
+        contents={
+          <>
+            <AddCompany newCompany={company} />
+          </>
+        }
+      />
+
+      {/* modal for branch manage */}
+      <MyModal
+        open={openModalBranch}
+        setOpenMyModal={setOpenModalBranch}
+        title="Branch"
+        contents={
+          <>
+            <AddBranch
+              companyDetails={company}
+              branch={branch}
+              setBranch={setBranch}
+            />
+          </>
+        }
+      />
+      {/* list all copmany */}
       <Card className={classes.root}>
-        <CardActionArea onClick={handleExpandClick}>
-          <CardMedia className={classes.media} image={logo} title={name} />
-          <CardHeader
-            action={
+        <CardMedia
+          className={classes.media}
+          image={company.logo}
+          title={company.name}
+        />
+        <CardHeader
+          action={
+            <div>
+              <IconButton
+                aria-label="show more"
+                onClick={() => setOpenModalEditCompany(true)}
+              >
+                <EditIcon />
+              </IconButton>
               <IconButton
                 className={clsx(classes.expand, {
                   [classes.expandOpen]: expanded,
@@ -115,10 +231,11 @@ function Company({ logo, name }) {
               >
                 <ExpandMoreIcon />
               </IconButton>
-            }
-            subheader={name}
-          />
-          {/*   <CardContent>
+            </div>
+          }
+          subheader={company.name}
+        />
+        {/*   <CardContent>
              <Typography gutterBottom variant="h6" component="h6">
               {name}
             </Typography>
@@ -128,7 +245,6 @@ function Company({ logo, name }) {
               with the mussels, if you like.
             </Typography> 
           </CardContent>*/}
-        </CardActionArea>
 
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
@@ -141,15 +257,27 @@ function Company({ logo, name }) {
             >
               {list.map((l) => (
                 // Correct ! La clé doit être spécifiée dans le tableau.
-                <ListItem
-                  button
-                  onClick={() => {
-                    setOpen(true);
-                    // pass all branch details
-                    setBranchDetails(l);
-                  }}
-                >
-                  <ListItemText primary={l.names} />
+                <ListItem>
+                  <ListItemText primary={l.name} />
+
+                  <IconButton
+                    onClick={() => {
+                      setOpen(true);
+                      // pass all branch details
+                      setBranchDetails(l);
+                    }}
+                  >
+                    <VisibilityIcon />
+                  </IconButton>
+
+                  <IconButton
+                    onClick={() => {
+                      setOpenModalBranch(true);
+                      setBranch(l);
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
                 </ListItem>
               ))}
             </List>

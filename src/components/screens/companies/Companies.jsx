@@ -1,4 +1,4 @@
-import React ,{useState}from "react";
+import React, { useState } from "react";
 import "./Companies.css";
 import Company from "./company/Company";
 
@@ -162,7 +162,7 @@ function Companies() {
       <div className="companies__container  grid">
         <div className="companies__list">
           {companies.map((c) => (
-            <Company key={c.id} logo={c.logo} name={c.name} />
+            <Company key={c.id} company={c} />
           ))}
         </div>
       </div>
@@ -199,7 +199,10 @@ function Companies() {
                     <div>
                       {activeStep === 0 ? (
                         <div>
-                          <AddCompany newCompany={newCompany} setNewCompany={setNewCompany} />
+                          <AddCompany
+                            newCompany={newCompany}
+                            setNewCompany={setNewCompany}
+                          />
 
                           <div>
                             <Button
