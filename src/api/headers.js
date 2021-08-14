@@ -2,7 +2,7 @@ export const setHeaders = (token) => {
     const header = {
         headers: {
             "Content-Type": "application/json",
-            "X-auth-token": `${token}`,
+            "Authorization": `Bearer ${token}`,
         }
     }
     return header;

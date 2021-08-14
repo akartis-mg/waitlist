@@ -3,6 +3,8 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './authReducers';
 import authBusinessReducer from './authBusinessReducers';
+import companyReducer from './companyReducers';
+import typeCompanyReducer from './typeCompanyReducers';
 
 const persistConfig = {
     key: 'root',
@@ -12,7 +14,10 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    authBusiness: authBusinessReducer
+    authBusiness: authBusinessReducer,
+    company: companyReducer,
+    typeCompany: typeCompanyReducer,
+
 })
 
 export default persistReducer(persistConfig, rootReducer);

@@ -1,4 +1,5 @@
-import React ,{useState}from "react";
+import React, {useState, useEffect} from "react";
+import { useSelector } from 'react-redux';
 import "./Companies.css";
 import Company from "./company/Company";
 
@@ -9,6 +10,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
+import { connect } from 'react-redux';
 
 //stepper
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,6 +18,10 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Typography from "@material-ui/core/Typography";
+
+//import actions
+import { getTypeCompany } from '../../../actions/typeCompanyActions';
+import { addCompany } from '../../../actions/companyActions';
 
 //admin components
 import AddCompany from "../admin/AddCompany";
@@ -50,12 +56,14 @@ function getStepContent(step) {
   }
 }
 
-function Companies() {
+function Companies({getTypeCompany, addCompany}) {
+  const typeCompany = useSelector(state => state.typeCompany);
+
   const [openNewCompany, setOpenNewCompany] = useState(false);
 
   const [newCompany, setNewCompany] = useState({
     name: "",
-    type: "",
+    typeCompanyID: "",
   });
 
   const handleClickOpen = () => {
@@ -82,6 +90,20 @@ function Companies() {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  const handleAddCompany = () => {
+    addCompany({
+      name: newCompany.name,
+      typeCompanyID: newCompany.typeCompanyID
+    });
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+    setNewCompany({
+      name: "",
+      typeCompanyID: ""
+    })
+  }
 
   const classes = useStyles();
 
@@ -147,6 +169,11 @@ function Companies() {
       name: "Cafe Lux",
     },
   ];
+
+  useEffect(() => {
+    getTypeCompany();
+  }, [])
+
   return (
     <div className="companies section">
       <h2 className="section__title">Companies List</h2>
@@ -203,16 +230,9 @@ function Companies() {
 
                           <div>
                             <Button
-                              disabled={activeStep === 0}
-                              onClick={handleBack}
-                              className={classes.backButton}
-                            >
-                              Back
-                            </Button>
-                            <Button
                               variant="contained"
                               color="primary"
-                              onClick={handleNext}
+                              onClick={handleAddCompany}
                             >
                               {activeStep === steps.length - 1
                                 ? "Finish"
@@ -291,4 +311,4 @@ function Companies() {
   );
 }
 
-export default Companies;
+export default connect(null, { getTypeCompany, addCompany })(Companies);

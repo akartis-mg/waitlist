@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from 'react-redux';
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
+
+import { connect } from 'react-redux';
+import { addCompany } from '../../../actions/companyActions';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -18,12 +22,16 @@ const useStyles = makeStyles((theme) => ({
 function AddCompany({ newCompany, setNewCompany }) {
   const classes = useStyles();
 
+  const typeCompany = useSelector((state) => state.typeCompany);
+  
   const handleChange = (event) => {
     setNewCompany(event.target.value);
   };
 
-  const handleSubmit = ()=>{
-      
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    console.log(newCompany);
   }
   return (
     <div>
@@ -43,26 +51,19 @@ function AddCompany({ newCompany, setNewCompany }) {
           <Select
             labelId="demo-simple-select-label"
             id="type"
-            value={newCompany.type}
+            value={newCompany.typeCompanyID}
             className="reservation__input"
             onChange={(e) =>
-              setNewCompany({ ...newCompany, type: e.target.value })
+              setNewCompany({ ...newCompany, typeCompanyID: e.target.value })
             }
           >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            {typeCompany && typeCompany.map(tc => {
+              return(
+                <MenuItem value={tc._id}>{tc.name}</MenuItem>
+              ) 
+            })}
           </Select>
         </div>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className="button"
-        >
-          Sign In
-        </Button>
       </form>
     </div>
   );
