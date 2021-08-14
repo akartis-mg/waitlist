@@ -197,7 +197,7 @@ function Companies({getTypeCompany, addCompany}) {
       <div className="companies__container  grid">
         <div className="companies__list">
           {companies.map((c) => (
-            <Company key={c.id} company={c} />
+            <Company key={c.id} company={c} setNewCompany={setNewCompany}/>
           ))}
         </div>
       </div>

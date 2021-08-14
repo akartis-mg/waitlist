@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
 }));
-function Company({ company }) {
+function Company({ company, setNewCompany }) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
@@ -84,7 +84,8 @@ function Company({ company }) {
         longitude: 45,
         latitude: 5765,
       },
-    },{
+    },
+    {
       cid: 2,
       name: "branch1",
       average_duration: 30,
@@ -185,7 +186,7 @@ function Company({ company }) {
         title="Edit Company"
         contents={
           <>
-            <AddCompany newCompany={company} />
+            <AddCompany newCompany={company} setNewCompany={setNewCompany} />
           </>
         }
       />
