@@ -1,7 +1,90 @@
-import React from "react";
+import React ,{useState}from "react";
 import "./Companies.css";
 import Company from "./company/Company";
+
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import TextField from "@material-ui/core/TextField";
+
+//stepper
+import { makeStyles } from "@material-ui/core/styles";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import Typography from "@material-ui/core/Typography";
+
+//admin components
+import AddCompany from "../admin/AddCompany";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+  },
+  button: {
+    marginRight: theme.spacing(1),
+  },
+  instructions: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+}));
+
+function getSteps() {
+  return ["Add Company", "Add Branch", "Asign Staff"];
+}
+
+function getStepContent(step) {
+  switch (step) {
+    case 0:
+      return "Add Company";
+    case 1:
+      return "Add Branch";
+    case 2:
+      return "Asign Staff";
+    default:
+      return "Unknown step";
+  }
+}
+
 function Companies() {
+  const [openNewCompany, setOpenNewCompany] = useState(false);
+
+  const [newCompany, setNewCompany] = useState({
+    name: "",
+    type: "",
+  });
+
+  const handleClickOpen = () => {
+    setOpenNewCompany(true);
+  };
+
+  const handleClose = () => {
+    setOpenNewCompany(false);
+  };
+
+  //for stepper
+
+  const [activeStep, setActiveStep] = React.useState(0);
+  const steps = getSteps();
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
+  const classes = useStyles();
+
   const companies = [
     {
       id: 1,
@@ -68,12 +151,141 @@ function Companies() {
     <div className="companies section">
       <h2 className="section__title">Companies List</h2>
       <span className="section__subtitle">List of all companies</span>
+
+      <div className="admin__view">
+        <button className="button button" onClick={handleClickOpen}>
+          {" "}
+          Add new Company
+        </button>
+      </div>
+
       <div className="companies__container  grid">
         <div className="companies__list">
           {companies.map((c) => (
             <Company key={c.id} logo={c.logo} name={c.name} />
           ))}
         </div>
+      </div>
+
+      {/* dialog */}
+
+      <div>
+        <Dialog
+          open={openNewCompany}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Add Company</DialogTitle>
+          <DialogContent>
+            <div className="reservation__content ">
+              <div className="reservation__content ">
+                <Stepper activeStep={activeStep} alternativeLabel>
+                  {steps.map((label) => (
+                    <Step key={label}>
+                      <StepLabel>{label}</StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
+                <div>
+                  {activeStep === 3 ? (
+                    <div>
+                      <Typography className={classes.instructions}>
+                        All steps completed
+                      </Typography>
+                      <Button onClick={handleReset}>Reset</Button>
+                    </div>
+                  ) : (
+                    <div>
+                      {activeStep === 0 ? (
+                        <div>
+                          <AddCompany newCompany={newCompany} setNewCompany={setNewCompany} />
+
+                          <div>
+                            <Button
+                              disabled={activeStep === 0}
+                              onClick={handleBack}
+                              className={classes.backButton}
+                            >
+                              Back
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={handleNext}
+                            >
+                              {activeStep === steps.length - 1
+                                ? "Finish"
+                                : "Next"}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : activeStep === 1 ? (
+                        /* Add branch*/
+                        <div>
+                          <div>
+                            <Button
+                              disabled={activeStep === 0}
+                              onClick={handleBack}
+                              className={classes.backButton}
+                            >
+                              Back
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={handleNext}
+                            >
+                              {activeStep === steps.length - 1
+                                ? "Finish"
+                                : "Next"}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div></div>
+                      )}
+
+                      {/* <div>
+                    <Typography className={classes.instructions}>
+                      {getStepContent(activeStep)}
+                    </Typography>
+                    <div>
+                      <Button
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        className={classes.backButton}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleNext}
+                      >
+                        {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                      </Button>
+                    </div>
+                  </div> */}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            {/* <DialogContentText id="alert-dialog-description">
+              Let Google help apps determine location. This means sending
+              anonymous location data to Google, even when no apps are running.
+            </DialogContentText> */}
+          </DialogContent>
+          {/* <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Disagree
+            </Button>
+            <Button onClick={handleClose} color="primary" autoFocus>
+              Agree
+            </Button>
+          </DialogActions> */}
+        </Dialog>
       </div>
     </div>
   );
