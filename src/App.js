@@ -15,7 +15,7 @@ import SignIn from './components/screens/login/SignIn';
 import Contact from './components/screens/contact/Contact';
 import Register from './components/screens/register/Register'
 import Companies from './components/screens/companies/Companies';
-import CalendarTest from './components/calendars/Calendar'
+import BookCalendar from './components/screens/calendars/Calendars';
 function App() {
 
   // App.js
@@ -39,7 +39,7 @@ function App() {
         <Switch>
           <Route path="/calendar">
 
-            <CalendarTest />
+            <BookCalendar />
           </Route>
 
           <Route path="/companies">
