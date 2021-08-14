@@ -10,9 +10,7 @@ export const addCompany = (company) => async (dispatch, getState) => {
             localStorage.setItem('new_company', JSON.stringify(company.data));
             dispatch({
                 type: "ADD_COMPANY",
-                company: {
-                    company: company.data
-                }
+                company: company.data
             })
         })
         .catch(error => {

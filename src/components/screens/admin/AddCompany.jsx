@@ -47,9 +47,9 @@ function AddCompany({ newCompany, setNewCompany }) {
           id="name"
           label="Company Name"
           type="text"
-          defaultValue={newCompany.name}
+          defaultValue={newCompany.name.name}
           className="reservation__input"
-          onChange={() => onChange}
+          onChange={(e) => setNewCompany({...newCompany, name: {name: e.target.value}})}
         />
         <div>
           <InputLabel id="demo-simple-select-label">Type</InputLabel>
@@ -58,7 +58,7 @@ function AddCompany({ newCompany, setNewCompany }) {
             id="typeCompanyID"
             value={newCompany.typeCompanyID}
             className="reservation__input"
-            onChange={() => onChange}
+            onChange={(e) => setNewCompany({...newCompany, typeCompanyID: e.target.value})}
           >
             {typeCompany && typeCompany.map(tc => {
               return(

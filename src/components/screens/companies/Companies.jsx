@@ -62,7 +62,9 @@ function Companies({getTypeCompany, addCompany}) {
   const [openNewCompany, setOpenNewCompany] = useState(false);
 
   const [newCompany, setNewCompany] = useState({
-    name: "",
+    name: {
+      name: ""
+    },
     typeCompanyID: "",
   });
 
@@ -92,15 +94,21 @@ function Companies({getTypeCompany, addCompany}) {
   };
 
   const handleAddCompany = () => {
+    console.log("ADD NEW COMPANY: ", newCompany.name);
+
     addCompany({
-      name: newCompany.name,
+      name: {
+        name: newCompany.name.name
+      },
       typeCompanyID: newCompany.typeCompanyID
     });
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
     setNewCompany({
-      name: "",
+      name: {
+        name: ""
+      },
       typeCompanyID: ""
     })
   }
