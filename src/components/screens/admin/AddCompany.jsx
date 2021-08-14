@@ -33,29 +33,32 @@ function AddCompany({ newCompany, setNewCompany }) {
 
     console.log(newCompany);
   }
+  const onChange = (e) => {
+    setNewCompany({ ...newCompany, [e.target.id]: e.target.value });
+  };
   return (
     <div>
-      <form className="reservation__inputs grid" noValidate onSubmit={handleSubmit}>
+      <form
+        className="reservation__inputs grid"
+        noValidate
+        onSubmit={handleSubmit}
+      >
         <TextField
           id="name"
           label="Company Name"
           type="text"
           defaultValue={newCompany.name}
           className="reservation__input"
-          onChange={(e) =>
-            setNewCompany({ ...newCompany, name: e.target.value })
-          }
+          onChange={() => onChange}
         />
         <div>
           <InputLabel id="demo-simple-select-label">Type</InputLabel>
           <Select
             labelId="demo-simple-select-label"
-            id="type"
+            id="typeCompanyID"
             value={newCompany.typeCompanyID}
             className="reservation__input"
-            onChange={(e) =>
-              setNewCompany({ ...newCompany, typeCompanyID: e.target.value })
-            }
+            onChange={() => onChange}
           >
             {typeCompany && typeCompany.map(tc => {
               return(
