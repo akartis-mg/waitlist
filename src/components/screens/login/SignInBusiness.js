@@ -15,7 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import BGlogin from './img/bglogin.jpeg'
 import { connect } from 'react-redux';
-import { login } from '../../../actions/authActions';
+import { loginBusiness } from '../../../actions/authBusinessActions';
 
 function Copyright() {
     return (
@@ -61,14 +61,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function SignIn({ login }) {
+function SignInBusiness({ loginBusiness }) {
     const [credentials, setCredentials] = useState({
         email: "",
-        password: ""
+        password: "",
     });
     const [error, setError] = useState("");
 
     const loginHandler = async (e) => {
+        console.log("ETO NDRAY")
         e.preventDefault();
 
         setCredentials({
@@ -76,7 +77,7 @@ function SignIn({ login }) {
             password: credentials.password
         });
 
-        login(credentials);
+        loginBusiness(credentials);
 
         setCredentials({
             email: "",
@@ -163,4 +164,4 @@ function SignIn({ login }) {
     )
 }
 
-export default connect(null, { login })(SignIn);
+export default connect(null, { loginBusiness })(SignInBusiness);
