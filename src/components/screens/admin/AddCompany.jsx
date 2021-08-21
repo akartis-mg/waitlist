@@ -48,7 +48,7 @@ function AddCompany({ newCompany, setNewCompany }) {
           type="text"
           defaultValue={newCompany.company.name}
           className="reservation__input"
-          onChange={(e) => setNewCompany({...newCompany, company: {name: e.target.value, logoUrl: newCompany.company.logoUrl}})}
+          onChange={(e) => setNewCompany({...newCompany, company: {...newCompany.comapny, name: e.target.value}})}
         />
         <TextField
           id="logoUrl"
@@ -56,7 +56,7 @@ function AddCompany({ newCompany, setNewCompany }) {
           type="text"
           defaultValue={newCompany.company.logoUrl}
           className="reservation__input"
-          onChange={(e) => setNewCompany({...newCompany, company: {name: newCompany.company.name, logoUrl: e.target.value}})}
+          onChange={(e) => setNewCompany({...newCompany, company: {...newCompany.company, logoUrl: e.target.value}})}
         />
         <div>
           <InputLabel id="demo-simple-select-label">Type</InputLabel>
