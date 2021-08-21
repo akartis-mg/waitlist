@@ -30,12 +30,11 @@ function AddCompany({ newCompany, setNewCompany }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log(newCompany);
   }
   const onChange = (e) => {
     setNewCompany({ ...newCompany, [e.target.id]: e.target.value });
   };
+
   return (
     <div>
       <form
@@ -47,9 +46,17 @@ function AddCompany({ newCompany, setNewCompany }) {
           id="name"
           label="Company Name"
           type="text"
-          defaultValue={newCompany.name.name}
+          defaultValue={newCompany.company.name}
           className="reservation__input"
-          onChange={(e) => setNewCompany({...newCompany, name: {name: e.target.value}})}
+          onChange={(e) => setNewCompany({...newCompany, company: {name: e.target.value, logoUrl: newCompany.company.logoUrl}})}
+        />
+        <TextField
+          id="logoUrl"
+          label="Logo URL"
+          type="text"
+          defaultValue={newCompany.company.logoUrl}
+          className="reservation__input"
+          onChange={(e) => setNewCompany({...newCompany, company: {name: newCompany.company.name, logoUrl: e.target.value}})}
         />
         <div>
           <InputLabel id="demo-simple-select-label">Type</InputLabel>

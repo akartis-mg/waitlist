@@ -63,8 +63,9 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch}) {
   const [openNewCompany, setOpenNewCompany] = useState(false);
 
   const [newCompany, setNewCompany] = useState({
-    name: {
-      name: ""
+    company: {
+      name: "",
+      logoUrl: "",
     },
     typeCompanyID: "",
   });
@@ -155,11 +156,11 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch}) {
   };
 
   const handleAddCompany = () => {
-    console.log("ADD NEW COMPANY: ", newCompany.name);
 
     addCompany({
-      name: {
-        name: newCompany.name.name
+      company: {
+        name: newCompany.company.name,
+        logoUrl: newCompany.company.logoUrl,
       },
       typeCompanyID: newCompany.typeCompanyID
     });
@@ -167,8 +168,9 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch}) {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
     setNewCompany({
-      name: {
-        name: ""
+      company: {
+        name: "",
+        logoUrl: "",
       },
       typeCompanyID: ""
     })
