@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import Card from "@material-ui/core/Card";
@@ -70,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 function Company({ company, setNewCompany, branch, setBranch }) {
-  console.log("COMPANY: ", company);
+  const authBusiness = useSelector(state => state.authBusiness.userBusiness);
 
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
@@ -229,16 +230,6 @@ function Company({ company, setNewCompany, branch, setBranch }) {
           }
           subheader={company.name}
         />
-        {/*   <CardContent>
-             <Typography gutterBottom variant="h6" component="h6">
-              {name}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              This impressive paella is a perfect party dish and a fun meal to
-              cook together with your guests. Add 1 cup of frozen peas along
-              with the mussels, if you like.
-            </Typography> 
-          </CardContent>*/}
 
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
@@ -249,7 +240,81 @@ function Company({ company, setNewCompany, branch, setBranch }) {
               aria-label="contacts"
             >
               {company.branchs.map((l) => (
-                // Correct ! La clé doit être spécifiée dans le tableau.
+                <>
+                  {authBusiness && authBusiness.type == "Manager" ? (
+                    <>
+                      {authBusiness.type == "Manager" ? (
+                        <>
+                          {authBusiness.bid.map((bauth, index) => (
+                            <>
+                              {authBusiness.bid[index] == l._id ? (
+                                <>
+                                  <ListItem>
+                                    <ListItemText primary={l.name} />
+                                    <IconButton
+                                      onClick={() => {
+                                        setOpenCalendar(true);
+                                        // pass all branch details
+                                        setBranchDetails(l);
+                                      }}
+                                    >
+                                      <VisibilityIcon />
+                                    </IconButton>
+
+                                    <IconButton
+                                      onClick={() => {
+                                        setOpenModalBranch(true);
+                                        setBranchDetails(l);
+                                      }}
+                                    >
+                                      <EditIcon />
+                                    </IconButton>
+                                  </ListItem>
+                                </>
+                              ) : (
+                                <>
+                                </>
+                              )}
+                            </>
+                          ))}
+                        </>
+                        ) : (
+                        <>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <ListItem>
+                      <ListItemText primary={l.name} />
+
+                      <IconButton
+                        onClick={() => {
+                          setOpenCalendar(true);
+                          // pass all branch details
+                          setBranchDetails(l);
+                        }}
+                      >
+                        <VisibilityIcon />
+                      </IconButton>
+
+                      <IconButton
+                        onClick={() => {
+                          setOpenModalBranch(true);
+                          //console.log(l);
+                          setBranchDetails(l);
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </ListItem>
+                    </>
+                  )}
+                  
+                </>
+              ))}
+
+              {/* {company.branchs.map((l) => (
                 <ListItem>
                   <ListItemText primary={l.name} />
 
@@ -273,7 +338,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
                     <EditIcon />
                   </IconButton>
                 </ListItem>
-              ))}
+              ))} */}
             </List>
           </CardContent>
         </Collapse>

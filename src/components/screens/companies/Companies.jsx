@@ -60,7 +60,6 @@ function getStepContent(step) {
 
 function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaff}) {
   const allCompany = useSelector(state => state.company);
-  console.log("ALL COMAPNIES: ", allCompany);
   const authBusiness = useSelector(state => state.authBusiness.userBusiness);
   const [openNewCompany, setOpenNewCompany] = useState(false);
 
@@ -303,7 +302,7 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
       <h2 className="section__title">Companies List</h2>
       <span className="section__subtitle">List of all companies</span>
 
-      {(authBusiness.type == "Superadmin" || authBusiness.type == "Staff") ? (
+      {(authBusiness.type == "Superadmin") ? (
         <div className="admin__view">
           <button className="button button" onClick={handleClickOpen}>
             {" "} Add new Company
@@ -317,12 +316,48 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
         <div className="companies__list">
           {allCompany.map((c, index) => (
             <>
-              <Company
+              {authBusiness.type == "Manager" ? (
+                <>
+                  {allCompany[index].branchs && allCompany[index].branchs.map((b, ind) => (
+                    <>
+                      {authBusiness.bid && authBusiness.bid.map((bauth, indx) => (
+                        <>
+                          {allCompany[index].branchs[ind]._id == authBusiness.bid[indx] ? (
+                            <>
+                              <Company
+                                key={allCompany[index]._id}
+                                company={allCompany[index]}
+                                setNewCompany={setNewCompany}
+                                setBranch={setBranch}
+                              />
+                            </>
+                          ) : (
+                            <>
+                            </>
+                          )}                         
+                        </>
+                      ))      
+                      }
+                    </>
+                  ))                   
+                  }                
+                </>
+              ) : (
+                <>
+                  <Company
+                    key={allCompany[index]._id}
+                    company={allCompany[index]}
+                    setNewCompany={setNewCompany}
+                    setBranch={setBranch}
+                  />
+                </>
+              )}
+              {/* <Company
                 key={allCompany[index]._id}
                 company={allCompany[index]}
                 setNewCompany={setNewCompany}
                 setBranch={setBranch}
-              />
+              /> */}
             </>
           ))}
         </div>

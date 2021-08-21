@@ -68,7 +68,7 @@ function App() {
             <SignInBusiness />
           </Route>
 
-          <PrivateRoute path="/register-business" type={(authBusiness.type == "Superadmin" || authBusiness.type == "Manager") ? "Authorized" : "Unauthorized"} user={authBusiness} component={RegisterBusiness} />
+          <PrivateRoute path="/register-business" type={(authBusiness.type == "Superadmin") ? "Authorized" : "Unauthorized"} user={authBusiness} component={RegisterBusiness} />
         </Switch>
 
         <Route exact path="/" >
