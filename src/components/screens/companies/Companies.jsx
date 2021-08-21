@@ -59,6 +59,7 @@ function getStepContent(step) {
 
 function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaff}) {
   const allCompany = useSelector(state => state.company);
+  const authBusiness = useSelector(state => state.authBusiness.userBusiness);
   const [openNewCompany, setOpenNewCompany] = useState(false);
 
   const [newCompany, setNewCompany] = useState({
@@ -360,13 +361,16 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
       <h2 className="section__title">Companies List</h2>
       <span className="section__subtitle">List of all companies</span>
 
-      <div className="admin__view">
-        <button className="button button" onClick={handleClickOpen}>
-          {" "}
-          Add new Company
+      {authBusiness.type == "Superadmin" ? (
+        <div className="admin__view">
+          <button className="button button" onClick={handleClickOpen}>
+            {" "} Add new Company
         </button>
       </div>
-
+      ) : (
+        <></>
+      )}
+      
       <div className="companies__container  grid">
         <div className="companies__list">
           {companies.map((c) => (
@@ -385,6 +389,7 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">Add Company</DialogTitle>
+          
           <DialogContent>
             <div className="reservation__content ">
               <div className="reservation__content ">
@@ -465,46 +470,12 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
                       ) : (
                         <div></div>
                       )}
-
-                      {/* <div>
-                    <Typography className={classes.instructions}>
-                      {getStepContent(activeStep)}
-                    </Typography>
-                    <div>
-                      <Button
-                        disabled={activeStep === 0}
-                        onClick={handleBack}
-                        className={classes.backButton}
-                      >
-                        Back
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleNext}
-                      >
-                        {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                      </Button>
-                    </div>
-                  </div> */}
                     </div>
                   )}
                 </div>
               </div>
             </div>
-            {/* <DialogContentText id="alert-dialog-description">
-              Let Google help apps determine location. This means sending
-              anonymous location data to Google, even when no apps are running.
-            </DialogContentText> */}
           </DialogContent>
-          {/* <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Disagree
-            </Button>
-            <Button onClick={handleClose} color="primary" autoFocus>
-              Agree
-            </Button>
-          </DialogActions> */}
         </Dialog>
       </div>
     </div>
