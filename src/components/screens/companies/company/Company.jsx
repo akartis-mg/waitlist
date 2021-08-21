@@ -125,6 +125,12 @@ function Company({ company, setNewCompany, branch, setBranch }) {
             closing_hour: 0,
           },
         },
+        phone: 0,
+        website: "",
+      },
+      spots: {
+        available: 35,
+        not_available: 0,
       },
     },
   ];
@@ -140,7 +146,6 @@ function Company({ company, setNewCompany, branch, setBranch }) {
   //branch management
   const [openModalBranch, setOpenModalBranch] = useState(false);
 
-
   //reservation
   const [openCalendar, setOpenCalendar] = useState(false);
 
@@ -150,7 +155,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
       <ReservationModal
         open={open}
         setOpen={setOpen}
-        title={company.name}
+        title={company.company.name}
         contents={branchDetails}
       />
       {/* modal for edit company */}
@@ -174,7 +179,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
           <>
             <AddBranch
               companyDetails={company}
-              branch={branch}
+              branch={branchDetails}
               setBranch={setBranch}
             />
           </>
@@ -188,7 +193,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
         title="Reservation"
         contents={
           <>
-            <Calendars />
+            <Calendars company={company} branch={branchDetails} />
           </>
         }
       />
@@ -196,8 +201,8 @@ function Company({ company, setNewCompany, branch, setBranch }) {
       <Card className={classes.root}>
         <CardMedia
           className={classes.media}
-          image={company.logo}
-          title={company.name}
+          image={company.company.logo}
+          title={company.company.name}
         />
         <CardHeader
           action={
@@ -220,7 +225,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
               </IconButton>
             </div>
           }
-          subheader={company.name}
+          subheader={company.company.name}
         />
         {/*   <CardContent>
              <Typography gutterBottom variant="h6" component="h6">
@@ -260,7 +265,8 @@ function Company({ company, setNewCompany, branch, setBranch }) {
                   <IconButton
                     onClick={() => {
                       setOpenModalBranch(true);
-                      setBranch(l);
+                      //console.log(l);
+                      setBranchDetails(l);
                     }}
                   >
                     <EditIcon />

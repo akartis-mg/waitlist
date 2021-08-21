@@ -18,6 +18,7 @@ function myModal({ title, contents, open, setOpenMyModal }) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         className="my__modal"
+        maxWidth="lg"
       >
         <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent>{contents}</DialogContent>

@@ -101,8 +101,21 @@ input {
   -ms-flex: 1;
   flex: 1;
   margin: 30px;
+  overflow: hidden;
+  position: relative;
+  float: left;
 }
 
+#text-container {
+  height: 30px;
+  width: 300px;
+  color: white;
+  background-color: blue;
+  float: left;
+  position: relative;
+  left: -400px;
+  transition: all 0.3s linear;
+}
 hgroup {
   line-height: 0.8rem;
   margin-bottom: 30px;
@@ -350,5 +363,14 @@ hgroup {
     width: auto;
     margin-top: 20px;
   }
+}
+
+.afenina {
+  display: none;
+  transition: 1s al;
+}
+.aseho {
+  left: 0px;
+  transition: 1s al;
 }
 /*# sourceMappingURL=schedule.css.map */
