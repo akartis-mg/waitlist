@@ -8,18 +8,29 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 
 function InputOpenClose({ jour, branch, setBranch }) {
-  const onChangeValue = (e, j) => {
-    setBranch({
-      ...branch.info.opening_days[j],
-      [e.target.id]: e.target.value,
-    });
-  };
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  function getBoolean(value) {
+    switch (value) {
+      case true:
+      case "true":
+      case 1:
+      case "1":
+      case "on":
+      case "yes":
+        return true;
+      default:
+        return false;
+    }
+  }
 
   return (
     <>
       <Grid item xs={12}>
         <Typography component="h1" variant="subtitle1">
-          {jour}
+          {capitalizeFirstLetter(jour)}
         </Typography>
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -75,9 +86,9 @@ function InputOpenClose({ jour, branch, setBranch }) {
 
       <Grid item xs={12} sm={4}>
         <FormControlLabel
-          value={branch["info"]["opening_days"][jour]["open"]}
           control={
             <Checkbox
+              checked={branch["info"]["opening_days"][jour]["open"]}
               color="primary"
               onChange={(e) =>
                 setBranch({
@@ -96,7 +107,7 @@ function InputOpenClose({ jour, branch, setBranch }) {
               }
             />
           }
-          label="start"
+          label="Is Open"
           labelPlacement="start"
         />
       </Grid>

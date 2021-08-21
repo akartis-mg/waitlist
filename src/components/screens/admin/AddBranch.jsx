@@ -43,7 +43,15 @@ function AddBranch({ companyDetails, branch, setBranch }) {
   };
   const classes = useStyles();
 
-  const days = ["monday", "tuesday", "wednesday"];
+  const days = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ];
 
   return (
     <div>
@@ -160,176 +168,14 @@ function AddBranch({ companyDetails, branch, setBranch }) {
               }
             />
           </Grid>
-          {/* MONDAY */}
-          <Grid item xs={12}>
-            <Typography component="h1" variant="subtitle1">
-              Monday
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              id="open_hour"
-              label="Open"
-              type="number"
-              defaultValue={branch.info.opening_days.monday.open_hour}
-              className="reservation__input"
-              onChange={(e) =>
-                setBranch({
-                  ...branch,
-                  info: {
-                    ...branch.info,
-                    opening_days: {
-                      ...branch.info.opening_days,
-                      monday: {
-                        ...branch.info.opening_days.monday,
-                        open_hour: e.target.value,
-                      },
-                    },
-                  },
-                })
-              }
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              id="closing_hour"
-              label="Close"
-              type="number"
-              value={branch.info.opening_days.monday.closing_hour}
-              className="reservation__input"
-              onChange={(e) =>
-                setBranch({
-                  ...branch,
-                  info: {
-                    ...branch.info,
-                    opening_days: {
-                      ...branch.info.opening_days,
-                      monday: {
-                        ...branch.info.opening_days.monday,
-                        closing_hour: e.target.value,
-                      },
-                    },
-                  },
-                })
-              }
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <FormControlLabel
-              value="Is OPEN"
-              control={
-                <Checkbox
-                  color="primary"
-                  onChange={(e) =>
-                    setBranch({
-                      ...branch,
-                      info: {
-                        ...branch.info,
-                        opening_days: {
-                          ...branch.info.opening_days,
-                          monday: {
-                            ...branch.info.opening_days.monday,
-                            open: e.target.checked,
-                          },
-                        },
-                      },
-                    })
-                  }
-                />
-              }
-              label="start"
-              labelPlacement="start"
-            />
-          </Grid>
-
-          {/* Tuesday */}
-          <Grid item xs={12}>
-            <Typography component="h1" variant="subtitle1">
-              Tuesday
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              id="open_hour"
-              label="Open"
-              type="number"
-              defaultValue={branch.info.opening_days.tuesday.open_hour}
-              className="reservation__input"
-              onChange={(e) =>
-                setBranch({
-                  ...branch,
-                  info: {
-                    ...branch.info,
-                    opening_days: {
-                      ...branch.info.opening_days,
-                      tuesday: {
-                        ...branch.info.opening_days.tuesday,
-                        open_hour: e.target.value,
-                      },
-                    },
-                  },
-                })
-              }
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              id="closing_hour"
-              label="Close"
-              type="number"
-              value={branch.info.opening_days.tuesday.closing_hour}
-              className="reservation__input"
-              onChange={(e) =>
-                setBranch({
-                  ...branch,
-                  info: {
-                    ...branch.info,
-                    opening_days: {
-                      tuesday: {
-                        ...branch.info.opening_days.tuesday,
-                        closing_hour: e.target.value,
-                      },
-                    },
-                  },
-                })
-              }
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <FormControlLabel
-              value="Is OPEN"
-              control={
-                <Checkbox
-                  color="primary"
-                  onChange={(e) =>
-                    setBranch({
-                      ...branch,
-                      info: {
-                        ...branch.info,
-                        opening_days: {
-                          tuesday: {
-                            ...branch.info.opening_days.tuesday,
-                            open: e.target.checked,
-                          },
-                        },
-                      },
-                    })
-                  }
-                />
-              }
-              label="start"
-              labelPlacement="start"
-            />
-          </Grid>
 
           {days.map((d) => (
-            <InputOpenClose jour={d} setBranch={setBranch} branch={branch} />
+            <InputOpenClose
+              key={d}
+              jour={d}
+              setBranch={setBranch}
+              branch={branch}
+            />
           ))}
 
           <Button
