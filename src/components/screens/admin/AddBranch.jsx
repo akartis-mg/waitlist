@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import PhoneInput from 'react-phone-input-2'
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import InputOpenClose from "../../inputOpenClose/InputOpenClose";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -28,11 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AddBranch({ companyDetails, branch, setBranch }) {
-  // if (branchDetails != null) {
-  //   setBranch({ ...branch, branchDetails });
-  // }
-  //console.warn("STREET", branch.address.street);
+function AddBranch({ branch, setBranch }) {
   const onChange = (e) => {
     setBranch({ ...branch, [e.target.id]: e.target.value });
   };
@@ -62,7 +56,6 @@ function AddBranch({ companyDetails, branch, setBranch }) {
               id="name"
               label="Branch Name"
               type="text"
-              variant="filled"
               defaultValue={branch.name}
               fullWidth
               onChange={onChange}
@@ -76,6 +69,22 @@ function AddBranch({ companyDetails, branch, setBranch }) {
               defaultValue={branch.average_duration}
               fullWidth
               onChange={onChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <PhoneInput
+              required
+              country={'mu'}
+              value={branch.info.phone}
+              onChange={(phoneNb) =>
+                setBranch({
+                  ...branch,
+                  info: {
+                    ...branch.info,
+                    phone: phoneNb,
+                  },
+                })
+              }
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -177,16 +186,6 @@ function AddBranch({ companyDetails, branch, setBranch }) {
               branch={branch}
             />
           ))}
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className="button"
-          >
-            Sign In
-          </Button>
         </Grid>
       </form>
     </div>

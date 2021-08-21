@@ -2,13 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
-
-import { connect } from 'react-redux';
-import { addCompany } from '../../../actions/companyActions';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -23,17 +19,10 @@ function AddCompany({ newCompany, setNewCompany }) {
   const classes = useStyles();
 
   const typeCompany = useSelector((state) => state.typeCompany);
-  
-  const handleChange = (event) => {
-    setNewCompany(event.target.value);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
   }
-  const onChange = (e) => {
-    setNewCompany({ ...newCompany, [e.target.id]: e.target.value });
-  };
 
   return (
     <div>

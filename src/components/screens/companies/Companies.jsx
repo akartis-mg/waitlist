@@ -5,9 +5,7 @@ import Company from "./company/Company";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import { connect } from "react-redux";
@@ -20,13 +18,15 @@ import StepLabel from "@material-ui/core/StepLabel";
 import Typography from "@material-ui/core/Typography";
 
 //import actions
-import { getTypeCompany } from "../../../actions/typeCompanyActions";
-import { addCompany, getCompanies } from "../../../actions/companyActions";
-import { addBranch } from "../../../actions/branchActions";
+import { getTypeCompany } from '../../../actions/typeCompanyActions';
+import { addCompany, getCompanies } from '../../../actions/companyActions';
+import { addBranch } from '../../../actions/branchActions';
+import { addStaff } from '../../../actions/staffActions';
 
 //admin components
 import AddCompany from "../admin/AddCompany";
 import AddBranch from "../admin/AddBranch";
+import AddManager from "../admin/AddManager";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,14 +52,15 @@ function getStepContent(step) {
     case 1:
       return "Add Branch";
     case 2:
-      return "Asign Staff";
+      return "Add Branch Manager";
     default:
       return "Unknown step";
   }
 }
 
-function Companies({ getTypeCompany, addCompany, getCompanies, addBranch }) {
-  const allCompany = useSelector((state) => state.company);
+function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaff}) {
+  const allCompany = useSelector(state => state.company);
+  const authBusiness = useSelector(state => state.authBusiness.userBusiness);
   const [openNewCompany, setOpenNewCompany] = useState(false);
 
   const [newCompany, setNewCompany] = useState({
@@ -130,6 +131,15 @@ function Companies({ getTypeCompany, addCompany, getCompanies, addBranch }) {
     },
   });
 
+  const [manager, setManager] = useState({
+    bid: "",
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    type: "Manager"
+  })
+
   const handleClickOpen = () => {
     setOpenNewCompany(true);
   };
@@ -190,7 +200,93 @@ function Companies({ getTypeCompany, addCompany, getCompanies, addBranch }) {
     addBranch(newBranch);
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
+
+    setBranch({
+        cid: "",
+        name: "",
+        average_duration: 0,
+        address: {
+          street: "",
+          city: "",
+          postal_code: 0,
+          longitude: 0,
+          latitude: 0,
+        },
+
+        info: {
+          opening_days: {
+            monday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            tuesday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            wednesday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            thursday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            friday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            saturday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            sunday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+          },
+          phone: 0,
+          website: "",
+        },
+
+        spots: {
+          available: 0,
+          not_available: 0,
+        }
+    })
+
+  }
+
+  const handleAddManager = () => {
+    const new_manager_localstorage = JSON.parse(localStorage.getItem("new_branch"));
+
+    manager.bid = new_manager_localstorage._id;
+    manager.password = manager.firstname + manager.lastname;
+
+    const newManager = {
+      bid: new_manager_localstorage._id,
+      manager
+    }
+    
+    addStaff(newManager);
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+    setManager({
+      bid: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      type: "Manager"
+    })
+  }
 
   const classes = useStyles();
 
@@ -303,13 +399,16 @@ function Companies({ getTypeCompany, addCompany, getCompanies, addBranch }) {
       <h2 className="section__title">Companies List</h2>
       <span className="section__subtitle">List of all companies</span>
 
-      <div className="admin__view">
-        <button className="button button" onClick={handleClickOpen}>
-          {" "}
-          Add new Company
+      {authBusiness.type == "Superadmin" ? (
+        <div className="admin__view">
+          <button className="button button" onClick={handleClickOpen}>
+            {" "} Add new Company
         </button>
       </div>
-
+      ) : (
+        <></>
+      )}
+      
       <div className="companies__container  grid">
         <div className="companies__list">
           {companies.map((c) => (
@@ -333,6 +432,7 @@ function Companies({ getTypeCompany, addCompany, getCompanies, addBranch }) {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">Add Company</DialogTitle>
+          
           <DialogContent>
             <div className="reservation__content ">
               <div className="reservation__content ">
@@ -388,58 +488,38 @@ function Companies({ getTypeCompany, addCompany, getCompanies, addBranch }) {
                             </Button>
                           </div>
                         </div>
+                      ) : activeStep === 2 ? (
+                        /* Add manager*/
+                        <div>
+                          <AddManager
+                            manager={manager}
+                            setManager={setManager}
+                          />
+                          <div>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={handleAddManager}
+                            >
+                              {activeStep === steps.length - 1
+                                ? "Finish"
+                                : "Next"}
+                            </Button>
+                          </div>
+                        </div>
                       ) : (
                         <div></div>
                       )}
-
-                      {/* <div>
-                    <Typography className={classes.instructions}>
-                      {getStepContent(activeStep)}
-                    </Typography>
-                    <div>
-                      <Button
-                        disabled={activeStep === 0}
-                        onClick={handleBack}
-                        className={classes.backButton}
-                      >
-                        Back
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleNext}
-                      >
-                        {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                      </Button>
-                    </div>
-                  </div> */}
                     </div>
                   )}
                 </div>
               </div>
             </div>
-            {/* <DialogContentText id="alert-dialog-description">
-              Let Google help apps determine location. This means sending
-              anonymous location data to Google, even when no apps are running.
-            </DialogContentText> */}
           </DialogContent>
-          {/* <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Disagree
-            </Button>
-            <Button onClick={handleClose} color="primary" autoFocus>
-              Agree
-            </Button>
-          </DialogActions> */}
         </Dialog>
       </div>
     </div>
   );
 }
 
-export default connect(null, {
-  getTypeCompany,
-  addCompany,
-  getCompanies,
-  addBranch,
-})(Companies);
+export default connect(null, { getTypeCompany, addCompany, getCompanies, addBranch, addStaff })(Companies);
