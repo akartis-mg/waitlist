@@ -21,10 +21,12 @@ import Typography from "@material-ui/core/Typography";
 
 //import actions
 import { getTypeCompany } from '../../../actions/typeCompanyActions';
-import { addCompany } from '../../../actions/companyActions';
+import { addCompany, getCompanies } from '../../../actions/companyActions';
+import { addBranch } from '../../../actions/branchActions';
 
 //admin components
 import AddCompany from "../admin/AddCompany";
+import AddBranch from "../admin/AddBranch";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,16 +58,76 @@ function getStepContent(step) {
   }
 }
 
-function Companies({getTypeCompany, addCompany}) {
-  const typeCompany = useSelector(state => state.typeCompany);
-
+function Companies({getTypeCompany, addCompany, getCompanies, addBranch}) {
+  const allCompany = useSelector(state => state.company);
   const [openNewCompany, setOpenNewCompany] = useState(false);
 
   const [newCompany, setNewCompany] = useState({
-    name: {
-      name: ""
+    company: {
+      name: "",
+      logoUrl: "",
     },
     typeCompanyID: "",
+  });
+
+  const [branch, setBranch] = useState({
+    cid: "",
+    name: "",
+    average_duration: 0,
+    address: {
+      street: "",
+      city: "",
+      postal_code: 0,
+      longitude: 0,
+      latitude: 0,
+    },
+
+    info: {
+      opening_days: {
+        monday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        tuesday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        wednesday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        thursday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        friday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        saturday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+        sunday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+        },
+      },
+      phone: 0,
+      website: "",
+    },
+
+    spots: {
+      available: 0,
+      not_available: 0,
+    },
   });
 
   const handleClickOpen = () => {
@@ -94,11 +156,11 @@ function Companies({getTypeCompany, addCompany}) {
   };
 
   const handleAddCompany = () => {
-    console.log("ADD NEW COMPANY: ", newCompany.name);
 
     addCompany({
-      name: {
-        name: newCompany.name.name
+      company: {
+        name: newCompany.company.name,
+        logoUrl: newCompany.company.logoUrl,
       },
       typeCompanyID: newCompany.typeCompanyID
     });
@@ -106,11 +168,30 @@ function Companies({getTypeCompany, addCompany}) {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
     setNewCompany({
-      name: {
-        name: ""
+      company: {
+        name: "",
+        logoUrl: "",
       },
       typeCompanyID: ""
     })
+  }
+
+  const handleAddBranch = () => {
+    const new_branch_localstorage = JSON.parse(localStorage.getItem("new_company"));
+
+    branch.cid = new_branch_localstorage._id;
+
+    const newBranch = {
+      cid: new_branch_localstorage._id,
+      branch
+    }
+
+    addBranch(newBranch);
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+
+
   }
 
   const classes = useStyles();
@@ -180,6 +261,7 @@ function Companies({getTypeCompany, addCompany}) {
 
   useEffect(() => {
     getTypeCompany();
+    getCompanies();
   }, [])
 
   return (
@@ -254,18 +336,15 @@ function Companies({getTypeCompany, addCompany}) {
                       ) : activeStep === 1 ? (
                         /* Add branch*/
                         <div>
+                          <AddBranch
+                            branch={branch}
+                            setBranch={setBranch}
+                          />
                           <div>
-                            <Button
-                              disabled={activeStep === 0}
-                              onClick={handleBack}
-                              className={classes.backButton}
-                            >
-                              Back
-                            </Button>
                             <Button
                               variant="contained"
                               color="primary"
-                              onClick={handleNext}
+                              onClick={handleAddBranch}
                             >
                               {activeStep === steps.length - 1
                                 ? "Finish"
@@ -322,4 +401,4 @@ function Companies({getTypeCompany, addCompany}) {
   );
 }
 
-export default connect(null, { getTypeCompany, addCompany })(Companies);
+export default connect(null, { getTypeCompany, addCompany, getCompanies, addBranch })(Companies);
