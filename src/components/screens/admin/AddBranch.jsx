@@ -18,10 +18,9 @@ function AddBranch({ companyDetails, branch, setBranch }) {
         noValidate
         onSubmit={handleSubmit}
       >
-        {branch.name}
         <TextField
           id="name"
-          label="Branch Name"
+          label="Branch location"
           type="text"
           defaultValue={branch.name}
           className="reservation__input"
@@ -91,16 +90,6 @@ function AddBranch({ companyDetails, branch, setBranch }) {
             setBranch({ ...branch, "address.latitude": e.target.value })
           }
         />
-
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className="button"
-        >
-          Sign In
-        </Button>
       </form>
     </div>
   );
