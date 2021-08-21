@@ -38,6 +38,9 @@ import MyModal from "../../../dialog/myModal";
 import AddCompany from "../../admin/AddCompany";
 import AddBranch from "../../admin/AddBranch";
 
+//reservation components
+import Calendars from "../../calendars/Calendars";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 305,
@@ -78,23 +81,50 @@ function Company({ company, setNewCompany }) {
       name: "branch1",
       average_duration: 30,
       address: {
-        street: "14",
+        street: "14 avenue",
         city: "Qb",
         postal_code: 31,
         longitude: 45,
         latitude: 5765,
       },
-    },
-    {
-      cid: 2,
-      name: "branch1",
-      average_duration: 30,
-      address: {
-        street: "14",
-        city: "Qb",
-        postal_code: 31,
-        longitude: 45,
-        latitude: 5765,
+      info: {
+        opening_days: {
+          monday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          tuesday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          wednesday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          thursday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          friday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          saturday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          sunday: {
+            open: false,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+        },
       },
     },
   ];
@@ -170,6 +200,9 @@ function Company({ company, setNewCompany }) {
     },
   });
 
+  //reservation
+  const [openCalendar, setOpenCalendar] = useState(false);
+
   return (
     <div>
       {/* modal for reservation */}
@@ -203,6 +236,18 @@ function Company({ company, setNewCompany }) {
               branch={branch}
               setBranch={setBranch}
             />
+          </>
+        }
+      />
+
+      {/* modal for reservation */}
+      <MyModal
+        open={openCalendar}
+        setOpenMyModal={setOpenCalendar}
+        title="Reservation"
+        contents={
+          <>
+            <Calendars />
           </>
         }
       />
@@ -263,7 +308,7 @@ function Company({ company, setNewCompany }) {
 
                   <IconButton
                     onClick={() => {
-                      setOpen(true);
+                      setOpenCalendar(true);
                       // pass all branch details
                       setBranchDetails(l);
                     }}
