@@ -5,11 +5,8 @@ import Company from "./company/Company";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import TextField from "@material-ui/core/TextField";
 import { connect } from 'react-redux';
 
 //stepper
@@ -23,10 +20,12 @@ import Typography from "@material-ui/core/Typography";
 import { getTypeCompany } from '../../../actions/typeCompanyActions';
 import { addCompany, getCompanies } from '../../../actions/companyActions';
 import { addBranch } from '../../../actions/branchActions';
+import { addStaff } from '../../../actions/staffActions';
 
 //admin components
 import AddCompany from "../admin/AddCompany";
 import AddBranch from "../admin/AddBranch";
+import AddManager from "../admin/AddManager";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,13 +51,13 @@ function getStepContent(step) {
     case 1:
       return "Add Branch";
     case 2:
-      return "Asign Staff";
+      return "Add Branch Manager";
     default:
       return "Unknown step";
   }
 }
 
-function Companies({getTypeCompany, addCompany, getCompanies, addBranch}) {
+function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaff}) {
   const allCompany = useSelector(state => state.company);
   const [openNewCompany, setOpenNewCompany] = useState(false);
 
@@ -130,6 +129,15 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch}) {
     },
   });
 
+  const [manager, setManager] = useState({
+    bid: "",
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    type: "Manager"
+  })
+
   const handleClickOpen = () => {
     setOpenNewCompany(true);
   };
@@ -190,8 +198,91 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch}) {
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
+    setBranch({
+        cid: "",
+        name: "",
+        average_duration: 0,
+        address: {
+          street: "",
+          city: "",
+          postal_code: 0,
+          longitude: 0,
+          latitude: 0,
+        },
 
+        info: {
+          opening_days: {
+            monday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            tuesday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            wednesday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            thursday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            friday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            saturday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+            sunday: {
+              open: true,
+              open_hour: 0,
+              closing_hour: 0,
+            },
+          },
+          phone: 0,
+          website: "",
+        },
 
+        spots: {
+          available: 0,
+          not_available: 0,
+        }
+    })
+
+  }
+
+  const handleAddManager = () => {
+    const new_manager_localstorage = JSON.parse(localStorage.getItem("new_branch"));
+
+    manager.bid = new_manager_localstorage._id;
+    manager.password = manager.firstname + manager.lastname;
+
+    const newManager = {
+      bid: new_manager_localstorage._id,
+      manager
+    }
+    
+    addStaff(newManager);
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+    setManager({
+      bid: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      type: "Manager"
+    })
   }
 
   const classes = useStyles();
@@ -352,6 +443,25 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch}) {
                             </Button>
                           </div>
                         </div>
+                      ) : activeStep === 2 ? (
+                        /* Add manager*/
+                        <div>
+                          <AddManager
+                            manager={manager}
+                            setManager={setManager}
+                          />
+                          <div>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={handleAddManager}
+                            >
+                              {activeStep === steps.length - 1
+                                ? "Finish"
+                                : "Next"}
+                            </Button>
+                          </div>
+                        </div>
                       ) : (
                         <div></div>
                       )}
@@ -401,4 +511,4 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch}) {
   );
 }
 
-export default connect(null, { getTypeCompany, addCompany, getCompanies, addBranch })(Companies);
+export default connect(null, { getTypeCompany, addCompany, getCompanies, addBranch, addStaff })(Companies);
