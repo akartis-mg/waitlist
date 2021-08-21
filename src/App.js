@@ -76,10 +76,10 @@ function App() {
             !authBusiness.token ? (
               <Redirect to="/login" />
             ) : (
-              <></>
+              <Redirect to="/companies" />
             )
           ) : (
-            <Redirect to="/contact" />
+            <Redirect to="/companies" />
           )}
         </Route>
       </Router>

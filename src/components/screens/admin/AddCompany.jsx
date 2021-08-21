@@ -35,7 +35,7 @@ function AddCompany({ newCompany, setNewCompany }) {
           id="name"
           label="Company Name"
           type="text"
-          defaultValue={newCompany.company.name}
+          defaultValue={newCompany.name}
           className="reservation__input"
           onChange={(e) => setNewCompany({...newCompany, company: {...newCompany.comapny, name: e.target.value}})}
         />
@@ -43,7 +43,7 @@ function AddCompany({ newCompany, setNewCompany }) {
           id="logoUrl"
           label="Logo URL"
           type="text"
-          defaultValue={newCompany.company.logoUrl}
+          defaultValue={newCompany.logoUrl}
           className="reservation__input"
           onChange={(e) => setNewCompany({...newCompany, company: {...newCompany.company, logoUrl: e.target.value}})}
         />

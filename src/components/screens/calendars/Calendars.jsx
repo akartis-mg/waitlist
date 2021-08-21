@@ -239,7 +239,7 @@ function Calendars({ company, branch }) {
               alignItems="center"
             >
               <Grid item xs={12}>
-                <h4 id="scheduler">{company.company.name}</h4>
+                <h4 id="scheduler">{company.name}</h4>
               </Grid>
 
               <Grid item xs={12}>

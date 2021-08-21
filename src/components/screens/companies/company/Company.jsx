@@ -70,6 +70,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 function Company({ company, setNewCompany, branch, setBranch }) {
+  console.log("COMPANY: ", company);
+
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
@@ -155,7 +157,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
       <ReservationModal
         open={open}
         setOpen={setOpen}
-        title={company.company.name}
+        title={company.name}
         contents={branchDetails}
       />
       {/* modal for edit company */}
@@ -201,8 +203,8 @@ function Company({ company, setNewCompany, branch, setBranch }) {
       <Card className={classes.root}>
         <CardMedia
           className={classes.media}
-          image={company.company.logo}
-          title={company.company.name}
+          image={company.logoUrl}
+          title={company.name}
         />
         <CardHeader
           action={
@@ -225,7 +227,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
               </IconButton>
             </div>
           }
-          subheader={company.company.name}
+          subheader={company.name}
         />
         {/*   <CardContent>
              <Typography gutterBottom variant="h6" component="h6">
@@ -241,13 +243,12 @@ function Company({ company, setNewCompany, branch, setBranch }) {
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
             <Typography paragraph>All branches :</Typography>
-
             <List
               component="nav"
               className={classes.list}
               aria-label="contacts"
             >
-              {list.map((l) => (
+              {company.branchs.map((l) => (
                 // Correct ! La clé doit être spécifiée dans le tableau.
                 <ListItem>
                   <ListItemText primary={l.name} />
