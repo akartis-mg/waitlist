@@ -46,16 +46,6 @@ function Calendars({ company, branch }) {
   ];
   const timesAvailable = ["9:00", "10:00", "11:00", "2:00", "3:00"];
 
-  // const [event, setEvent] = useState({
-  //   name: "",
-  //   organizer: "",
-  //   duration: 0,
-  //   description: "",
-  //   date: new Date(),
-  //   time: "",
-  //   attendees: [],
-  // });
-
   const [event, setEvent] = useState({
     bid: branch.cid,
     uid: "610e9dfe4a6f3137d05a350b",

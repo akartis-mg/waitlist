@@ -219,6 +219,8 @@ function Companies({
       branch,
     };
 
+    console.log("NEW BRANCH: ", newBranch);
+
     addBranch(newBranch);
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -373,14 +375,12 @@ function Companies({
                     ))}
                 </>
               ) : (
-                <>
                   <Company
                     key={allCompany[index]._id}
                     company={allCompany[index]}
                     setNewCompany={setNewCompany}
                     setBranch={setBranch}
                   />
-                </>
               )}
               {/* <Company
                 key={allCompany[index]._id}
@@ -479,6 +479,12 @@ function Companies({
                             setManager={setManager}
                           />
                           <div>
+                          <Button
+                          onClick={handleBack}
+                          className={classes.backButton}
+                        >
+                          Back
+                        </Button>
                             <Button
                               variant="contained"
                               color="primary"

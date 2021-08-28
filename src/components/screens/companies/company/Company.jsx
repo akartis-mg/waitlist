@@ -161,29 +161,48 @@ function Company({ company, setNewCompany, branch, setBranch }) {
         title={company.name}
         contents={branchDetails}
       />
+
       {/* modal for edit company */}
-      <MyModal
-        open={openModalEditCompany}
-        setOpenMyModal={setOpenModalEditCompany}
-        title="Edit Company"
-        contents={
-          <>
-            <AddCompany newCompany={company} setNewCompany={setNewCompany} />
-          </>
-        }
-      />
+      {authBusiness && authBusiness.type == "Superadmin" ? (
+        <>
+          <MyModal
+            open={openModalEditCompany}
+            setOpenMyModal={setOpenModalEditCompany}
+            title="Edit Company"
+            contents={
+              <>
+                <AddCompany newCompany={company} setNewCompany={setNewCompany} />
+              </>
+            }
+          />
+        </>
+      ) : (
+        <></>
+      )}
 
       {/* modal for branch manage */}
-      <MyModal
-        open={openModalBranch}
-        setOpenMyModal={setOpenModalBranch}
-        title="Branch"
-        contents={
-          <>
-            <AddBranch branch={branchDetails} setBranch={setBranch} />
-          </>
-        }
-      />
+      {authBusiness && authBusiness.type == "Manager" ? (
+        <>
+          <MyModal
+            open={openModalBranch}
+            setOpenMyModal={setOpenModalBranch}
+            title="Branch"
+            contents={
+              <>
+                <AddBranch
+                  companyDetails={company}
+                  branch={branchDetails}
+                  setBranch={setBranch}
+                />
+              </>
+            }
+          />
+        </>
+      ) : (
+        <>
+        </>
+      )}
+
 
       {/* modal for reservation */}
       <MyModal
@@ -205,13 +224,22 @@ function Company({ company, setNewCompany, branch, setBranch }) {
         />
         <CardHeader
           action={
+            <>
             <div>
-              <IconButton
-                aria-label="show more"
-                onClick={() => setOpenModalEditCompany(true)}
-              >
-                <EditIcon />
-              </IconButton>
+              {authBusiness && authBusiness.type == "Superadmin" ? (
+                <>                  
+                  <IconButton
+                    aria-label="show more"
+                     onClick={() => setOpenModalEditCompany(true)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </>
+              ) : (
+                <>
+                </>
+              )}
+                    
               <IconButton
                 className={clsx(classes.expand, {
                   [classes.expandOpen]: expanded,
@@ -221,9 +249,9 @@ function Company({ company, setNewCompany, branch, setBranch }) {
                 aria-label="show more"
               >
                 <ExpandMoreIcon />
-              </IconButton>
-            </div>
-          }
+              </IconButton> 
+              </div>
+          </>}
           subheader={company.name}
         />
 
@@ -292,16 +320,16 @@ function Company({ company, setNewCompany, branch, setBranch }) {
                           <VisibilityIcon />
                         </IconButton>
 
-                        <IconButton
-                          onClick={() => {
-                            setOpenModalBranch(true);
-                            //console.log(l);
-                            setBranchDetails(l);
-                          }}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </ListItem>
+                      {/* <IconButton
+                        onClick={() => {
+                          setOpenModalBranch(true);
+                          //console.log(l);
+                          setBranchDetails(l);
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton> */}
+                    </ListItem>
                     </>
                   )}
                 </>
