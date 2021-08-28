@@ -5,22 +5,19 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
-import { Link, withRouter, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import EventIcon from "@material-ui/icons/Event";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import EventSeatIcon from "@material-ui/icons/EventSeat";
-import Header from "../header/Header";
 import moment from "moment";
 import TextField from "@material-ui/core/TextField";
-import { everyLimit } from "async";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from "@material-ui/core";
 
 function Calendars({ company, branch }) {
-  const history = useHistory();
   const months = [
     "January",
     "February",
@@ -57,20 +54,23 @@ function Calendars({ company, branch }) {
 
   const [dateSelected, setSelected] = useState("");
   const [timeSelected, setTimeSelected] = useState("");
+  const [openingDateTime, setOpeningDateTime] = useState(branch.info.opening_days);
+
+  console.log("OPENING DAYS: ", openingDateTime); 
 
   //convert to second
-  function hmsToSecondsOnly(str) {
-    var p = str.split(":"),
-      s = 0,
-      m = 1;
-
-    while (p.length > 0) {
-      s += m * parseInt(p.pop(), 10);
-      m *= 3600;
+  function hmsToSecondsOnly(str) {  
+    let timetoArray = str.toString(10).split('').map(Number);
+    let timeConverted;
+    if(timetoArray.length == 3) {
+      timeConverted = timetoArray[0].toString() + ":" + timetoArray[1].toString() + timetoArray[2].toString();
+    } else if (timetoArray.length == 4){
+      timeConverted = timetoArray[0].toString() + timetoArray[1].toString() + ":" + timetoArray[2].toString() + timetoArray[3].toString();
     }
 
-    return s;
+    return timeConverted;
   }
+
   //convert to HH:MM
   function convertSeconds(sec) {
     var hrs = Math.floor(sec / 3600);
@@ -82,6 +82,27 @@ function Calendars({ company, branch }) {
     result += ":" + (min < 10 ? "0" + min : min);
     //result += "-" + (seconds < 10 ? "0" + seconds : seconds);
     return result;
+  }
+
+  function getTimeInterval () {
+    let openDays = [];
+
+    for (let x in openingDateTime) {
+      console.log("FOR LOOP: ", openingDateTime[x]);
+
+      if(openingDateTime[x].open){
+        console.log("NAME: ", x);
+
+        let openHour;
+        let closeHour;
+        openHour = hmsToSecondsOnly(openingDateTime[x].open_hour);
+        console.log("OPEN HOUR: ", openHour);
+
+        //openDays.push(openingDateTime[x]);
+      }
+    }
+
+    //console.log("OPENDAYS: ", openDays);
   }
 
   const loadCalendar = () => {
@@ -147,22 +168,11 @@ function Calendars({ company, branch }) {
               event.time = hmsToSecondsOnly(this.textContent);
               setTimeSelected(convertSeconds(event.time));
               confirmBtn.addEventListener("click", function () {
-                // event.date_reservation =
-                //   days[daySelected.getDay()] +
-                //   ", " +
-                //   months[daySelected.getFullYear()] +
-                //   " " +
-                //   daySelected.getDate();
+
                 var month = daySelected.getMonth() + 1;
                 if (month < 10) {
                   month = "0" + month;
                 }
-                // event.date_reservation =
-                //   daySelected.getFullYear() +
-                //   "-" +
-                //   month +
-                //   "-" +
-                //   daySelected.getDate();
 
                 event.date_reservation = moment(daySelected).format();
                 sessionStorage.setItem("eventObj", JSON.stringify(event));
@@ -199,6 +209,7 @@ function Calendars({ company, branch }) {
 
   useEffect(() => {
     loadCalendar();
+    getTimeInterval();
   }, []);
 
   useEffect(() => {}, [dateSelected]);
