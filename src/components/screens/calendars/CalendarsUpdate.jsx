@@ -19,7 +19,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from "@material-ui/core";
 
-function Calendars({ company, branch }) {
+function CalendarsUpdate({ company, branch, resaInfo }) {
   const history = useHistory();
   const months = [
     "January",
@@ -47,16 +47,17 @@ function Calendars({ company, branch }) {
   const timesAvailable = ["9:00", "10:00", "11:00", "2:00", "3:00"];
 
   const [event, setEvent] = useState({
-    bid: branch._id,
-    uid: "610e9dfe4a6f3137d05a350b",
-    name: "",
-    nb_spots: 0,
-    date_reservation: "",
-    time: 0,
+    _id: resaInfo._id,
+    bid: resaInfo.bid,
+    uid: resaInfo.uid,
+    name: resaInfo.name,
+    nb_spots: resaInfo.nb_spots,
+    time: resaInfo.time,
+    date_reservation: resaInfo.date_reservation,
   });
 
-  const [dateSelected, setSelected] = useState("");
-  const [timeSelected, setTimeSelected] = useState("");
+  const [dateSelected, setSelected] = useState(resaInfo.date_reservation);
+  const [timeSelected, setTimeSelected] = useState(resaInfo.time);
 
   //convert to second
   function hmsToSecondsOnly(str) {
@@ -144,8 +145,9 @@ function Calendars({ company, branch }) {
               confirmBtn.classList.add("confirm-btn");
               confirmBtn.appendChild(confirmTxt);
               this.parentNode.appendChild(confirmBtn);
-              event.time = hmsToSecondsOnly(this.textContent);
-              setTimeSelected(convertSeconds(event.time));
+              //event.time = hmsToSecondsOnly(this.textContent);
+              event.time = this.textContent;
+              setTimeSelected(this.textContent);
               confirmBtn.addEventListener("click", function () {
                 // event.date_reservation =
                 //   days[daySelected.getDay()] +
@@ -175,7 +177,7 @@ function Calendars({ company, branch }) {
                 placeResa.classList.remove("afenina");
                 document.getElementById("calendar-section").style.lef =
                   "-400px";
-                console.log("averina heure", convertSeconds(event.time));
+                //console.log("averina heure", convertSeconds(event.time));
               });
               last = this;
             });
@@ -201,7 +203,23 @@ function Calendars({ company, branch }) {
     loadCalendar();
   }, []);
 
-  useEffect(() => {}, [dateSelected]);
+  useEffect(() => {
+    setEvent({ resaInfo });
+  }, []);
+
+  useEffect(() => {
+    setEvent({
+      ...event,
+      date_reservation: dateSelected,
+    });
+  }, [dateSelected]);
+
+  useEffect(() => {
+    setEvent({
+      ...event,
+      time: timeSelected,
+    });
+  }, [timeSelected]);
 
   const handleGoBack = () => {
     var placeCalendar = document.getElementsByClassName("misyCalendar")[0];
@@ -210,9 +228,12 @@ function Calendars({ company, branch }) {
     placeResa.classList.add("afenina");
   };
 
+  //const [resaInfo, setResaInfo] = useState({});
+
   const handleSubmit = () => {
     if (event.nb_spots === 0) {
       alert("Aza mianiany");
+    } else {
     }
     console.log(event);
   };
@@ -229,7 +250,7 @@ function Calendars({ company, branch }) {
               alignItems="center"
             >
               <Grid item xs={12}>
-                <h4 id="scheduler">{company.name}</h4>
+                <h4 id="scheduler">{company?.name}</h4>
               </Grid>
 
               <Grid item xs={12}>
@@ -239,14 +260,14 @@ function Calendars({ company, branch }) {
                 <EventSeatIcon />
               </Grid>
               <Grid item xs={10}>
-                <h4 id="vent-time-stamp">{branch.spots.available} </h4>
+                <h4 id="event-time-stamp">{branch.spots.available} </h4>
               </Grid>
 
               <Grid item xs={2}>
                 <EventIcon />
               </Grid>
               <Grid item xs={10}>
-                <h4 id="vent-time-stamp">{dateSelected} </h4>
+                <h4 id="event-time-stamp">{dateSelected} </h4>
               </Grid>
 
               <Grid item xs={2}>
@@ -348,4 +369,4 @@ function Calendars({ company, branch }) {
   );
 }
 
-export default Calendars;
+export default CalendarsUpdate;

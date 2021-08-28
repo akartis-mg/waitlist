@@ -171,7 +171,10 @@ function Company({ company, setNewCompany, branch, setBranch }) {
             title="Edit Company"
             contents={
               <>
-                <AddCompany newCompany={company} setNewCompany={setNewCompany} />
+                <AddCompany
+                  newCompany={company}
+                  setNewCompany={setNewCompany}
+                />
               </>
             }
           />
@@ -199,10 +202,8 @@ function Company({ company, setNewCompany, branch, setBranch }) {
           />
         </>
       ) : (
-        <>
-        </>
+        <></>
       )}
-
 
       {/* modal for reservation */}
       <MyModal
@@ -211,7 +212,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
         title="Reservation"
         contents={
           <>
-            <Calendars company={company} branch={branchDetails} />
+            <Calendars where="add" company={company} branch={branchDetails} />
           </>
         }
       />
@@ -225,33 +226,33 @@ function Company({ company, setNewCompany, branch, setBranch }) {
         <CardHeader
           action={
             <>
-            <div>
-              {authBusiness && authBusiness.type == "Superadmin" ? (
-                <>                  
-                  <IconButton
-                    aria-label="show more"
-                     onClick={() => setOpenModalEditCompany(true)}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </>
-              ) : (
-                <>
-                </>
-              )}
-                    
-              <IconButton
-                className={clsx(classes.expand, {
-                  [classes.expandOpen]: expanded,
-                })}
-                onClick={handleExpandClick}
-                aria-expanded={expanded}
-                aria-label="show more"
-              >
-                <ExpandMoreIcon />
-              </IconButton> 
+              <div>
+                {authBusiness && authBusiness.type == "Superadmin" ? (
+                  <>
+                    <IconButton
+                      aria-label="show more"
+                      onClick={() => setOpenModalEditCompany(true)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </>
+                ) : (
+                  <></>
+                )}
+
+                <IconButton
+                  className={clsx(classes.expand, {
+                    [classes.expandOpen]: expanded,
+                  })}
+                  onClick={handleExpandClick}
+                  aria-expanded={expanded}
+                  aria-label="show more"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
               </div>
-          </>}
+            </>
+          }
           subheader={company.name}
         />
 
@@ -320,7 +321,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
                           <VisibilityIcon />
                         </IconButton>
 
-                      {/* <IconButton
+                        {/* <IconButton
                         onClick={() => {
                           setOpenModalBranch(true);
                           //console.log(l);
@@ -329,7 +330,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
                       >
                         <EditIcon />
                       </IconButton> */}
-                    </ListItem>
+                      </ListItem>
                     </>
                   )}
                 </>
