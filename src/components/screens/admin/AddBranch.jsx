@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
-import PhoneInput from 'react-phone-input-2'
+import PhoneInput from "react-phone-input-2";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import InputOpenClose from "../../inputOpenClose/InputOpenClose";
@@ -31,6 +31,7 @@ function AddBranch({ branch, setBranch }) {
     setBranch({ ...branch, [e.target.id]: e.target.value });
   };
 
+  const phone = branch.info.phone;
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(branch);
@@ -51,7 +52,7 @@ function AddBranch({ branch, setBranch }) {
     <div>
       <form className={classes.form} noValidate onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={8}>
+          <Grid item xs={12} sm={6}>
             <TextField
               id="name"
               label="Branch Name"
@@ -61,7 +62,7 @@ function AddBranch({ branch, setBranch }) {
               onChange={onChange}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={2}>
             <TextField
               id="average_duration"
               label="Average Duration"
@@ -71,11 +72,11 @@ function AddBranch({ branch, setBranch }) {
               onChange={onChange}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <PhoneInput
               required
-              country={'mu'}
-              value={branch.info.phone}
+              country={"mu"}
+              value={phone.toString()}
               onChange={(phoneNb) =>
                 setBranch({
                   ...branch,

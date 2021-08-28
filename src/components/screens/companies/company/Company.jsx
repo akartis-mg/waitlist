@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 function Company({ company, setNewCompany, branch, setBranch }) {
-  const authBusiness = useSelector(state => state.authBusiness.userBusiness);
+  const authBusiness = useSelector((state) => state.authBusiness.userBusiness);
 
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
@@ -180,11 +180,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
         title="Branch"
         contents={
           <>
-            <AddBranch
-              companyDetails={company}
-              branch={branchDetails}
-              setBranch={setBranch}
-            />
+            <AddBranch branch={branchDetails} setBranch={setBranch} />
           </>
         }
       />
@@ -267,50 +263,47 @@ function Company({ company, setNewCompany, branch, setBranch }) {
                                         setBranchDetails(l);
                                       }}
                                     >
-                                      <EditIcon />
+                                      <StarIcon />
                                     </IconButton>
                                   </ListItem>
                                 </>
                               ) : (
-                                <>
-                                </>
+                                <></>
                               )}
                             </>
                           ))}
                         </>
-                        ) : (
-                        <>
-                        </>
+                      ) : (
+                        <></>
                       )}
                     </>
                   ) : (
                     <>
                       <ListItem>
-                      <ListItemText primary={l.name} />
+                        <ListItemText primary={l.name} />
 
-                      <IconButton
-                        onClick={() => {
-                          setOpenCalendar(true);
-                          // pass all branch details
-                          setBranchDetails(l);
-                        }}
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
+                        <IconButton
+                          onClick={() => {
+                            setOpenCalendar(true);
+                            // pass all branch details
+                            setBranchDetails(l);
+                          }}
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
 
-                      <IconButton
-                        onClick={() => {
-                          setOpenModalBranch(true);
-                          //console.log(l);
-                          setBranchDetails(l);
-                        }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </ListItem>
+                        <IconButton
+                          onClick={() => {
+                            setOpenModalBranch(true);
+                            //console.log(l);
+                            setBranchDetails(l);
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </ListItem>
                     </>
                   )}
-                  
                 </>
               ))}
 

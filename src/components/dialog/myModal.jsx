@@ -23,11 +23,8 @@ function myModal({ title, contents, open, setOpenMyModal }) {
         <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent>{contents}</DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Disagree
-          </Button>
           <Button onClick={handleClose} color="primary" autoFocus>
-            Agree
+            Close
           </Button>
         </DialogActions>
       </Dialog>

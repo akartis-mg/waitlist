@@ -18,15 +18,19 @@ import StepLabel from "@material-ui/core/StepLabel";
 import Typography from "@material-ui/core/Typography";
 
 //import actions
-import { getTypeCompany } from '../../../actions/typeCompanyActions';
-import { addCompany, getCompanies } from '../../../actions/companyActions';
-import { addBranch } from '../../../actions/branchActions';
-import { addStaff } from '../../../actions/staffActions';
+import { getTypeCompany } from "../../../actions/typeCompanyActions";
+import { addCompany, getCompanies } from "../../../actions/companyActions";
+import { addBranch } from "../../../actions/branchActions";
+import { addStaff } from "../../../actions/staffActions";
 
 //admin components
 import AddCompany from "../admin/AddCompany";
 import AddBranch from "../admin/AddBranch";
 import AddManager from "../admin/AddManager";
+import AddStaff from "../admin/AddStaff";
+
+//modal
+import MyModal from "../../dialog/myModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,12 +62,19 @@ function getStepContent(step) {
   }
 }
 
-function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaff}) {
-  const allCompany = useSelector(state => state.company);
-  const authBusiness = useSelector(state => state.authBusiness.userBusiness);
+function Companies({
+  getTypeCompany,
+  addCompany,
+  getCompanies,
+  addBranch,
+  addStaff,
+}) {
+  const allCompany = useSelector((state) => state.company);
+  const authBusiness = useSelector((state) => state.authBusiness.userBusiness);
   const [openNewCompany, setOpenNewCompany] = useState(false);
+  const [openNewStaff, setOpenNewStaff] = useState(false);
 
-  const [companies, setCompanies] = useState([{allCompany}]);
+  const [companies, setCompanies] = useState([{ allCompany }]);
 
   const [newCompany, setNewCompany] = useState({
     company: {
@@ -139,8 +150,17 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
     lastname: "",
     email: "",
     password: "",
-    type: "Manager"
-  })
+    type: "Manager",
+  });
+
+  const [staff, setStaff] = useState({
+    bid: "",
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    type: "Staff",
+  });
 
   const handleClickOpen = () => {
     setOpenNewCompany(true);
@@ -204,78 +224,79 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
     setBranch({
-        cid: "",
-        name: "",
-        average_duration: 0,
-        address: {
-          street: "",
-          city: "",
-          postal_code: 0,
-          longitude: 0,
-          latitude: 0,
-        },
+      cid: "",
+      name: "",
+      average_duration: 0,
+      address: {
+        street: "",
+        city: "",
+        postal_code: 0,
+        longitude: 0,
+        latitude: 0,
+      },
 
-        info: {
-          opening_days: {
-            monday: {
-              open: true,
-              open_hour: 0,
-              closing_hour: 0,
-            },
-            tuesday: {
-              open: true,
-              open_hour: 0,
-              closing_hour: 0,
-            },
-            wednesday: {
-              open: true,
-              open_hour: 0,
-              closing_hour: 0,
-            },
-            thursday: {
-              open: true,
-              open_hour: 0,
-              closing_hour: 0,
-            },
-            friday: {
-              open: true,
-              open_hour: 0,
-              closing_hour: 0,
-            },
-            saturday: {
-              open: true,
-              open_hour: 0,
-              closing_hour: 0,
-            },
-            sunday: {
-              open: true,
-              open_hour: 0,
-              closing_hour: 0,
-            },
+      info: {
+        opening_days: {
+          monday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
           },
-          phone: 0,
-          website: "",
+          tuesday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          wednesday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          thursday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          friday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          saturday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          sunday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
         },
+        phone: 0,
+        website: "",
+      },
 
-        spots: {
-          available: 0,
-          not_available: 0,
-        }
-    })
-
-  }
+      spots: {
+        available: 0,
+        not_available: 0,
+      },
+    });
+  };
 
   const handleAddManager = () => {
-    const new_manager_localstorage = JSON.parse(localStorage.getItem("new_branch"));
+    const new_manager_localstorage = JSON.parse(
+      localStorage.getItem("new_branch")
+    );
 
     manager.bid = new_manager_localstorage._id;
     manager.password = manager.firstname + manager.lastname;
 
     const newManager = {
       bid: new_manager_localstorage._id,
-      manager
-    }
-    
+      manager,
+    };
+
     addStaff(newManager);
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -286,9 +307,9 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
       lastname: "",
       email: "",
       password: "",
-      type: "Manager"
-    })
-  }
+      type: "Manager",
+    });
+  };
 
   const classes = useStyles();
 
@@ -302,45 +323,54 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
       <h2 className="section__title">Companies List</h2>
       <span className="section__subtitle">List of all companies</span>
 
-      {(authBusiness.type == "Superadmin") ? (
+      {authBusiness.type == "Superadmin" ? (
         <div className="admin__view">
           <button className="button button" onClick={handleClickOpen}>
-            {" "} Add new Company
-        </button>
-      </div>
+            Add new Company
+          </button>
+        </div>
+      ) : authBusiness.type == "Manager" ? (
+        <div className="admin__view">
+          <button
+            className="button button"
+            onClick={() => setOpenNewStaff(true)}
+          >
+            Add Staff
+          </button>
+        </div>
       ) : (
         <></>
       )}
-      
+
       <div className="companies__container  grid">
         <div className="companies__list">
           {allCompany.map((c, index) => (
             <>
               {authBusiness.type == "Manager" ? (
                 <>
-                  {allCompany[index].branchs && allCompany[index].branchs.map((b, ind) => (
-                    <>
-                      {authBusiness.bid && authBusiness.bid.map((bauth, indx) => (
-                        <>
-                          {allCompany[index].branchs[ind]._id == authBusiness.bid[indx] ? (
+                  {allCompany[index].branchs &&
+                    allCompany[index].branchs.map((b, ind) => (
+                      <>
+                        {authBusiness.bid &&
+                          authBusiness.bid.map((bauth, indx) => (
                             <>
-                              <Company
-                                key={allCompany[index]._id}
-                                company={allCompany[index]}
-                                setNewCompany={setNewCompany}
-                                setBranch={setBranch}
-                              />
+                              {allCompany[index].branchs[ind]._id ==
+                              authBusiness.bid[indx] ? (
+                                <>
+                                  <Company
+                                    key={allCompany[index]._id}
+                                    company={allCompany[index]}
+                                    setNewCompany={setNewCompany}
+                                    setBranch={setBranch}
+                                  />
+                                </>
+                              ) : (
+                                <></>
+                              )}
                             </>
-                          ) : (
-                            <>
-                            </>
-                          )}                         
-                        </>
-                      ))      
-                      }
-                    </>
-                  ))                   
-                  }                
+                          ))}
+                      </>
+                    ))}
                 </>
               ) : (
                 <>
@@ -363,6 +393,18 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
         </div>
       </div>
 
+      {/* modal for add staff */}
+      <MyModal
+        open={openNewStaff}
+        setOpenMyModal={setOpenNewStaff}
+        title="New Staff"
+        contents={
+          <>
+            <AddStaff staff={staff} setStaff={setStaff} />
+          </>
+        }
+      />
+
       {/* dialog */}
 
       <div>
@@ -373,7 +415,7 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">Add Company</DialogTitle>
-          
+
           <DialogContent>
             <div className="reservation__content ">
               <div className="reservation__content ">
@@ -463,4 +505,10 @@ function Companies({getTypeCompany, addCompany, getCompanies, addBranch, addStaf
   );
 }
 
-export default connect(null, { getTypeCompany, addCompany, getCompanies, addBranch, addStaff })(Companies);
+export default connect(null, {
+  getTypeCompany,
+  addCompany,
+  getCompanies,
+  addBranch,
+  addStaff,
+})(Companies);
