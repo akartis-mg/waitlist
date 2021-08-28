@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
-import PhoneInput from 'react-phone-input-2'
+import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
-import InputOpenClose from "../../inputOpenClose/InputOpenClose";
+import { connect, useSelector } from "react-redux";
+
+import { addStaff } from "../../../actions/staffActions";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -25,13 +27,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AddStaff({ staff, setStaff }) {
+function AddStaff({ staff, setStaff, addStaff, setOpenMyModal }) {
+  const authManager = useSelector(state => state.authBusiness.userBusiness);
+
   const onChange = (e) => {
     setStaff({ ...staff, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  };
+
+  const handleAddStaff = () => {
+
+    staff.bid = authManager.bid;
+    staff.password = staff.firstname + staff.lastname;
+
+    let manager = staff;
+
+    const newStaff = {
+      bid: authManager.bid,
+      manager,
+    };
+
+    addStaff(newStaff);
+
+    setOpenMyModal(false);
+
+    setStaff({
+      bid: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      type: "Staff",
+    });
   };
 
   const classes = useStyles();
@@ -52,7 +82,7 @@ function AddStaff({ staff, setStaff }) {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-          <TextField
+            <TextField
               id="lastname"
               label="Last name"
               type="text"
@@ -64,23 +94,31 @@ function AddStaff({ staff, setStaff }) {
           </Grid>
           <Grid item xs={12}>
             <TextField
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                value={staff.email}
-                onChange={onChange}
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              value={staff.email}
+              onChange={onChange}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-                required
-                disabled
-                fullWidth
-                id="type"
-                label="Type"
-                value={staff.type}
+              required
+              disabled
+              fullWidth
+              id="type"
+              label="Type"
+              value={staff.type}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddStaff}
+            > Add staff
+            </Button>
           </Grid>
         </Grid>
       </form>
@@ -88,4 +126,4 @@ function AddStaff({ staff, setStaff }) {
   );
 }
 
-export default AddStaff;
+export default connect(null, { addStaff })(AddStaff);

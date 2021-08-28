@@ -219,8 +219,6 @@ function Companies({
       branch,
     };
 
-    console.log("NEW BRANCH: ", newBranch);
-
     addBranch(newBranch);
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -382,12 +380,6 @@ function Companies({
                     setBranch={setBranch}
                   />
               )}
-              {/* <Company
-                key={allCompany[index]._id}
-                company={allCompany[index]}
-                setNewCompany={setNewCompany}
-                setBranch={setBranch}
-              /> */}
             </>
           ))}
         </div>
@@ -400,13 +392,12 @@ function Companies({
         title="New Staff"
         contents={
           <>
-            <AddStaff staff={staff} setStaff={setStaff} />
+            <AddStaff staff={staff} setStaff={setStaff} setOpenMyModal={setOpenNewStaff}/>
           </>
         }
       />
 
       {/* dialog */}
-
       <div>
         <Dialog
           open={openNewCompany}
