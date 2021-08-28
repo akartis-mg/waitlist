@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import moment from "moment";
+
 import "./Companies.css";
 import Company from "./company/Company";
 
@@ -102,36 +104,43 @@ function Companies({
           open: true,
           open_hour: 0,
           closing_hour: 0,
+          hour_interval: [],
         },
         tuesday: {
           open: true,
           open_hour: 0,
           closing_hour: 0,
+          hour_interval: [],
         },
         wednesday: {
           open: true,
           open_hour: 0,
           closing_hour: 0,
+          hour_interval: [],
         },
         thursday: {
           open: true,
           open_hour: 0,
           closing_hour: 0,
+          hour_interval: [],
         },
         friday: {
           open: true,
           open_hour: 0,
           closing_hour: 0,
+          hour_interval: [],
         },
         saturday: {
           open: true,
           open_hour: 0,
           closing_hour: 0,
+          hour_interval: [],
         },
         sunday: {
           open: true,
           open_hour: 0,
           closing_hour: 0,
+          hour_interval: [],
         },
       },
       phone: 0,
@@ -212,14 +221,41 @@ function Companies({
       localStorage.getItem("new_company")
     );
 
+    for (let x in branch.info.opening_days) {
+      let final_hours_interval = [];
+      if (branch.info.opening_days[x].open) {
+        let hours_interval = [];
+        let intervalStart = moment(branch.info.opening_days[x].open_hour, "HH:mm").format("HH:mm");
+        let intervalEnd = moment(branch.info.opening_days[x].closing_hour, "HH:mm").format("HH:mm");
+
+        do {
+          let start = intervalStart;
+          let end = moment(intervalStart, "HH:mm").add(30, 'minutes').format("HH:mm");
+
+          let newHoursInterval = {
+            hours: start,
+            seats: 0
+          }
+
+          hours_interval.push(newHoursInterval);
+
+          intervalStart = end;
+        } while (
+          intervalStart <= intervalEnd
+        );
+
+        final_hours_interval.push(hours_interval);       
+      }
+
+      branch.info.opening_days[x].hour_interval = final_hours_interval;
+    }
+
     branch.cid = new_branch_localstorage._id;
 
     const newBranch = {
       cid: new_branch_localstorage._id,
       branch,
     };
-
-    console.log("NEW BRANCH: ", newBranch);
 
     addBranch(newBranch);
 
@@ -357,7 +393,7 @@ function Companies({
                           authBusiness.bid.map((bauth, indx) => (
                             <>
                               {allCompany[index].branchs[ind]._id ==
-                              authBusiness.bid[indx] ? (
+                                authBusiness.bid[indx] ? (
                                 <>
                                   <Company
                                     key={allCompany[index]._id}
@@ -375,19 +411,13 @@ function Companies({
                     ))}
                 </>
               ) : (
-                  <Company
-                    key={allCompany[index]._id}
-                    company={allCompany[index]}
-                    setNewCompany={setNewCompany}
-                    setBranch={setBranch}
-                  />
+                <Company
+                  key={allCompany[index]._id}
+                  company={allCompany[index]}
+                  setNewCompany={setNewCompany}
+                  setBranch={setBranch}
+                />
               )}
-              {/* <Company
-                key={allCompany[index]._id}
-                company={allCompany[index]}
-                setNewCompany={setNewCompany}
-                setBranch={setBranch}
-              /> */}
             </>
           ))}
         </div>
@@ -400,13 +430,12 @@ function Companies({
         title="New Staff"
         contents={
           <>
-            <AddStaff staff={staff} setStaff={setStaff} />
+            <AddStaff staff={staff} setStaff={setStaff} setOpenMyModal={setOpenNewStaff} />
           </>
         }
       />
 
       {/* dialog */}
-
       <div>
         <Dialog
           open={openNewCompany}
@@ -479,12 +508,12 @@ function Companies({
                             setManager={setManager}
                           />
                           <div>
-                          <Button
-                          onClick={handleBack}
-                          className={classes.backButton}
-                        >
-                          Back
-                        </Button>
+                            <Button
+                              onClick={handleBack}
+                              className={classes.backButton}
+                            >
+                              Back
+                            </Button>
                             <Button
                               variant="contained"
                               color="primary"
