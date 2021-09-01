@@ -234,7 +234,6 @@ function Companies({
 
           let newHoursInterval = {
             hours: start,
-            seats: 0
           }
 
           hours_interval.push(newHoursInterval);

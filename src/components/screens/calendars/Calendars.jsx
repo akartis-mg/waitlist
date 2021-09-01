@@ -16,8 +16,11 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from "@material-ui/core";
+import { connect } from "react-redux";
 
-function Calendars({ company, branch }) {
+import { createReservation } from '../../../actions/reservationActions'
+
+function Calendars({ company, branch, createReservation }) {
   const months = [
     "January",
     "February",
@@ -49,14 +52,12 @@ function Calendars({ company, branch }) {
     name: "",
     nb_spots: 0,
     date_reservation: "",
-    time: 0,
+    time: "",
   });
 
   const [dateSelected, setSelected] = useState("");
   const [timeSelected, setTimeSelected] = useState("");
   const [openingDateTime, setOpeningDateTime] = useState(branch.info.opening_days);
-
-  console.log("OPENING DAYS: ", openingDateTime); 
 
   //convert to second
   function hmsToSecondsOnly(str) {  
@@ -359,4 +360,4 @@ function Calendars({ company, branch }) {
   );
 }
 
-export default Calendars;
+export default connect(null, { createReservation })(Calendars)
