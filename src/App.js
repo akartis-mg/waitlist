@@ -20,6 +20,7 @@ import Register from './components/screens/register/Register'
 import Companies from './components/screens/companies/Companies';
 import BookCalendar from './components/screens/calendars/Calendars';
 import RegisterBusiness from './components/screens/register/RegisterBusiness'
+import ListResa from './components/screens/reservation/ListResa';
 
 function App() {
   const auth = useSelector(state => state.auth.user);
@@ -46,8 +47,10 @@ function App() {
 
       <Router>
         <Switch>
+          <Route path="/list">
+            <ListResa />
+          </Route>
           <Route path="/calendar">
-
             <BookCalendar />
           </Route>
 

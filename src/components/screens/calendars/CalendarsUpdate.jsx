@@ -5,22 +5,22 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
-import { useHistory } from "react-router-dom";
+import { Link, withRouter, useHistory } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import EventIcon from "@material-ui/icons/Event";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import EventSeatIcon from "@material-ui/icons/EventSeat";
+import Header from "../header/Header";
 import moment from "moment";
 import TextField from "@material-ui/core/TextField";
+import { everyLimit } from "async";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from "@material-ui/core";
-import { connect } from "react-redux";
 
-import { createReservation } from '../../../actions/reservationActions'
-
-function Calendars({ company, branch, createReservation }) {
+function CalendarsUpdate({ company, branch, resaInfo }) {
+  const history = useHistory();
   const months = [
     "January",
     "February",
@@ -44,46 +44,34 @@ function Calendars({ company, branch, createReservation }) {
     "Friday",
     "Saturday",
   ];
+  //const timesAvailable = ["9:00", "10:00", "11:00", "2:00", "3:00"];
 
   const [event, setEvent] = useState({
-    bid: branch._id,
-    uid: "610e9dfe4a6f3137d05a350b",
-    name: "",
-    nb_spots: 0,
-    date_reservation: "",
-    time: "",
+    _id: resaInfo._id,
+    bid: resaInfo.bid,
+    uid: resaInfo.uid,
+    name: resaInfo.name,
+    nb_spots: resaInfo.nb_spots,
+    time: resaInfo.time,
+    date_reservation: resaInfo.date_reservation,
   });
 
-  console.log("MY B", branch);
-
-  const [dateSelected, setSelected] = useState("");
-  const [timeSelected, setTimeSelected] = useState("");
-  const [openingDateTime, setOpeningDateTime] = useState(
-    branch.info.opening_days
-  );
+  const [dateSelected, setSelected] = useState(resaInfo.date_reservation);
+  const [timeSelected, setTimeSelected] = useState(resaInfo.time);
 
   //convert to second
   function hmsToSecondsOnly(str) {
-    let timetoArray = str.toString(10).split("").map(Number);
-    let timeConverted;
-    if (timetoArray.length == 3) {
-      timeConverted =
-        timetoArray[0].toString() +
-        ":" +
-        timetoArray[1].toString() +
-        timetoArray[2].toString();
-    } else if (timetoArray.length == 4) {
-      timeConverted =
-        timetoArray[0].toString() +
-        timetoArray[1].toString() +
-        ":" +
-        timetoArray[2].toString() +
-        timetoArray[3].toString();
+    var p = str.split(":"),
+      s = 0,
+      m = 1;
+
+    while (p.length > 0) {
+      s += m * parseInt(p.pop(), 10);
+      m *= 3600;
     }
 
-    return timeConverted;
+    return s;
   }
-
   //convert to HH:MM
   function convertSeconds(sec) {
     var hrs = Math.floor(sec / 3600);
@@ -95,27 +83,6 @@ function Calendars({ company, branch, createReservation }) {
     result += ":" + (min < 10 ? "0" + min : min);
     //result += "-" + (seconds < 10 ? "0" + seconds : seconds);
     return result;
-  }
-
-  function getTimeInterval() {
-    let openDays = [];
-
-    for (let x in openingDateTime) {
-      console.log("FOR LOOP: ", openingDateTime[x]);
-
-      if (openingDateTime[x].open) {
-        console.log("NAME: ", x);
-
-        let openHour;
-        let closeHour;
-        openHour = hmsToSecondsOnly(openingDateTime[x].open_hour);
-        console.log("OPEN HOUR: ", openHour);
-
-        //openDays.push(openingDateTime[x]);
-      }
-    }
-
-    //console.log("OPENDAYS: ", openDays);
   }
 
   const loadCalendar = () => {
@@ -185,13 +152,26 @@ function Calendars({ company, branch, createReservation }) {
               confirmBtn.classList.add("confirm-btn");
               confirmBtn.appendChild(confirmTxt);
               this.parentNode.appendChild(confirmBtn);
+              //event.time = hmsToSecondsOnly(this.textContent);
               event.time = this.textContent;
               setTimeSelected(this.textContent);
               confirmBtn.addEventListener("click", function () {
+                // event.date_reservation =
+                //   days[daySelected.getDay()] +
+                //   ", " +
+                //   months[daySelected.getFullYear()] +
+                //   " " +
+                //   daySelected.getDate();
                 var month = daySelected.getMonth() + 1;
                 if (month < 10) {
                   month = "0" + month;
                 }
+                // event.date_reservation =
+                //   daySelected.getFullYear() +
+                //   "-" +
+                //   month +
+                //   "-" +
+                //   daySelected.getDate();
 
                 event.date_reservation = moment(daySelected).format();
                 sessionStorage.setItem("eventObj", JSON.stringify(event));
@@ -228,21 +208,25 @@ function Calendars({ company, branch, createReservation }) {
 
   useEffect(() => {
     loadCalendar();
-    getTimeInterval();
   }, []);
 
-  /*useEffect(() => {
-    console.log("MY DAY", dayCheck.toLowerCase());
-    console.log("AARY", timesAvailable);
-    timesAvailable = [];
-    const hoursInterval = branch.info.opening_days[
-      dayCheck.toLowerCase()
-    ].hour_interval[0].map((h) => {
-      //console.log("h", h);
-      timesAvailable.push(h.hours);
+  useEffect(() => {
+    setEvent({ resaInfo });
+  }, []);
+
+  useEffect(() => {
+    setEvent({
+      ...event,
+      date_reservation: dateSelected,
     });
-    console.log("MY HOURS", hoursInterval);
-  }, [dayCheck]);*/
+  }, [dateSelected]);
+
+  useEffect(() => {
+    setEvent({
+      ...event,
+      time: timeSelected,
+    });
+  }, [timeSelected]);
 
   const handleGoBack = () => {
     var placeCalendar = document.getElementsByClassName("misyCalendar")[0];
@@ -251,9 +235,12 @@ function Calendars({ company, branch, createReservation }) {
     placeResa.classList.add("afenina");
   };
 
+  //const [resaInfo, setResaInfo] = useState({});
+
   const handleSubmit = () => {
     if (event.nb_spots === 0) {
       alert("Aza mianiany");
+    } else {
     }
     console.log(event);
   };
@@ -270,7 +257,7 @@ function Calendars({ company, branch, createReservation }) {
               alignItems="center"
             >
               <Grid item xs={12}>
-                <h4 id="scheduler">{company.name}</h4>
+                <h4 id="scheduler">{company?.name}</h4>
               </Grid>
 
               <Grid item xs={12}>
@@ -280,14 +267,14 @@ function Calendars({ company, branch, createReservation }) {
                 <EventSeatIcon />
               </Grid>
               <Grid item xs={10}>
-                <h4 id="vent-time-stamp">{branch.spots.available} </h4>
+                <h4 id="event-time-stamp">{branch.spots.available} </h4>
               </Grid>
 
               <Grid item xs={2}>
                 <EventIcon />
               </Grid>
               <Grid item xs={10}>
-                <h4 id="vent-time-stamp">{dateSelected} </h4>
+                <h4 id="event-time-stamp">{dateSelected} </h4>
               </Grid>
 
               <Grid item xs={2}>
@@ -389,4 +376,4 @@ function Calendars({ company, branch, createReservation }) {
   );
 }
 
-export default connect(null, { createReservation })(Calendars)
+export default CalendarsUpdate;
