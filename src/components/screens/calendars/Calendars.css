@@ -293,7 +293,9 @@ hgroup {
   -webkit-box-ordinal-group: 3;
   -ms-flex-order: 2;
   order: 2;
+  height: 400px;
   margin-left: 10px;
+  overflow-y: scroll;
 }
 
 .time-slot {

@@ -44,7 +44,7 @@ function CalendarsUpdate({ company, branch, resaInfo }) {
     "Friday",
     "Saturday",
   ];
-  const timesAvailable = ["9:00", "10:00", "11:00", "2:00", "3:00"];
+  //const timesAvailable = ["9:00", "10:00", "11:00", "2:00", "3:00"];
 
   const [event, setEvent] = useState({
     _id: resaInfo._id,
@@ -99,6 +99,8 @@ function CalendarsUpdate({ company, branch, resaInfo }) {
 
         if (daySelected >= currentDay) {
           setSelected(moment(daySelected).format("DD MMMM YYYY"));
+          var jour = moment(daySelected).format("dddd").toLowerCase();
+          var timesAvailable = [];
           const timeDiv = document.getElementById("available-times-div");
 
           while (timeDiv.firstChild) {
@@ -117,6 +119,11 @@ function CalendarsUpdate({ company, branch, resaInfo }) {
           h4.appendChild(h4node);
 
           timeDiv.appendChild(h4);
+
+          //get available hour for day clicked
+          branch.info.opening_days[jour].hour_interval[0].map((h) => {
+            timesAvailable.push(h.hours);
+          });
 
           //Time Buttons
           for (var i = 0; i < timesAvailable.length; i++) {

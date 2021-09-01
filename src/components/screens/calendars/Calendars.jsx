@@ -41,7 +41,6 @@ function Calendars({ company, branch }) {
     "Friday",
     "Saturday",
   ];
-  const timesAvailable = ["9:00", "10:00", "11:00", "2:00", "3:00"];
 
   const [event, setEvent] = useState({
     bid: branch._id,
@@ -52,20 +51,33 @@ function Calendars({ company, branch }) {
     time: 0,
   });
 
+  console.log("MY B", branch);
+
   const [dateSelected, setSelected] = useState("");
   const [timeSelected, setTimeSelected] = useState("");
-  const [openingDateTime, setOpeningDateTime] = useState(branch.info.opening_days);
+  const [openingDateTime, setOpeningDateTime] = useState(
+    branch.info.opening_days
+  );
 
-  console.log("OPENING DAYS: ", openingDateTime); 
+  console.log("OPENING DAYS: ", openingDateTime);
 
   //convert to second
-  function hmsToSecondsOnly(str) {  
-    let timetoArray = str.toString(10).split('').map(Number);
+  function hmsToSecondsOnly(str) {
+    let timetoArray = str.toString(10).split("").map(Number);
     let timeConverted;
-    if(timetoArray.length == 3) {
-      timeConverted = timetoArray[0].toString() + ":" + timetoArray[1].toString() + timetoArray[2].toString();
-    } else if (timetoArray.length == 4){
-      timeConverted = timetoArray[0].toString() + timetoArray[1].toString() + ":" + timetoArray[2].toString() + timetoArray[3].toString();
+    if (timetoArray.length == 3) {
+      timeConverted =
+        timetoArray[0].toString() +
+        ":" +
+        timetoArray[1].toString() +
+        timetoArray[2].toString();
+    } else if (timetoArray.length == 4) {
+      timeConverted =
+        timetoArray[0].toString() +
+        timetoArray[1].toString() +
+        ":" +
+        timetoArray[2].toString() +
+        timetoArray[3].toString();
     }
 
     return timeConverted;
@@ -84,13 +96,13 @@ function Calendars({ company, branch }) {
     return result;
   }
 
-  function getTimeInterval () {
+  function getTimeInterval() {
     let openDays = [];
 
     for (let x in openingDateTime) {
       console.log("FOR LOOP: ", openingDateTime[x]);
 
-      if(openingDateTime[x].open){
+      if (openingDateTime[x].open) {
         console.log("NAME: ", x);
 
         let openHour;
@@ -119,6 +131,8 @@ function Calendars({ company, branch }) {
 
         if (daySelected >= currentDay) {
           setSelected(moment(daySelected).format("DD MMMM YYYY"));
+          var jour = moment(daySelected).format("dddd").toLowerCase();
+          var timesAvailable = [];
           const timeDiv = document.getElementById("available-times-div");
 
           while (timeDiv.firstChild) {
@@ -137,6 +151,11 @@ function Calendars({ company, branch }) {
           h4.appendChild(h4node);
 
           timeDiv.appendChild(h4);
+
+          //get available hour for day clicked
+          branch.info.opening_days[jour].hour_interval[0].map((h) => {
+            timesAvailable.push(h.hours);
+          });
 
           //Time Buttons
           for (var i = 0; i < timesAvailable.length; i++) {
@@ -165,10 +184,9 @@ function Calendars({ company, branch }) {
               confirmBtn.classList.add("confirm-btn");
               confirmBtn.appendChild(confirmTxt);
               this.parentNode.appendChild(confirmBtn);
-              event.time = hmsToSecondsOnly(this.textContent);
-              setTimeSelected(convertSeconds(event.time));
+              event.time = this.textContent;
+              setTimeSelected(this.textContent);
               confirmBtn.addEventListener("click", function () {
-
                 var month = daySelected.getMonth() + 1;
                 if (month < 10) {
                   month = "0" + month;
@@ -185,7 +203,7 @@ function Calendars({ company, branch }) {
                 placeResa.classList.remove("afenina");
                 document.getElementById("calendar-section").style.lef =
                   "-400px";
-                console.log("averina heure", convertSeconds(event.time));
+                //console.log("averina heure", convertSeconds(event.time));
               });
               last = this;
             });
@@ -212,7 +230,18 @@ function Calendars({ company, branch }) {
     getTimeInterval();
   }, []);
 
-  useEffect(() => {}, [dateSelected]);
+  /*useEffect(() => {
+    console.log("MY DAY", dayCheck.toLowerCase());
+    console.log("AARY", timesAvailable);
+    timesAvailable = [];
+    const hoursInterval = branch.info.opening_days[
+      dayCheck.toLowerCase()
+    ].hour_interval[0].map((h) => {
+      //console.log("h", h);
+      timesAvailable.push(h.hours);
+    });
+    console.log("MY HOURS", hoursInterval);
+  }, [dayCheck]);*/
 
   const handleGoBack = () => {
     var placeCalendar = document.getElementsByClassName("misyCalendar")[0];
