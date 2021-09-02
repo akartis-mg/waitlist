@@ -370,7 +370,7 @@ function Calendars({ company, branch }) {
                     min={branch.spots.available}
                     className="reservation__input"
                     onChange={(e) =>
-                      setEvent({ ...event, nb_spots: e.target.value })
+                      setEvent({ ...event, nb_spots: Number(e.target.value) })
                     }
                     fullWidth
                   />
