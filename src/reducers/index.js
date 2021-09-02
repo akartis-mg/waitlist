@@ -7,11 +7,12 @@ import companyReducer from './companyReducers';
 import typeCompanyReducer from './typeCompanyReducers';
 import staffReducer from './staffReducers';
 import reservationReducer from './reservationReducers';
+import dateResaReducer from './dateResaReducers';
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth', 'authBusiness', 'company', 'typeCompany', 'staff', 'reservation']
+    whitelist: ['auth', 'authBusiness', 'company', 'typeCompany', 'staff', 'reservation', 'dateresa']
 }
 
 const rootReducer = combineReducers({
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
     typeCompany: typeCompanyReducer,
     staff: staffReducer,
     reservation: reservationReducer,
+    dateresa: dateResaReducer
 })
 
 export default persistReducer(persistConfig, rootReducer);

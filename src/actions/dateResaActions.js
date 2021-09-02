@@ -3,15 +3,13 @@ import { toast } from 'react-toastify'
 import { setHeaders } from '../api/headers'
 
 // Get date resa by branch id
-export const getDateResaById = (id) => async (dispatch, getState) => {
+export const getDateResaById = (dateresa) => async (dispatch, getState) => {
     const token = getState().authBusiness.userBusiness.token;
-    await axios.post('/api/company/newCompany', company, setHeaders(token))
-        .then((company) => {
-            console.log("ACTIONS")
-            localStorage.setItem('new_company', JSON.stringify(company.data));
+    await axios.get('/api/dateresa/findDateresa', dateresa, setHeaders(token))
+        .then((dateresa) => {
             dispatch({
-                type: "ADD_COMPANY",
-                company: company.data
+                type: "GET_DATERESA_BY_ID",
+                dateresa: dateresa.data
             })
         })
         .catch(error => {
@@ -21,21 +19,4 @@ export const getDateResaById = (id) => async (dispatch, getState) => {
         })
 }
 
-// Get all companies
-export const getCompanies = () => async (dispatch, getState) => {
-    const token = getState().authBusiness.userBusiness.token;
-    await axios.get('/api/company/findAllCompany', setHeaders(token))
-        .then((companies) => {
-            console.log("COMPANIES: ", companies);
-            dispatch({
-                type: "GET_ALL_COMPANIES",
-                companies
-            })
-        })
-        .catch(error => {
-            toast.error(error.response?.data, {
-                position: toast.POSITION.BOTTON_RIGHT
-            });
-        })
-}
 

@@ -20,6 +20,7 @@ import CalendarsUpdate from "../calendars/CalendarsUpdate";
 import { useSelector } from "react-redux";
 import { connect } from "react-redux";
 import { getCompanies } from "../../../actions/companyActions";
+import { getDateResaById } from "../../../actions/dateResaActions";
 
 const drawerWidth = 240;
 
@@ -58,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #ced4da",
   },
 }));
-function ListResa({ getCompanies }) {
+function ListResa({ getCompanies, getDateResaById }) {
   const allCompany = useSelector((state) => state.company);
   const branchId = useSelector((state) => state.authBusiness.userBusiness.bid);
 
@@ -226,4 +227,4 @@ function ListResa({ getCompanies }) {
   );
 }
 
-export default connect(null, { getCompanies })(ListResa);
+export default connect(null, { getCompanies, getDateResaById })(ListResa);
