@@ -9,7 +9,7 @@ export const createReservation = (reservation) => async (dispatch, getState) => 
         .then((reservation) => {
             dispatch({
                 type: "ADD_RESERVATION",
-                reservation: reseravtion.data
+                reservation: reservation.data
             })
         })
         .catch(error => {

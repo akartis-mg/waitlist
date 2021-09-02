@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from 'react-redux';
 import "./Calendars.css";
 import { Calendar } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -21,6 +22,8 @@ import { connect } from "react-redux";
 import { createReservation } from '../../../actions/reservationActions'
 
 function Calendars({ company, branch, createReservation }) {
+  const auth = useSelector(state => state.auth.user);
+
   const months = [
     "January",
     "February",
@@ -47,20 +50,19 @@ function Calendars({ company, branch, createReservation }) {
 
   const [event, setEvent] = useState({
     bid: branch._id,
-    uid: "610e9dfe4a6f3137d05a350b",
+    uid: auth._id,
     name: "",
     nb_spots: 0,
     date_reservation: "",
     time: "",
   });
 
-  console.log("MY B", branch);
-
   const [dateSelected, setSelected] = useState("");
   const [timeSelected, setTimeSelected] = useState("");
   const [openingDateTime, setOpeningDateTime] = useState(
     branch.info.opening_days
   );
+  const [jour, setJour] = useState("");
 
   //convert to second
   function hmsToSecondsOnly(str) {
@@ -131,8 +133,8 @@ function Calendars({ company, branch, createReservation }) {
         const daySelected = info.start;
 
         if (daySelected >= currentDay) {
-          setSelected(moment(daySelected).format("DD MMMM YYYY"));
-          var jour = moment(daySelected).format("dddd").toLowerCase();
+          setSelected(moment(daySelected).format("DD/MM/YYYY"));
+          var jour = (moment(daySelected).format("dddd").toLowerCase());
           var timesAvailable = [];
           const timeDiv = document.getElementById("available-times-div");
 
@@ -193,7 +195,7 @@ function Calendars({ company, branch, createReservation }) {
                   month = "0" + month;
                 }
 
-                event.date_reservation = moment(daySelected).format();
+                event.date_reservation = moment(daySelected).format("DD/MM/YYYY");
                 sessionStorage.setItem("eventObj", JSON.stringify(event));
                 console.log(event);
                 var placeCalendar =
@@ -255,7 +257,9 @@ function Calendars({ company, branch, createReservation }) {
     if (event.nb_spots === 0) {
       alert("Aza mianiany");
     }
-    console.log(event);
+    
+    createReservation(event);
+    console.log("EVENT: ", event);
   };
 
   return (
@@ -371,7 +375,7 @@ function Calendars({ company, branch, createReservation }) {
                     min={branch.spots.available}
                     className="reservation__input"
                     onChange={(e) =>
-                      setEvent({ ...event, nb_spots: e.target.value })
+                      setEvent({ ...event, nb_spots: Number(e.target.value) })
                     }
                     fullWidth
                   />

@@ -6,7 +6,7 @@ import authBusinessReducer from './authBusinessReducers';
 import companyReducer from './companyReducers';
 import typeCompanyReducer from './typeCompanyReducers';
 import staffReducer from './staffReducers';
-import reservationReducer from './reservationreducers';
+import reservationReducer from './reservationReducers';
 
 const persistConfig = {
     key: 'root',
