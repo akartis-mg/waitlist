@@ -63,6 +63,7 @@ function ListResa({ getCompanies, getDateResaById }) {
   const allCompany = useSelector((state) => state.company);
   const branchId = useSelector((state) => state.authBusiness.userBusiness.bid);
   const branchIdString = branchId.toString();
+  const dateResa = useSelector((state) => state.dateresa);
 
   //GET ONE COMPANY
   const companyForTheBranch = allCompany.filter((eachVal) => {
@@ -111,12 +112,15 @@ function ListResa({ getCompanies, getDateResaById }) {
 
   const [resaInfo, setResaInfo] = useState({});
 
-  const [managerResa, setManagerResa] = useState({});
-  const valiny = getDateResaById({ branchId: branchIdString });
-  console.log("MY RESa", branchIdString);
+ 
   useEffect(() => {
     getCompanies();
   }, []);
+  useEffect(() => {
+    getDateResaById(branchId[0]);
+  }, [])
+
+  console.log("INFO: ", dateResa);
 
   return (
     <div className={classes.root}>
