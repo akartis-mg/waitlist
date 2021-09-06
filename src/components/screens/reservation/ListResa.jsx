@@ -62,16 +62,17 @@ const useStyles = makeStyles((theme) => ({
 function ListResa({ getCompanies, getDateResaById }) {
   const allCompany = useSelector((state) => state.company);
   const branchId = useSelector((state) => state.authBusiness.userBusiness.bid);
+  const branchIdString = branchId.toString();
 
   //GET ONE COMPANY
   const companyForTheBranch = allCompany.filter((eachVal) => {
-    let opt = eachVal.branchs.some(({ _id }) => _id === branchId.toString());
+    let opt = eachVal.branchs.some(({ _id }) => _id === branchIdString);
     return opt;
   });
 
   //GET BRANCH DETAILS
   const oneBranchDetails = companyForTheBranch[0].branchs.filter(
-    (branch) => branch._id === branchId.toString()
+    (branch) => branch._id === branchIdString
   );
 
   const classes = useStyles();
@@ -109,6 +110,13 @@ function ListResa({ getCompanies, getDateResaById }) {
   ];
 
   const [resaInfo, setResaInfo] = useState({});
+
+  const [managerResa, setManagerResa] = useState({});
+  const valiny = getDateResaById({ branchId: branchIdString });
+  console.log("MY RESa", branchIdString);
+  useEffect(() => {
+    getCompanies();
+  }, []);
 
   return (
     <div className={classes.root}>
