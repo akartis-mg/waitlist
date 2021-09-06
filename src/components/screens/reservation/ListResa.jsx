@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
 function ListResa({ getCompanies, getDateResaById }) {
   const allCompany = useSelector((state) => state.company);
   const branchId = useSelector((state) => state.authBusiness.userBusiness.bid);
+  const dateResa = useSelector((state) => state.dateresa);
 
   //GET ONE COMPANY
   const companyForTheBranch = allCompany.filter((eachVal) => {
@@ -109,6 +110,12 @@ function ListResa({ getCompanies, getDateResaById }) {
   ];
 
   const [resaInfo, setResaInfo] = useState({});
+
+  useEffect(() => {
+    getDateResaById(branchId[0]);
+  }, [])
+
+  console.log("INFO: ", dateResa);
 
   return (
     <div className={classes.root}>
