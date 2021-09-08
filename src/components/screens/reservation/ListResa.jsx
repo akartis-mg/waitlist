@@ -21,7 +21,7 @@ import { useSelector } from "react-redux";
 import { connect } from "react-redux";
 import { getCompanies } from "../../../actions/companyActions";
 import { getDateResaById } from "../../../actions/dateResaActions";
-
+import { getOneReservation } from "../../../actions/reservationActions";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -59,11 +59,12 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #ced4da",
   },
 }));
-function ListResa({ getCompanies, getDateResaById }) {
+function ListResa({ getCompanies, getDateResaById, getOneReservation }) {
   const allCompany = useSelector((state) => state.company);
   const branchId = useSelector((state) => state.authBusiness.userBusiness.bid);
   const branchIdString = branchId.toString();
   const dateResa = useSelector((state) => state.dateresa);
+  const reseravtionlist = useSelector((state) => state.reservation);
 
   //GET ONE COMPANY
   const companyForTheBranch = allCompany.filter((eachVal) => {
@@ -89,7 +90,7 @@ function ListResa({ getCompanies, getDateResaById }) {
   const [branch, setBranch] = useState(oneBranchDetails[0]);
   const [company, setCompany] = useState(companyForTheBranch[0]);
 
-  const [listResa, setListResaDummy] = useState([]);
+  //const [listResaDummy, setListResaDummy] = useState([]);
 
   const listResaDummy = [
     {
@@ -117,27 +118,30 @@ function ListResa({ getCompanies, getDateResaById }) {
   useEffect(() => {
     getCompanies();
     getDateResaById(branchId[0]);
-  }, []);
+    //getOneReservation("6130e48aa2425da8a0bf5dd3");
+    //console.log("Valiny", reseravtionlist);
+  }, [branchId[0]]);
 
-  useEffect(() => {
-    setListResaDummy(dateResa);
-  }, [listResa]);
+  // useEffect(() => {
+  //   setListResaDummy(dateResa);
+  // }, [listResaDummy]);
 
   //get resa length
   //const intervalLength = dateResa[0].info.interval.length();
 
   //console.log("INFO: ", intervalLength);
 
+  const listResaID = [];
   const listResaFinal = [];
 
   dateResa.map((date) => {
     date.info.map((i) => {
       i.interval.map((inter) => {
         inter.id_resa.map((oneId) => {
-          console.log(listResaFinal);
+          console.log(oneId);
 
-          if (!listResaFinal.includes(oneId)) {
-            listResaFinal.push(oneId);
+          if (!listResaID.includes(oneId)) {
+            listResaID.push(oneId);
           }
           //listResaFinal.push()
           //setState((prev) => [...prev, oneId]);
@@ -146,7 +150,27 @@ function ListResa({ getCompanies, getDateResaById }) {
     });
   });
 
-  console.log(listResaFinal);
+  console.log(listResaID);
+
+  listResaID.map((ls) => {
+    //getMyResa(ls)
+    //getOneReservation(ls);
+    //console.log("Valiny", reseravtionlist);
+    //const res = getOneReservation(ls);
+    //listResaFinal.push(res);
+  });
+
+  //console.log("Valiny", listResaFinal);
+
+ 
+    // async function getMyResa(ls) {
+    //   try {
+    //     const res = await getOneReservation(ls);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // }
+
 
   return (
     <div className={classes.root}>
@@ -265,4 +289,8 @@ function ListResa({ getCompanies, getDateResaById }) {
   );
 }
 
-export default connect(null, { getCompanies, getDateResaById })(ListResa);
+export default connect(null, {
+  getCompanies,
+  getDateResaById,
+  getOneReservation,
+})(ListResa);
