@@ -20,7 +20,7 @@ export const createReservation = (reservation) => async (dispatch, getState) => 
 }
 
 // Get one reseravtion by its ID
-export const getOneReservation = (bid) => async (dispatch, getState) => {
+export const getReservationByBranchId = (bid) => async (dispatch, getState) => {
     const token = getState().auth.user.token;
     await axios.get(`/api/reservation/findReservation/${bid}`, setHeaders(token))
         .then((reservation) => {
