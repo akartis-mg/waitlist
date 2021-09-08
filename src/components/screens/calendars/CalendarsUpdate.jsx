@@ -314,7 +314,7 @@ function CalendarsUpdate({ company, branch, resaInfo }) {
           </div>
 
           <div className="misyResa afenina">
-            <Grid container spacing={3} justify="center" alignItems="center">
+            <Grid container spacing={3} alignItems="center">
               <Grid item xs={2}>
                 <IconButton onClick={handleGoBack}>
                   <ArrowBackIcon />

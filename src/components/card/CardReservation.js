@@ -23,7 +23,7 @@ export default function CardReservation({ data, setOpenCalendar, setResaInfo }) 
     return (
         <Card className={classes.root}>
             <CardContent>
-                <Typography gutterBottom variant="h6" component="h2" color="black">
+                <Typography gutterBottom variant="h6" component="h2" color="primary">
                     {data.name}
                 </Typography>
                 <Grid container spacing={2}>

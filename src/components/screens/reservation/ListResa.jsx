@@ -89,6 +89,8 @@ function ListResa({ getCompanies, getDateResaById }) {
   const [branch, setBranch] = useState(oneBranchDetails[0]);
   const [company, setCompany] = useState(companyForTheBranch[0]);
 
+  const [listResa, setListResaDummy] = useState([]);
+
   const listResaDummy = [
     {
       _id: 1,
@@ -112,15 +114,39 @@ function ListResa({ getCompanies, getDateResaById }) {
 
   const [resaInfo, setResaInfo] = useState({});
 
- 
   useEffect(() => {
     getCompanies();
-  }, []);
-  useEffect(() => {
     getDateResaById(branchId[0]);
-  }, [])
+  }, []);
 
-  console.log("INFO: ", dateResa);
+  useEffect(() => {
+    setListResaDummy(dateResa);
+  }, [listResa]);
+
+  //get resa length
+  //const intervalLength = dateResa[0].info.interval.length();
+
+  //console.log("INFO: ", intervalLength);
+
+  const listResaFinal = [];
+
+  dateResa.map((date) => {
+    date.info.map((i) => {
+      i.interval.map((inter) => {
+        inter.id_resa.map((oneId) => {
+          console.log(listResaFinal);
+
+          if (!listResaFinal.includes(oneId)) {
+            listResaFinal.push(oneId);
+          }
+          //listResaFinal.push()
+          //setState((prev) => [...prev, oneId]);
+        });
+      });
+    });
+  });
+
+  console.log(listResaFinal);
 
   return (
     <div className={classes.root}>
@@ -169,7 +195,7 @@ function ListResa({ getCompanies, getDateResaById }) {
                 className={fixedHeightPaper}
                 style={{ backgroundColor: "#a8e6cf" }}
               >
-                <SummaryResa title="Confirm" number={10000} color="#2b9348" />
+                <SummaryResa title="Confirm" number={10000} />
               </Paper>
             </Grid>
 
@@ -215,8 +241,8 @@ function ListResa({ getCompanies, getDateResaById }) {
                 style={{ backgroundColor: "#ffaaa5" }}
               >
                 <Grid container spacing={2} className={classes.listResa}>
-                  {listResaDummy.map((ls) => (
-                    <Grid item xs={12} md={4} lg={3}>
+                  {listResaFinal.map((ls, i) => (
+                    <Grid item xs={12} md={4} lg={3} key={i}>
                       <CardReservation
                         data={ls}
                         setResaInfo={setResaInfo}
