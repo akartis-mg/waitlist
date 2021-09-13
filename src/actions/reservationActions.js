@@ -36,4 +36,20 @@ export const getReservationByBranchId = (bid) => async (dispatch, getState) => {
         })
 }
 
+// Update reseravtion
+export const updateReservation = (reservation) => async (dispatch, getState) => {
+    const token = getState().authBusiness.userBusiness.token;
+    await axios.put(`/api/reservation/updateReservation`, reservation, setHeaders(token))
+        .then((reservation) => {
+            dispatch({
+                type: "UPDATE_RESERVATION",
+                reservation: reservation.data
+            })
+        })
+        .catch(error => {
+            toast.error(error.response?.data, {
+                position: toast.POSITION.BOTTON_RIGHT
+            });
+        })
+}
 

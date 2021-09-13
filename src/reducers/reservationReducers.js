@@ -6,6 +6,8 @@ const reservationReducer = (state = [], action) => {
             return [action.reservation, ...state]
         case "GET_RESERVATION_BY_ID":
             return action.reservation
+        case "UPDATE_RESERVATION":
+            return action.reservation
         default:
             return state;
     }
