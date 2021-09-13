@@ -18,8 +18,10 @@ import { everyLimit } from "async";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from "@material-ui/core";
+import { connect } from "react-redux";
+import { updateReservation, createReservation } from '../../../actions/reservationActions';
 
-function CalendarsUpdate({ company, branch, resaInfo }) {
+function CalendarsUpdate({ company, branch, resaInfo, updateReservation, createReservation }) {
   const history = useHistory();
   const months = [
     "January",
@@ -242,7 +244,12 @@ function CalendarsUpdate({ company, branch, resaInfo }) {
     if (event.nb_spots === 0) {
       alert("Aza mianiany");
     } else {
+      updateReservation(event);
+      console.log(event);
     }
+
+    //createReservation(event)
+    //updateReservation(event);
     console.log(event);
   };
 
@@ -359,7 +366,7 @@ function CalendarsUpdate({ company, branch, resaInfo }) {
                     min={branch.spots.available}
                     className="reservation__input"
                     onChange={(e) =>
-                      setEvent({ ...event, nb_spots: e.target.value })
+                      setEvent({ ...event, nb_spots: Number(e.target.value) })
                     }
                     fullWidth
                   />
@@ -377,4 +384,4 @@ function CalendarsUpdate({ company, branch, resaInfo }) {
   );
 }
 
-export default CalendarsUpdate;
+export default connect(null, {updateReservation, createReservation})(CalendarsUpdate)

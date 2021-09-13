@@ -7,7 +7,8 @@ const reservationReducer = (state = [], action) => {
         case "GET_RESERVATION_BY_ID":
             return action.reservation
         case "UPDATE_RESERVATION":
-            return action.reservation
+            console.log("REDUCERS: ", action.reservation);
+            return state.map((resa) => resa._id === action.reservation._id ? action.reservation : resa)
         default:
             return state;
     }
