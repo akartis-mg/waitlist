@@ -21,7 +21,7 @@ import { useSelector } from "react-redux";
 import { connect } from "react-redux";
 import { getCompanies } from "../../../actions/companyActions";
 import { getDateResaById } from "../../../actions/dateResaActions";
-
+import { getReservationByBranchId } from "../../../actions/reservationActions";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -59,20 +59,22 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #ced4da",
   },
 }));
-function ListResa({ getCompanies, getDateResaById }) {
+function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
   const allCompany = useSelector((state) => state.company);
   const branchId = useSelector((state) => state.authBusiness.userBusiness.bid);
+  const branchIdString = branchId.toString();
   const dateResa = useSelector((state) => state.dateresa);
+  const reservationlist = useSelector((state) => state.reservation);
 
   //GET ONE COMPANY
   const companyForTheBranch = allCompany.filter((eachVal) => {
-    let opt = eachVal.branchs.some(({ _id }) => _id === branchId.toString());
+    let opt = eachVal.branchs.some(({ _id }) => _id === branchIdString);
     return opt;
   });
 
   //GET BRANCH DETAILS
   const oneBranchDetails = companyForTheBranch[0].branchs.filter(
-    (branch) => branch._id === branchId.toString()
+    (branch) => branch._id === branchIdString
   );
 
   const classes = useStyles();
@@ -87,6 +89,8 @@ function ListResa({ getCompanies, getDateResaById }) {
   //get branch details from staff
   const [branch, setBranch] = useState(oneBranchDetails[0]);
   const [company, setCompany] = useState(companyForTheBranch[0]);
+
+  //const [listResaDummy, setListResaDummy] = useState([]);
 
   const listResaDummy = [
     {
@@ -112,10 +116,60 @@ function ListResa({ getCompanies, getDateResaById }) {
   const [resaInfo, setResaInfo] = useState({});
 
   useEffect(() => {
+    getCompanies();
     getDateResaById(branchId[0]);
-  }, [])
+    getReservationByBranchId(branchId[0]);
+    //getOneReservation("6130e48aa2425da8a0bf5dd3");
+    //console.log("Valiny", reseravtionlist);
+  }, []);
 
-  console.log("INFO: ", dateResa);
+  // useEffect(() => {
+  //   setListResaDummy(dateResa);
+  // }, [listResaDummy]);
+
+  //get resa length
+  //const intervalLength = dateResa[0].info.interval.length();
+
+  //console.log("INFO: ", intervalLength);
+
+  const listResaID = [];
+  const listResaFinal = [];
+
+  dateResa.map((date) => {
+    date.info.map((i) => {
+      i.interval.map((inter) => {
+        inter.id_resa.map((oneId) => {
+          console.log(oneId);
+
+          if (!listResaID.includes(oneId)) {
+            listResaID.push(oneId);
+          }
+          //listResaFinal.push()
+          //setState((prev) => [...prev, oneId]);
+        });
+      });
+    });
+  });
+
+  console.log(listResaID);
+
+  listResaID.map((ls) => {
+    //getMyResa(ls)
+    //getOneReservation(ls);
+    //console.log("Valiny", reseravtionlist);
+    //const res = getOneReservation(ls);
+    //listResaFinal.push(res);
+  });
+
+  console.log("Valiny", reservationlist);
+
+  // async function getMyResa(ls) {
+  //   try {
+  //     const res = await getOneReservation(ls);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   return (
     <div className={classes.root}>
@@ -164,7 +218,7 @@ function ListResa({ getCompanies, getDateResaById }) {
                 className={fixedHeightPaper}
                 style={{ backgroundColor: "#a8e6cf" }}
               >
-                <SummaryResa title="Confirm" number={10000} color="#2b9348" />
+                <SummaryResa title="Confirm" number={10000} />
               </Paper>
             </Grid>
 
@@ -210,8 +264,8 @@ function ListResa({ getCompanies, getDateResaById }) {
                 style={{ backgroundColor: "#ffaaa5" }}
               >
                 <Grid container spacing={2} className={classes.listResa}>
-                  {listResaDummy.map((ls) => (
-                    <Grid item xs={12} md={4} lg={3}>
+                  {reservationlist.map((ls, i) => (
+                    <Grid item xs={12} md={4} lg={3} key={i}>
                       <CardReservation
                         data={ls}
                         setResaInfo={setResaInfo}
@@ -234,4 +288,8 @@ function ListResa({ getCompanies, getDateResaById }) {
   );
 }
 
-export default connect(null, { getCompanies, getDateResaById })(ListResa);
+export default connect(null, {
+  getCompanies,
+  getDateResaById,
+  getReservationByBranchId,
+})(ListResa);
