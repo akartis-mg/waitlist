@@ -98,7 +98,7 @@ function CalendarsUpdate({ company, branch, resaInfo }) {
         const daySelected = info.start;
 
         if (daySelected >= currentDay) {
-          setSelected(moment(daySelected).format("DD MMMM YYYY"));
+          setSelected(moment(daySelected).format("DD/MM/YYYY"));
           var jour = moment(daySelected).format("dddd").toLowerCase();
           var timesAvailable = [];
           const timeDiv = document.getElementById("available-times-div");
@@ -173,7 +173,8 @@ function CalendarsUpdate({ company, branch, resaInfo }) {
                 //   "-" +
                 //   daySelected.getDate();
 
-                event.date_reservation = moment(daySelected).format();
+                event.date_reservation =
+                  moment(daySelected).format("DD/MM/YYYY");
                 sessionStorage.setItem("eventObj", JSON.stringify(event));
                 console.log(event);
                 var placeCalendar =

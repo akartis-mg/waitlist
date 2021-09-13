@@ -21,7 +21,7 @@ import { useSelector } from "react-redux";
 import { connect } from "react-redux";
 import { getCompanies } from "../../../actions/companyActions";
 import { getDateResaById } from "../../../actions/dateResaActions";
-import { getOneReservation } from "../../../actions/reservationActions";
+import { getReservationByBranchId } from "../../../actions/reservationActions";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -59,12 +59,12 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #ced4da",
   },
 }));
-function ListResa({ getCompanies, getDateResaById, getOneReservation }) {
+function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
   const allCompany = useSelector((state) => state.company);
   const branchId = useSelector((state) => state.authBusiness.userBusiness.bid);
   const branchIdString = branchId.toString();
   const dateResa = useSelector((state) => state.dateresa);
-  const reseravtionlist = useSelector((state) => state.reservation);
+  const reservationlist = useSelector((state) => state.reservation);
 
   //GET ONE COMPANY
   const companyForTheBranch = allCompany.filter((eachVal) => {
@@ -118,9 +118,10 @@ function ListResa({ getCompanies, getDateResaById, getOneReservation }) {
   useEffect(() => {
     getCompanies();
     getDateResaById(branchId[0]);
+    getReservationByBranchId(branchId[0]);
     //getOneReservation("6130e48aa2425da8a0bf5dd3");
     //console.log("Valiny", reseravtionlist);
-  }, [branchId[0]]);
+  }, []);
 
   // useEffect(() => {
   //   setListResaDummy(dateResa);
@@ -160,17 +161,15 @@ function ListResa({ getCompanies, getDateResaById, getOneReservation }) {
     //listResaFinal.push(res);
   });
 
-  //console.log("Valiny", listResaFinal);
+  console.log("Valiny", reservationlist);
 
- 
-    // async function getMyResa(ls) {
-    //   try {
-    //     const res = await getOneReservation(ls);
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // }
-
+  // async function getMyResa(ls) {
+  //   try {
+  //     const res = await getOneReservation(ls);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   return (
     <div className={classes.root}>
@@ -265,7 +264,7 @@ function ListResa({ getCompanies, getDateResaById, getOneReservation }) {
                 style={{ backgroundColor: "#ffaaa5" }}
               >
                 <Grid container spacing={2} className={classes.listResa}>
-                  {listResaFinal.map((ls, i) => (
+                  {reservationlist.map((ls, i) => (
                     <Grid item xs={12} md={4} lg={3} key={i}>
                       <CardReservation
                         data={ls}
@@ -292,5 +291,5 @@ function ListResa({ getCompanies, getDateResaById, getOneReservation }) {
 export default connect(null, {
   getCompanies,
   getDateResaById,
-  getOneReservation,
+  getReservationByBranchId,
 })(ListResa);
