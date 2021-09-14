@@ -161,7 +161,7 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
     //listResaFinal.push(res);
   });
 
-  console.log("Valiny", reservationlist);
+  //console.log("Valiny", reservationlist);
 
   // async function getMyResa(ls) {
   //   try {
@@ -264,15 +264,140 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
                 style={{ backgroundColor: "#ffaaa5" }}
               >
                 <Grid container spacing={2} className={classes.listResa}>
-                  {reservationlist.map((ls, i) => (
-                    <Grid item xs={12} md={4} lg={3} key={i}>
-                      <CardReservation
-                        data={ls}
-                        setResaInfo={setResaInfo}
-                        setOpenCalendar={setOpenCalendar}
-                      />
-                    </Grid>
-                  ))}
+                  {reservationlist
+                    .filter((opt) => opt.status == "waiting")
+                    .map((ls, i) => (
+                      <Grid item xs={12} md={4} lg={3} key={i}>
+                        <CardReservation
+                          data={ls}
+                          setResaInfo={setResaInfo}
+                          setOpenCalendar={setOpenCalendar}
+                        />
+                      </Grid>
+                    ))}
+
+                  {/* <Grid item xs={12} md={4} lg={3}>
+                    <CardReservation setOpenCalendar={setOpenCalendar} />
+                  </Grid> */}
+                </Grid>
+              </Paper>
+            </Grid>
+
+            {/* reservation in progress */}
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={8}>
+                  <Title color="primary">Inprogress List</Title>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <SearchBar
+                    className={classes.search}
+                    placeholder="Filter inprogress list"
+                    value={search}
+                    onChange={(newValue) => setSearch(newValue)}
+                    //onRequestSearch={() => doSomethingWith(this.state.value)}
+                  />
+                </Grid>
+              </Grid>
+
+              <Paper
+                className={classes.paper}
+                style={{ backgroundColor: "#a8e6cf" }}
+              >
+                <Grid container spacing={2} className={classes.listResa}>
+                  {reservationlist
+                    .filter((opt) => opt.status == "confirm")
+                    .map((ls, i) => (
+                      <Grid item xs={12} md={4} lg={3} key={i}>
+                        <CardReservation
+                          data={ls}
+                          setResaInfo={setResaInfo}
+                          setOpenCalendar={setOpenCalendar}
+                        />
+                      </Grid>
+                    ))}
+
+                  {/* <Grid item xs={12} md={4} lg={3}>
+                    <CardReservation setOpenCalendar={setOpenCalendar} />
+                  </Grid> */}
+                </Grid>
+              </Paper>
+            </Grid>
+
+            {/* reservation done */}
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={8}>
+                  <Title color="primary">Done List</Title>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <SearchBar
+                    className={classes.search}
+                    placeholder="Filter done list"
+                    value={search}
+                    onChange={(newValue) => setSearch(newValue)}
+                    //onRequestSearch={() => doSomethingWith(this.state.value)}
+                  />
+                </Grid>
+              </Grid>
+
+              <Paper
+                className={classes.paper}
+                style={{ backgroundColor: "#dcedc1" }}
+              >
+                <Grid container spacing={2} className={classes.listResa}>
+                  {reservationlist
+                    .filter((opt) => opt.status == "done")
+                    .map((ls, i) => (
+                      <Grid item xs={12} md={4} lg={3} key={i}>
+                        <CardReservation
+                          data={ls}
+                          setResaInfo={setResaInfo}
+                          setOpenCalendar={setOpenCalendar}
+                        />
+                      </Grid>
+                    ))}
+
+                  {/* <Grid item xs={12} md={4} lg={3}>
+                    <CardReservation setOpenCalendar={setOpenCalendar} />
+                  </Grid> */}
+                </Grid>
+              </Paper>
+            </Grid>
+
+            {/* reservation disable */}
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={8}>
+                  <Title color="primary">Disable List</Title>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <SearchBar
+                    className={classes.search}
+                    placeholder="Filter disable list"
+                    value={search}
+                    onChange={(newValue) => setSearch(newValue)}
+                    //onRequestSearch={() => doSomethingWith(this.state.value)}
+                  />
+                </Grid>
+              </Grid>
+
+              <Paper
+                className={classes.paper}
+                style={{ backgroundColor: "#ffaaa5" }}
+              >
+                <Grid container spacing={2} className={classes.listResa}>
+                  {reservationlist
+                    .filter((opt) => opt.status == "disable")
+                    .map((ls, i) => (
+                      <Grid item xs={12} md={4} lg={3} key={i}>
+                        <CardReservation
+                          data={ls}
+                          setResaInfo={setResaInfo}
+                          setOpenCalendar={setOpenCalendar}
+                        />
+                      </Grid>
+                    ))}
 
                   {/* <Grid item xs={12} md={4} lg={3}>
                     <CardReservation setOpenCalendar={setOpenCalendar} />
