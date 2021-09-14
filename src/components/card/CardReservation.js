@@ -11,14 +11,33 @@ import Grid from '@material-ui/core/Grid';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import EventSeatIcon from '@material-ui/icons/EventSeat';
+import { connect } from "react-redux";
+import { updateReservation } from '../../actions/reservationActions';
+
 const useStyles = makeStyles({
     root: {
         maxWidth: 345,
     }
 });
 
-export default function CardReservation({ data, setOpenCalendar, setResaInfo }) {
+function CardReservation({ data, setOpenCalendar, setResaInfo, updateReservation }) {
     const classes = useStyles();
+
+    const handleAccept = () => {
+        const newData = {
+            ...data,
+            status: "done"
+        }
+        updateReservation(newData);
+    }
+
+    const handleRefuse = () => {
+        const newData = {
+            ...data,
+            status: "disable"
+        }
+        updateReservation(newData);
+    }
 
     return (
         <Card className={classes.root}>
@@ -45,8 +64,11 @@ export default function CardReservation({ data, setOpenCalendar, setResaInfo }) 
                     </Grid>
 
                 </Grid>
-                <Button size="small" color="primary">
+                <Button size="small" color="primary" onClick={handleAccept}>
                     Accept
+                </Button>
+                <Button size="small" color="primary" onClick={handleRefuse}>
+                    Refuse
                 </Button>
                 <Button size="small" color="primary" onClick={() => { setOpenCalendar(true); setResaInfo(data) }}>
                     Update
@@ -55,3 +77,6 @@ export default function CardReservation({ data, setOpenCalendar, setResaInfo }) 
         </Card>
     );
 }
+
+export default connect(null, { updateReservation })(CardReservation)
+

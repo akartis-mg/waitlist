@@ -19,9 +19,9 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from "@material-ui/core";
 import { connect } from "react-redux";
-import { updateReservation, createReservation } from '../../../actions/reservationActions';
+import { updateReservation } from '../../../actions/reservationActions';
 
-function CalendarsUpdate({ company, branch, resaInfo, updateReservation, createReservation }) {
+function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
   const history = useHistory();
   const months = [
     "January",
@@ -247,9 +247,6 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation, createR
       updateReservation(event);
       console.log(event);
     }
-
-    //createReservation(event)
-    //updateReservation(event);
     console.log(event);
   };
 
@@ -384,4 +381,4 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation, createR
   );
 }
 
-export default connect(null, {updateReservation, createReservation})(CalendarsUpdate)
+export default connect(null, {updateReservation})(CalendarsUpdate)
