@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import "./Calendars.css";
 import { Calendar } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -18,11 +18,12 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from "@material-ui/core";
 import { connect } from "react-redux";
+import { getDateResaById } from "../../../actions/dateResaActions";
+import { createReservation } from "../../../actions/reservationActions";
 
-import { createReservation } from '../../../actions/reservationActions'
-
-function Calendars({ company, branch, createReservation }) {
-  const auth = useSelector(state => state.auth.user);
+function Calendars({ company, branch, createReservation, getDateResaById }) {
+  const auth = useSelector((state) => state.auth.user);
+  const dateResa = useSelector((state) => state.dateresa);
 
   const months = [
     "January",
@@ -58,6 +59,7 @@ function Calendars({ company, branch, createReservation }) {
   });
 
   const [dateSelected, setSelected] = useState("");
+  const [seats, setSeats] = useState("");
   const [timeSelected, setTimeSelected] = useState("");
   const [openingDateTime, setOpeningDateTime] = useState(
     branch.info.opening_days
@@ -132,9 +134,10 @@ function Calendars({ company, branch, createReservation }) {
         const currentDay = new Date();
         const daySelected = info.start;
 
-        if (daySelected >= currentDay) {
+        if (daySelected <= currentDay) {
+          getDateResaById(branch._id);
           setSelected(moment(daySelected).format("DD/MM/YYYY"));
-          var jour = (moment(daySelected).format("dddd").toLowerCase());
+          var jour = moment(daySelected).format("dddd").toLowerCase();
           var timesAvailable = [];
           const timeDiv = document.getElementById("available-times-div");
 
@@ -155,10 +158,63 @@ function Calendars({ company, branch, createReservation }) {
 
           timeDiv.appendChild(h4);
 
+          let defaultTime = [];
+          let intervalHours = [];
+
           //get available hour for day clicked
           branch.info.opening_days[jour].hour_interval[0].map((h) => {
-            timesAvailable.push(h.hours);
+            timesAvailable.push({
+              hours: h.hours,
+              seats: branch.spots.available,
+            });
           });
+
+          console.log("old", timesAvailable);
+
+          dateResa[0].info
+            .filter((d) => d.date == moment(daySelected).format("DD/MM/YYYY"))
+            .map((ht) => {
+              console.log("taken ", ht.interval);
+              intervalHours = ht.interval;
+            });
+
+          console.log("seza", intervalHours);
+
+          if (intervalHours.length > 0) {
+            //filter default by hours taken
+            /*defaultTime.map((dt, index) =>
+              hoursTaken.map((ht) => {
+                console.log("seza", ht.seats);
+                //if (ht.hours == dt.hours) {
+                //dt[i].seats = ht[i].seats;
+
+                //console.log("seza", ht[i].seats);
+                //}
+              })
+            );*/
+
+            for (var i = 0; i < timesAvailable.length; i++) {
+              for (var j = 0; j < intervalHours.length; j++) {
+                //compare hours from default and taken
+
+                //console.log("ta", timesAvailable[i].hours);
+                //console.log("ih", intervalHours[j].hours);
+                if (timesAvailable[i].hours == intervalHours[j].hours) {
+                  if (branch.spots.available == intervalHours[j].seats) {
+                    console.log("tonga eto", i);
+                    //timesAvailable.filter((item) => item != timesAvailable[i]);
+                    timesAvailable.splice(i, 1);
+                  } else {
+                    //set new seats available
+                    timesAvailable[i].seats =
+                      branch.spots.available - intervalHours[j].seats;
+                  }
+                }
+              }
+            }
+          }
+
+          console.log("new", timesAvailable);
 
           //Time Buttons
           for (var i = 0; i < timesAvailable.length; i++) {
@@ -167,7 +223,7 @@ function Calendars({ company, branch, createReservation }) {
 
             var timeBtn = document.createElement("button");
 
-            var btnNode = document.createTextNode(timesAvailable[i]);
+            var btnNode = document.createTextNode(timesAvailable[i].hours);
             timeBtn.classList.add("time-btn");
 
             timeBtn.appendChild(btnNode);
@@ -182,6 +238,8 @@ function Calendars({ company, branch, createReservation }) {
                 console.log(last);
                 last.parentNode.removeChild(last.parentNode.lastChild);
               }
+
+              //
               var confirmBtn = document.createElement("button");
               var confirmTxt = document.createTextNode("Confirm");
               confirmBtn.classList.add("confirm-btn");
@@ -189,13 +247,19 @@ function Calendars({ company, branch, createReservation }) {
               this.parentNode.appendChild(confirmBtn);
               event.time = this.textContent;
               setTimeSelected(this.textContent);
+              const seatsAvailable = timesAvailable.filter(
+                (ta) => ta.hours == event.time
+              );
+              //console.log("i lera", seatsAvailable);
+              setSeats(seatsAvailable[0].seats.toString());
               confirmBtn.addEventListener("click", function () {
                 var month = daySelected.getMonth() + 1;
                 if (month < 10) {
                   month = "0" + month;
                 }
 
-                event.date_reservation = moment(daySelected).format("DD/MM/YYYY");
+                event.date_reservation =
+                  moment(daySelected).format("DD/MM/YYYY");
                 sessionStorage.setItem("eventObj", JSON.stringify(event));
                 console.log(event);
                 var placeCalendar =
@@ -233,6 +297,14 @@ function Calendars({ company, branch, createReservation }) {
     getTimeInterval();
   }, []);
 
+  console.log("dateresa", dateResa);
+  const listResaFinal = [];
+  //get hour interval
+  /*dateResa.map((date) => {
+    date.info.map((i) => {
+      i.interval.map((inter) => {});
+    });
+  });*/
   /*useEffect(() => {
     console.log("MY DAY", dayCheck.toLowerCase());
     console.log("AARY", timesAvailable);
@@ -257,7 +329,7 @@ function Calendars({ company, branch, createReservation }) {
     if (event.nb_spots === 0) {
       alert("Aza mianiany");
     }
-    
+
     createReservation(event);
     console.log("EVENT: ", event);
   };
@@ -284,7 +356,7 @@ function Calendars({ company, branch, createReservation }) {
                 <EventSeatIcon />
               </Grid>
               <Grid item xs={10}>
-                <h4 id="vent-time-stamp">{branch.spots.available} </h4>
+                <h4 id="vent-time-stamp">{seats} </h4>
               </Grid>
 
               <Grid item xs={2}>
@@ -393,4 +465,4 @@ function Calendars({ company, branch, createReservation }) {
   );
 }
 
-export default connect(null, { createReservation })(Calendars)
+export default connect(null, { createReservation, getDateResaById })(Calendars);
