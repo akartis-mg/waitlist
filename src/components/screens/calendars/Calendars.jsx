@@ -131,10 +131,10 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
       showNonCurrentDates: false,
       selectable: true,
       select: function (info) {
-        const currentDay = new Date();
+        const currentDay = new Date().setHours(0, 0, 0, 0);
         const daySelected = info.start;
 
-        if (daySelected <= currentDay) {
+        if (daySelected >= currentDay) {
           getDateResaById(branch._id);
           setSelected(moment(daySelected).format("DD/MM/YYYY"));
           var jour = moment(daySelected).format("dddd").toLowerCase();
