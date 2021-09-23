@@ -149,7 +149,6 @@ function Companies({
 
     spots: {
       available: 0,
-      not_available: 0,
     },
   });
 
@@ -335,6 +334,8 @@ function Companies({
       bid: new_manager_localstorage._id,
       manager,
     };
+
+    console.log("MANAGER: ", newManager);
 
     addStaff(newManager);
 

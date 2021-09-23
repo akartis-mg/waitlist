@@ -21,7 +21,16 @@ import { connect } from "react-redux";
 import { getDateResaById } from "../../../actions/dateResaActions";
 import { createReservation } from "../../../actions/reservationActions";
 import axios from 'axios'
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles } from '@material-ui/core/styles';
 
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+}));
 function Calendars({ company, branch, createReservation, getDateResaById }) {
   const auth = useSelector((state) => state.auth.user);
   const dateResa = useSelector((state) => state.dateresa);
@@ -133,6 +142,13 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
           console.log(err)
       }
   }
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleToggle = () => {
+    setOpen(!open);
+  };
 
   
 
@@ -150,6 +166,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
 
         if (daySelected >= currentDay) {
           //getDateResaById(branch._id);
+          setOpen(true)
           setSelected(moment(daySelected).format("DD/MM/YYYY"));
           var jour = moment(daySelected).format("dddd").toLowerCase();
          
@@ -184,6 +201,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
           getTimesAvailable(item)
 
           setTimeout(() => {
+          
             //Time Buttons
           for (var i = 0; i < timesAvailable.length; i++) {
             var timeSlot = document.createElement("div");
@@ -243,6 +261,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
               last = this;
             });
           }
+          setOpen(false)
           }, 2000);
           
 
@@ -306,10 +325,16 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
     window.location.reload();
   };
 
+ 
+  const classes = useStyles();
   return (
     <div>
+       <Backdrop className={classes.backdrop} open={open}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div className="container">
         <section className="description-section">
+       
           <hgroup>
             <Grid
               container

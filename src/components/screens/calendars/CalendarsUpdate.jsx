@@ -20,6 +20,17 @@ import Grid from "@material-ui/core/Grid";
 import { Typography } from "@material-ui/core";
 import { connect } from "react-redux";
 import { updateReservation } from '../../../actions/reservationActions';
+import axios from 'axios'
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+}));
 
 function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
   const history = useHistory();
@@ -59,20 +70,29 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
   });
 
   const [dateSelected, setSelected] = useState(resaInfo.date_reservation);
+  const [seats, setSeats] = useState("");
   const [timeSelected, setTimeSelected] = useState(resaInfo.time);
 
   //convert to second
   function hmsToSecondsOnly(str) {
-    var p = str.split(":"),
-      s = 0,
-      m = 1;
-
-    while (p.length > 0) {
-      s += m * parseInt(p.pop(), 10);
-      m *= 3600;
+    let timetoArray = str.toString(10).split("").map(Number);
+    let timeConverted;
+    if (timetoArray.length == 3) {
+      timeConverted =
+        timetoArray[0].toString() +
+        ":" +
+        timetoArray[1].toString() +
+        timetoArray[2].toString();
+    } else if (timetoArray.length == 4) {
+      timeConverted =
+        timetoArray[0].toString() +
+        timetoArray[1].toString() +
+        ":" +
+        timetoArray[2].toString() +
+        timetoArray[3].toString();
     }
 
-    return s;
+    return timeConverted;
   }
   //convert to HH:MM
   function convertSeconds(sec) {
@@ -87,6 +107,29 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
     return result;
   }
 
+  
+  
+
+  var timesAvailable = [];
+  async function getTimesAvailable(item) {
+      try {
+          const res = await axios.get('/api/dateresa/getAvailableTimes/' + item.bid + "/" + item.jour +"/" + item.daty );
+          timesAvailable= res.data;
+          //console.warn(res.data)
+      } catch (err) {
+          console.log(err)
+      }
+  }
+
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleToggle = () => {
+    setOpen(!open);
+  };
+
+
   const loadCalendar = () => {
     const calendarEl = document.getElementById("calendar");
     let calendar = new Calendar(calendarEl, {
@@ -96,13 +139,15 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
       showNonCurrentDates: false,
       selectable: true,
       select: function (info) {
-        const currentDay = new Date();
+        const currentDay = new Date().setHours(0, 0, 0, 0);
         const daySelected = info.start;
 
         if (daySelected >= currentDay) {
+          //getDateResaById(branch._id);
+          setOpen(true)
           setSelected(moment(daySelected).format("DD/MM/YYYY"));
           var jour = moment(daySelected).format("dddd").toLowerCase();
-          var timesAvailable = [];
+         
           const timeDiv = document.getElementById("available-times-div");
 
           while (timeDiv.firstChild) {
@@ -122,19 +167,27 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
 
           timeDiv.appendChild(h4);
 
-          //get available hour for day clicked
-          branch.info.opening_days[jour].hour_interval[0].map((h) => {
-            timesAvailable.push(h.hours);
-          });
+          let defaultTime = [];
+          let intervalHours = [];
 
-          //Time Buttons
+          const item ={
+            bid: branch._id,
+            jour: jour,
+            daty: daySelected
+          }
+
+          getTimesAvailable(item)
+
+          setTimeout(() => {
+          
+            //Time Buttons
           for (var i = 0; i < timesAvailable.length; i++) {
             var timeSlot = document.createElement("div");
             timeSlot.classList.add("time-slot");
 
             var timeBtn = document.createElement("button");
 
-            var btnNode = document.createTextNode(timesAvailable[i]);
+            var btnNode = document.createTextNode(timesAvailable[i].hours);
             timeBtn.classList.add("time-btn");
 
             timeBtn.appendChild(btnNode);
@@ -149,31 +202,25 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
                 console.log(last);
                 last.parentNode.removeChild(last.parentNode.lastChild);
               }
+
+              //
               var confirmBtn = document.createElement("button");
               var confirmTxt = document.createTextNode("Confirm");
               confirmBtn.classList.add("confirm-btn");
               confirmBtn.appendChild(confirmTxt);
               this.parentNode.appendChild(confirmBtn);
-              //event.time = hmsToSecondsOnly(this.textContent);
               event.time = this.textContent;
               setTimeSelected(this.textContent);
+              const seatsAvailable = timesAvailable.filter(
+                (ta) => ta.hours == event.time
+              );
+              //console.log("i lera", seatsAvailable);
+              setSeats(seatsAvailable[0].seats.toString());
               confirmBtn.addEventListener("click", function () {
-                // event.date_reservation =
-                //   days[daySelected.getDay()] +
-                //   ", " +
-                //   months[daySelected.getFullYear()] +
-                //   " " +
-                //   daySelected.getDate();
                 var month = daySelected.getMonth() + 1;
                 if (month < 10) {
                   month = "0" + month;
                 }
-                // event.date_reservation =
-                //   daySelected.getFullYear() +
-                //   "-" +
-                //   month +
-                //   "-" +
-                //   daySelected.getDate();
 
                 event.date_reservation =
                   moment(daySelected).format("DD/MM/YYYY");
@@ -192,6 +239,9 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
               last = this;
             });
           }
+          setOpen(false)
+          }, 2000);
+          
 
           var containerDiv = document.getElementsByClassName("container")[0];
           containerDiv.classList.add("time-div-active");
@@ -208,10 +258,9 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
     });
     calendar.render();
   };
-
   useEffect(() => {
     loadCalendar();
-  }, []);
+  }, [branch]);
 
   useEffect(() => {
     setEvent({ resaInfo });
@@ -249,9 +298,13 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
     }
     console.log(event);
   };
-
+ 
+  const classes = useStyles();
   return (
     <div>
+        <Backdrop className={classes.backdrop} open={open}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div className="container">
         <section className="description-section">
           <hgroup>

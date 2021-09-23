@@ -52,7 +52,7 @@ function AddBranch({ branch, setBranch }) {
     <div>
       <form className={classes.form} noValidate onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <TextField
               id="name"
               label="Branch Name"
@@ -60,6 +60,23 @@ function AddBranch({ branch, setBranch }) {
               defaultValue={branch.name}
               fullWidth
               onChange={onChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <TextField
+              id="available"
+              label="Number of Seats"
+              type="number"
+              defaultValue={branch.spots.available}
+              fullWidth
+              onChange={(e) =>
+                setBranch({
+                  ...branch,
+                  spots: {
+                    available: e.target.value,
+                  },
+                })
+              }
             />
           </Grid>
           <Grid item xs={12} sm={2}>
