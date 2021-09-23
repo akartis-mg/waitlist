@@ -17,6 +17,11 @@ import ShareIcon from "@material-ui/icons/Share";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import CardActionArea from "@material-ui/core/CardActionArea";
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+
+import { connect } from "react-redux";
 
 //list
 import List from "@material-ui/core/List";
@@ -37,10 +42,15 @@ import MyModal from "../../../dialog/myModal";
 
 //admin edit
 import AddCompany from "../../admin/AddCompany";
+import UpdateCompany from "../../admin/UpdateCompany";
+
 import AddBranch from "../../admin/AddBranch";
 
 //reservation components
 import Calendars from "../../calendars/Calendars";
+import Button from "@material-ui/core/Button";
+
+//actions
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -143,6 +153,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
     setExpanded(!expanded);
   };
 
+
   //edit company
   const [openModalEditCompany, setOpenModalEditCompany] = useState(false);
 
@@ -151,6 +162,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
 
   //reservation
   const [openCalendar, setOpenCalendar] = useState(false);
+  
 
   return (
     <div>
@@ -171,12 +183,13 @@ function Company({ company, setNewCompany, branch, setBranch }) {
             title="Edit Company"
             contents={
               <>
-                <AddCompany
-                  newCompany={company}
+                <UpdateCompany
+                  company={company}
                   setNewCompany={setNewCompany}
                 />
               </>
             }
+          
           />
         </>
       ) : (

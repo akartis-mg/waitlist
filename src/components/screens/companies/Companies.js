@@ -82,6 +82,7 @@ function Companies({
     company: {
       name: "",
       logoUrl: "",
+      isActive: true,
     },
     typeCompanyID: "",
   });
@@ -244,7 +245,7 @@ function Companies({
           intervalStart <= intervalEnd
         );
 
-        final_hours_interval.push(hours_interval);       
+        final_hours_interval.push(hours_interval);
       }
 
       branch.info.opening_days[x].hour_interval = final_hours_interval;
@@ -358,6 +359,9 @@ function Companies({
     getCompanies();
   }, []);
 
+  const allActiveCompanies = allCompany.filter(al => al.isActive == true);
+  const allNonActiveCompanies = allCompany.filter(al => al.isActive == false);
+  console.log("adsadas", allNonActiveCompanies)
   return (
     <div className="companies section">
       <h2 className="section__title">Companies List</h2>
@@ -382,24 +386,48 @@ function Companies({
         <></>
       )}
 
+      {authBusiness.type == "Superadmin" ? (
+
+        <div className="companies__container  grid">
+          <h2 className="section__title">List of non active companies </h2>
+
+          <div className="companies__list">
+            {allNonActiveCompanies.map((c, index) => (
+              <>
+                <Company
+                  key={c._id}
+                  company={c}
+                  setNewCompany={setNewCompany}
+                  setBranch={setBranch}
+                />
+
+              </>
+            ))}
+          </div>
+          <span className="section__subtitle">-------------</span>
+        </div>
+
+      ) : (<></>)}
+
+
       <div className="companies__container  grid">
         <div className="companies__list">
-          {allCompany.map((c, index) => (
+          {allActiveCompanies.map((c, index) => (
             <>
               {authBusiness.type == "Manager" ? (
                 <>
-                  {allCompany[index].branchs &&
-                    allCompany[index].branchs.map((b, ind) => (
+                  {allActiveCompanies[index].branchs &&
+                    allActiveCompanies[index].branchs.map((b, ind) => (
                       <>
                         {authBusiness.bid &&
                           authBusiness.bid.map((bauth, indx) => (
                             <>
-                              {allCompany[index].branchs[ind]._id ==
+                              {allActiveCompanies[index].branchs[ind]._id ==
                                 authBusiness.bid[indx] ? (
                                 <>
                                   <Company
-                                    key={allCompany[index]._id}
-                                    company={allCompany[index]}
+                                    key={allActiveCompanies[index]._id}
+                                    company={allActiveCompanies[index]}
                                     setNewCompany={setNewCompany}
                                     setBranch={setBranch}
                                   />
@@ -414,8 +442,8 @@ function Companies({
                 </>
               ) : (
                 <Company
-                  key={allCompany[index]._id}
-                  company={allCompany[index]}
+                  key={allActiveCompanies[index]._id}
+                  company={allActiveCompanies[index]}
                   setNewCompany={setNewCompany}
                   setBranch={setBranch}
                 />
