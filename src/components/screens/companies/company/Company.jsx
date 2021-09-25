@@ -37,6 +37,7 @@ import AddIcon from "@material-ui/icons/Add";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PersonIcon from "@material-ui/icons/Person";
+import ArrowBack from "@material-ui/icons/ArrowBack";
 import "./Company.css";
 
 //modal
@@ -56,13 +57,13 @@ import Button from "@material-ui/core/Button";
 
 //actions
 import { addBranch, modifBranch } from "../../../../actions/branchActions";
-import { modifStaff } from "../../../../actions/staffActions";
+import { modifStaff, removeStaff } from "../../../../actions/staffActions";
 import axios from "axios";
 import { setHeaders } from "../../../../api/headers";
 import { Grid } from "@material-ui/core";
 
 //listitem
-import listItem from "../../../listItem";
+import ListItemStaff from "../../../listItem";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -100,6 +101,7 @@ function Company({
   addBranch,
   modifBranch,
   modifStaff,
+  removeStaff,
 }) {
   const authBusiness = useSelector((state) => state.authBusiness.userBusiness);
   const auth = useSelector((state) => state.auth.user);
@@ -111,6 +113,7 @@ function Company({
   const [next, setNext] = useState(false);
   const [branchDetails, setBranchDetails] = useState({});
   const [managerDetails, setManagerDetails] = useState({});
+  const [staffList, setStaffList] = useState([]);
   const [staffDetails, setStaffDetails] = useState({});
 
   const info = {
@@ -365,6 +368,25 @@ function Company({
     }
   }
 
+  async function fetchStaffList(bid) {
+    try {
+      const res = await axios.get(
+        "/api/staff/findStaff/" + bid,
+        setHeaders(authBusiness.token)
+      );
+
+      if (res) {
+        setStaffList(res.data);
+
+        //console.log("Test  list", staffList);
+      }
+
+      //console.warn(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   useEffect(() => {
     if (openModalManager == false) {
       setManagerDetails({
@@ -377,13 +399,41 @@ function Company({
     }
   }, [openModalManager]);
 
-  const handleUpdateStaff = () => {
-    setManagerDetails({
-      ...managerDetails,
-      password: `${managerDetails.firstname}${managerDetails.lastname}`,
-    });
-    //console.log("new staff", managerDetails);
-    modifStaff(managerDetails);
+  useEffect(() => {
+    if (openModalStaff == false) {
+      setNext(false);
+      setStaffDetails({
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: "",
+        type: "",
+      });
+    }
+  }, [openModalStaff]);
+
+  const handleUpdateStaff = (text) => {
+    if (text === "manager") {
+      setManagerDetails({
+        ...managerDetails,
+        password: `${managerDetails.firstname}${managerDetails.lastname}`,
+      });
+      //console.log("new staff", managerDetails);
+      modifStaff(managerDetails);
+    } else {
+      setStaffDetails({
+        ...staffDetails,
+        password: `${staffDetails.firstname}${staffDetails.lastname}`,
+      });
+      //console.log("new staff", managerDetails);
+      modifStaff(staffDetails);
+    }
+  };
+
+  const handleDeleteStaff = (id) => {
+    removeStaff(id);
+
+    //console.log("id to be deleted", id);
   };
 
   return (
@@ -480,7 +530,11 @@ function Company({
             }
             action={
               <>
-                <Button color="primary" onClick={handleUpdateStaff} autoFocus>
+                <Button
+                  color="primary"
+                  onClick={() => handleUpdateStaff("manager")}
+                  autoFocus
+                >
                   Confirm Manager
                 </Button>
               </>
@@ -496,13 +550,23 @@ function Company({
               <>
                 <Grid container>
                   <Grid item xs={12} className={!next ? "show" : "hide"}>
-                    <Button onClick={() => setNext(true)}>NExt</Button>
+                    <List className={classes.root}>
+                      {staffList.map((staff, index) => (
+                        <ListItemStaff
+                          key={index}
+                          staff={staff}
+                          setNext={setNext}
+                          setStaffDetails={setStaffDetails}
+                          handleDeleteStaff={handleDeleteStaff}
+                        />
+                      ))}
+                    </List>
                   </Grid>
 
                   <Grid item xs={12} className={next ? "show" : "hide"}>
                     <AddManager
-                      manager={managerDetails}
-                      setManager={setManagerDetails}
+                      manager={staffDetails}
+                      setManager={setStaffDetails}
                     />
                   </Grid>
                 </Grid>
@@ -513,7 +577,7 @@ function Company({
                 <Button
                   className={next ? "show" : "hide"}
                   color="primary"
-                  onClick={handleUpdateStaff}
+                  onClick={() => handleUpdateStaff("staff")}
                   autoFocus
                 >
                   Confirm Staff
@@ -595,15 +659,6 @@ function Company({
               {company.branchs.map((ls) =>
                 authBusiness.token ? (
                   <ListItem>
-                    {/* <IconButton
-                      onClick={() => {
-                        setOpenCalendar(true);
-                        // pass all branch details
-                        setBranchDetails(ls);
-                      }}
-                    >
-                      <VisibilityIcon /> 
-                    </IconButton>*/}
                     {authBusiness.type == "Superadmin" ? (
                       <>
                         <ListItemText primary={ls.name} />
@@ -643,7 +698,7 @@ function Company({
                           aria-label="show more"
                           onClick={() => {
                             setOpenModalStaff(true);
-                            passbranchId(ls._id);
+                            fetchStaffList(ls._id);
                           }}
                         >
                           <AssignmentIndIcon />
@@ -781,4 +836,5 @@ export default connect(null, {
   addBranch,
   modifBranch,
   modifStaff,
+  removeStaff,
 })(Company);

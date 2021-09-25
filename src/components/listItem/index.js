@@ -7,24 +7,33 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import CommentIcon from '@material-ui/icons/Comment';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
-function listItem({ staff }) {
-
+function listItem({ staff, setNext, setStaffDetails, handleDeleteStaff }) {
 
     const handleToggle = (value) => () => {
 
     };
     return (
         <ListItem key={staff._id} role={undefined} dense button >
-            <ListItemIcon>
 
-            </ListItemIcon>
             <ListItemText primary={staff.firstname} />
             <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="comments">
-                    <CommentIcon />
+                <IconButton edge="end" aria-label="comments"
+                    onClick={() => {
+                        setStaffDetails(staff)
+                        setNext(true)
+                    }}>
+                    <EditIcon />
+                </IconButton>
+                <IconButton edge="end" aria-label="comments"
+                    onClick={() => {
+                        handleDeleteStaff(staff._id)
+                        setNext(true)
+                    }}>
+                    <DeleteIcon />
                 </IconButton>
             </ListItemSecondaryAction>
         </ListItem>

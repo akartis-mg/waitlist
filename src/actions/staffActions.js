@@ -37,5 +37,23 @@ export const modifStaff = (dataUpdated) => async (dispatch, getState) => {
         })
 }
 
+// get manager
+export const removeStaff = (id) => async (dispatch, getState) => {
+    const token = getState().authBusiness.userBusiness.token;
+    console.log("MY IOD", id)
+    await axios.delete(`/api/staff/deleteStaff/${id}`, setHeaders(token))
+        .then((staff) => {
+            dispatch({
+                type: "REMOVE_STAFF",
+                staff: staff.data
+            })
+        })
+        .catch(error => {
+            toast.error(error.response?.data, {
+                position: toast.POSITION.BOTTON_RIGHT
+            });
+        })
+}
+
 
 
