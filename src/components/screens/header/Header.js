@@ -30,7 +30,7 @@ function Header() {
         const navbar = document.querySelector(".navbars");
         window.addEventListener("scroll", () => {
             // setScroll(window.scrollY > 20);
-            window.scrollY > 20 ? navbar.classList.add("sticky") : navbar.classList.remove("sticky");
+            window.scrollY > 100 ? navbar.classList.add("sticky") : navbar.classList.remove("sticky");
         });
     }, [])
 

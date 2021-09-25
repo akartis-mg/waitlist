@@ -20,15 +20,17 @@ import { Typography } from "@material-ui/core";
 import { connect } from "react-redux";
 import { getDateResaById } from "../../../actions/dateResaActions";
 import { createReservation } from "../../../actions/reservationActions";
-import axios from 'axios'
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles } from '@material-ui/core/styles';
+import axios from "axios";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { makeStyles } from "@material-ui/core/styles";
+import MyModal from "../../dialog/myModal";
 
+import Register from "../register/Register";
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    color: "#fff",
   },
 }));
 function Calendars({ company, branch, createReservation, getDateResaById }) {
@@ -75,7 +77,8 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
     branch.info.opening_days
   );
   const [jour, setJour] = useState("");
-
+  const [openRegisterModal, setOpenRegisterModal] = useState(false);
+  const [arrayTimeAvailable, setArrayTimeAvailable] = useState([]);
   //convert to second
   function hmsToSecondsOnly(str) {
     let timetoArray = str.toString(10).split("").map(Number);
@@ -134,13 +137,28 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
 
   var timesAvailable = [];
   async function getTimesAvailable(item) {
-      try {
-          const res = await axios.get('/api/dateresa/getAvailableTimes/' + item.bid + "/" + item.jour +"/" + item.daty );
-          timesAvailable= res.data;
-          //console.warn(res.data)
-      } catch (err) {
-          console.log(err)
-      }
+    try {
+      const res = await axios
+        .get(
+          "/api/dateresa/getAvailableTimes/" +
+            item.bid +
+            "/" +
+            item.jour +
+            "/" +
+            item.daty
+        )
+        .then((res) => {
+          timesAvailable = res.data;
+          handleClose();
+        });
+
+      //console.warn(res.data)
+      await setArrayTimeAvailable(res.data);
+
+      await console.log(arrayTimeAvailable);
+    } catch (err) {
+      console.log(err);
+    }
   }
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
@@ -150,9 +168,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
     setOpen(!open);
   };
 
-  
-
-  const loadCalendar = () => {
+  const loadCalendar = async () => {
     const calendarEl = document.getElementById("calendar");
     let calendar = new Calendar(calendarEl, {
       plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
@@ -166,10 +182,10 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
 
         if (daySelected >= currentDay) {
           //getDateResaById(branch._id);
-          setOpen(true)
+          setOpen(true);
           setSelected(moment(daySelected).format("DD/MM/YYYY"));
           var jour = moment(daySelected).format("dddd").toLowerCase();
-         
+
           const timeDiv = document.getElementById("available-times-div");
 
           while (timeDiv.firstChild) {
@@ -192,78 +208,77 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
           let defaultTime = [];
           let intervalHours = [];
 
-          const item ={
+          const item = {
             bid: branch._id,
             jour: jour,
-            daty: daySelected
-          }
+            daty: daySelected,
+          };
 
-          getTimesAvailable(item)
+          getTimesAvailable(item);
 
           setTimeout(() => {
-          
             //Time Buttons
-          for (var i = 0; i < timesAvailable.length; i++) {
-            var timeSlot = document.createElement("div");
-            timeSlot.classList.add("time-slot");
+            for (var i = 0; i < timesAvailable.length; i++) {
+              var timeSlot = document.createElement("div");
+              timeSlot.classList.add("time-slot");
 
-            var timeBtn = document.createElement("button");
+              var timeBtn = document.createElement("button");
 
-            var btnNode = document.createTextNode(timesAvailable[i].hours);
-            timeBtn.classList.add("time-btn");
+              var btnNode = document.createTextNode(timesAvailable[i].hours);
+              timeBtn.classList.add("time-btn");
 
-            timeBtn.appendChild(btnNode);
-            timeSlot.appendChild(timeBtn);
+              timeBtn.appendChild(btnNode);
+              timeSlot.appendChild(timeBtn);
 
-            timeDiv.appendChild(timeSlot);
+              timeDiv.appendChild(timeSlot);
 
-            // When time is selected
-            var last = null;
-            timeBtn.addEventListener("click", function () {
-              if (last != null) {
-                console.log(last);
-                last.parentNode.removeChild(last.parentNode.lastChild);
-              }
-
-              //
-              var confirmBtn = document.createElement("button");
-              var confirmTxt = document.createTextNode("Confirm");
-              confirmBtn.classList.add("confirm-btn");
-              confirmBtn.appendChild(confirmTxt);
-              this.parentNode.appendChild(confirmBtn);
-              event.time = this.textContent;
-              setTimeSelected(this.textContent);
-              const seatsAvailable = timesAvailable.filter(
-                (ta) => ta.hours == event.time
-              );
-              //console.log("i lera", seatsAvailable);
-              setSeats(seatsAvailable[0].seats.toString());
-              confirmBtn.addEventListener("click", function () {
-                var month = daySelected.getMonth() + 1;
-                if (month < 10) {
-                  month = "0" + month;
+              // When time is selected
+              var last = null;
+              timeBtn.addEventListener("click", function () {
+                if (last != null) {
+                  console.log(last);
+                  last.parentNode.removeChild(last.parentNode.lastChild);
                 }
 
-                event.date_reservation =
-                  moment(daySelected).format("DD/MM/YYYY");
-                sessionStorage.setItem("eventObj", JSON.stringify(event));
-                console.log(event);
-                var placeCalendar =
-                  document.getElementsByClassName("misyCalendar")[0];
-                var placeResa = document.getElementsByClassName("misyResa")[0];
-                //history.push("/reservation");
-                placeCalendar.classList.add("afenina");
-                placeResa.classList.remove("afenina");
-                document.getElementById("calendar-section").style.lef =
-                  "-400px";
-                //console.log("averina heure", convertSeconds(event.time));
+                //
+                var confirmBtn = document.createElement("button");
+                var confirmTxt = document.createTextNode("Confirm");
+                confirmBtn.classList.add("confirm-btn");
+                confirmBtn.appendChild(confirmTxt);
+                this.parentNode.appendChild(confirmBtn);
+                event.time = this.textContent;
+                setTimeSelected(this.textContent);
+                const seatsAvailable = timesAvailable.filter(
+                  (ta) => ta.hours == event.time
+                );
+                //console.log("i lera", seatsAvailable);
+                setSeats(seatsAvailable[0].seats.toString());
+                confirmBtn.addEventListener("click", function () {
+                  var month = daySelected.getMonth() + 1;
+                  if (month < 10) {
+                    month = "0" + month;
+                  }
+
+                  event.date_reservation =
+                    moment(daySelected).format("DD/MM/YYYY");
+                  sessionStorage.setItem("eventObj", JSON.stringify(event));
+                  console.log(event);
+                  var placeCalendar =
+                    document.getElementsByClassName("misyCalendar")[0];
+                  var placeResa =
+                    document.getElementsByClassName("misyResa")[0];
+                  //history.push("/reservation");
+                  placeCalendar.classList.add("afenina");
+                  placeResa.classList.remove("afenina");
+                  document.getElementById("calendar-section").style.lef =
+                    "-400px";
+                  //console.log("averina heure", convertSeconds(event.time));
+                });
+                last = this;
               });
-              last = this;
-            });
-          }
-          setOpen(false)
-          }, 2000);
-          
+            }
+            setOpen(false);
+          }, 3000);
 
           var containerDiv = document.getElementsByClassName("container")[0];
           containerDiv.classList.add("time-div-active");
@@ -317,24 +332,34 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
   const handleSubmit = () => {
     if (event.nb_spots === 0) {
       alert("Aza mianiany");
+    } else if (auth.token == null) {
+      setOpenRegisterModal(true);
+    } else {
+      createReservation(event);
+      window.location.reload();
     }
 
-    createReservation(event);
-    console.log("EVENT: ", event);
-
-    window.location.reload();
+    //console.log("EVENT: ", event);
   };
 
- 
   const classes = useStyles();
   return (
     <div>
-       <Backdrop className={classes.backdrop} open={open}>
+      <MyModal
+        open={openRegisterModal}
+        setOpenMyModal={setOpenRegisterModal}
+        title="Create Account"
+        contents={
+          <>
+            <Register />
+          </>
+        }
+      />
+      <Backdrop className={classes.backdrop} open={open}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <div className="container">
         <section className="description-section">
-       
           <hgroup>
             <Grid
               container

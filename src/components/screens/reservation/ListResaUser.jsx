@@ -231,7 +231,7 @@ function ListResaUser({
                   {reservationlist
                     .filter((opt) => opt.status == "waiting")
                     .map((ls, i) => (
-                      <Grid item xs={12} md={4} lg={3} key={i}>
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
                         <CardReservation
                           data={ls}
                           setResaInfo={setResaInfo}
@@ -272,7 +272,7 @@ function ListResaUser({
                   {reservationlist
                     .filter((opt) => opt.status == "confirm")
                     .map((ls, i) => (
-                      <Grid item xs={12} md={4} lg={3} key={i}>
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
                         <CardReservation
                           data={ls}
                           setResaInfo={setResaInfo}

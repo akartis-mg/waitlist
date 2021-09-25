@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,9 +14,9 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import BGlogin from './img/bglogin.jpeg'
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { login } from '../../../actions/authActions';
-
+import { useHistory } from "react-router-dom";
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
@@ -62,11 +62,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function SignIn({ login }) {
+    let history = useHistory();
     const [credentials, setCredentials] = useState({
         email: "",
         password: ""
     });
     const [error, setError] = useState("");
+
+    const auth = useSelector((state) => state.auth.user)
 
     const loginHandler = async (e) => {
         e.preventDefault();
@@ -83,6 +86,14 @@ function SignIn({ login }) {
             password: ""
         });
     };
+
+    useEffect(() => {
+
+        if (auth.token) {
+            history.push('/companies')
+        }
+
+    }, [auth])
 
 
     const classes = useStyles();

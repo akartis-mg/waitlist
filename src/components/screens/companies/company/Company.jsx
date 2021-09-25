@@ -38,6 +38,7 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import PersonIcon from "@material-ui/icons/Person";
 import ArrowBack from "@material-ui/icons/ArrowBack";
+import EventIcon from "@material-ui/icons/Event";
 import "./Company.css";
 
 //modal
@@ -64,6 +65,8 @@ import { Grid } from "@material-ui/core";
 
 //listitem
 import ListItemStaff from "../../../listItem";
+
+import Divider from "@material-ui/core/Divider";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -713,16 +716,18 @@ function Company({
                     <ListItem>
                       <ListItemText primary={ls.name} />
 
-                      <IconButton
+                      <Button
+                        variant="outlined"
                         onClick={() => {
                           setOpenCalendar(true);
                           // pass all branch details
                           setBranchDetails(ls);
                         }}
                       >
-                        <VisibilityIcon />
-                      </IconButton>
+                        <EventIcon /> Book
+                      </Button>
                     </ListItem>
+                    <Divider />
                   </>
                 )
               )}

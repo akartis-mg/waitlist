@@ -48,7 +48,7 @@ function App() {
 
       <Router>
         <Switch>
-        <Route path="/my-reservation">
+          <Route path="/my-reservation">
             <ListResaUser />
           </Route>
           <Route path="/list">
@@ -76,19 +76,20 @@ function App() {
           </Route>
 
           <PrivateRoute path="/register-business" type={(authBusiness.type == "Superadmin") ? "Authorized" : "Unauthorized"} user={authBusiness} component={RegisterBusiness} />
-        </Switch>
 
-        <Route exact path="/" >
-          {!auth.token ? (
-            !authBusiness.token ? (
-              <Redirect to="/login" />
+
+          <Route exact path="/" >
+            {!auth.token ? (
+              !authBusiness.token ? (
+                <Redirect to="/login" />
+              ) : (
+                <></>
+              )
             ) : (
               <></>
-            )
-          ) : (
-            <></>
-          )}
-        </Route>
+            )}
+          </Route>
+        </Switch>
       </Router>
       {/* // Pass the toggle functionality to the button
         <button onClick={toggleTheme}>Toggle theme</button>

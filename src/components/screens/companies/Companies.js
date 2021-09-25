@@ -34,6 +34,8 @@ import AddStaff from "../admin/AddStaff";
 //modal
 import MyModal from "../../dialog/myModal";
 
+//hiatory
+import { useHistory } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -71,6 +73,7 @@ function Companies({
   addBranch,
   addStaff,
 }) {
+  let history = useHistory();
   const allCompany = useSelector((state) => state.company);
   const authBusiness = useSelector((state) => state.authBusiness.userBusiness);
   const [openNewCompany, setOpenNewCompany] = useState(false);
@@ -360,7 +363,15 @@ function Companies({
 
   const allActiveCompanies = allCompany.filter(al => al.isActive == true);
   const allNonActiveCompanies = allCompany.filter(al => al.isActive == false);
-  console.log("adsadas", allNonActiveCompanies)
+
+  // useEffect(() => {
+
+  //   if (!authBusiness.token) {
+  //     history.push('/login-business')
+  //   }
+
+  // }, [authBusiness])
+
   return (
     <div className="companies section">
       <h2 className="section__title">Companies List</h2>

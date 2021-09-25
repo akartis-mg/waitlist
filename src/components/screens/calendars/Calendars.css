@@ -260,7 +260,7 @@ hgroup {
 
 #calendar-section .fc-daygrid-day {
   font-weight: 400;
-  color: lightgray;
+  /* color: lightgray; */
 }
 
 #calendar-section .fc-daygrid-day-events {
