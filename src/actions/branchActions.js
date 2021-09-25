@@ -20,4 +20,22 @@ export const addBranch = (branch) => async (dispatch, getState) => {
         })
 }
 
+// Add new brach
+export const updateBranch = (branch) => async (dispatch, getState) => {
+    const token = getState().authBusiness.userBusiness.token;
+    await axios.post('/api/branch/updatebranch', branch, setHeaders(token))
+        .then((branch) => {
+            dispatch({
+                type: "UPDATE_BRANCH",
+                branch: branch.data
+            })
+        })
+        .catch(error => {
+            toast.error(error.response?.data, {
+                position: toast.POSITION.BOTTON_RIGHT
+            });
+        })
+}
+
+
 

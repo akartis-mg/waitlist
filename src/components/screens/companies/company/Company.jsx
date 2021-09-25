@@ -20,6 +20,8 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import moment from "moment";
+
 
 import { connect } from "react-redux";
 
@@ -32,6 +34,7 @@ import { FixedSizeList } from "react-window";
 //icons
 import StarIcon from "@material-ui/icons/Star";
 import EditIcon from "@material-ui/icons/Edit";
+import AddIcon from "@material-ui/icons/Add";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import "./Company.css";
@@ -51,6 +54,7 @@ import Calendars from "../../calendars/Calendars";
 import Button from "@material-ui/core/Button";
 
 //actions
+import { addBranch } from "../../../../actions/branchActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,13 +84,79 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
 }));
-function Company({ company, setNewCompany, branch, setBranch }) {
+function Company({ company, setNewCompany, branch, setBranch , addBranch }) {
   const authBusiness = useSelector((state) => state.authBusiness.userBusiness);
 
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
   const [branchDetails, setBranchDetails] = useState({});
+
+  const [branchNew, setBranchNew] = useState({
+    cid: "",
+    name: "",
+    average_duration: 0,
+    address: {
+      street: "",
+      city: "",
+      postal_code: 0,
+      longitude: 0,
+      latitude: 0,
+    },
+
+    info: {
+      opening_days: {
+        monday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+          hour_interval: [],
+        },
+        tuesday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+          hour_interval: [],
+        },
+        wednesday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+          hour_interval: [],
+        },
+        thursday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+          hour_interval: [],
+        },
+        friday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+          hour_interval: [],
+        },
+        saturday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+          hour_interval: [],
+        },
+        sunday: {
+          open: true,
+          open_hour: 0,
+          closing_hour: 0,
+          hour_interval: [],
+        },
+      },
+      phone: 0,
+      website: "",
+    },
+
+    spots: {
+      available: 0,
+    },
+  });
 
   const list = [
     {
@@ -159,9 +229,114 @@ function Company({ company, setNewCompany, branch, setBranch }) {
 
   //branch management
   const [openModalBranch, setOpenModalBranch] = useState(false);
-
+  const [openModalAddBranch, setOpenModalAddBranch] = useState(false);
   //reservation
   const [openCalendar, setOpenCalendar] = useState(false);
+
+  const handleAddBranch = () => {
+    // const new_branch_localstorage = JSON.parse(
+    //   localStorage.getItem("new_company")
+    // );
+    let branch = branchNew;
+    for (let x in branch.info.opening_days) {
+      let final_hours_interval = [];
+      if (branch.info.opening_days[x].open) {
+        let hours_interval = [];
+        let intervalStart = moment(branch.info.opening_days[x].open_hour, "HH:mm").format("HH:mm");
+        let intervalEnd = moment(branch.info.opening_days[x].closing_hour, "HH:mm").format("HH:mm");
+
+        do {
+          let start = intervalStart;
+          let end = moment(intervalStart, "HH:mm").add(30, 'minutes').format("HH:mm");
+
+          let newHoursInterval = {
+            hours: start,
+            seats_total: 100,
+            seats_available: 100
+          }
+
+          hours_interval.push(newHoursInterval);
+
+          intervalStart = end;
+        } while (
+          intervalStart <= intervalEnd
+        );
+
+        final_hours_interval.push(hours_interval);
+      }
+
+      branch.info.opening_days[x].hour_interval = final_hours_interval;
+    }
+
+    branch.cid = company._id;
+
+    const newBranch = {
+      cid: company._id,
+      branch,
+    };
+
+    addBranch(newBranch);
+
+
+    setBranchNew({
+      cid: "",
+      name: "",
+      average_duration: 0,
+      address: {
+        street: "",
+        city: "",
+        postal_code: 0,
+        longitude: 0,
+        latitude: 0,
+      },
+
+      info: {
+        opening_days: {
+          monday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          tuesday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          wednesday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          thursday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          friday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          saturday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+          sunday: {
+            open: true,
+            open_hour: 0,
+            closing_hour: 0,
+          },
+        },
+        phone: 0,
+        website: "",
+      },
+
+      spots: {
+        available: 0,
+      },
+    });
+  };
   
 
   return (
@@ -197,7 +372,7 @@ function Company({ company, setNewCompany, branch, setBranch }) {
       )}
 
       {/* modal for branch manage */}
-      {authBusiness && authBusiness.type == "Manager" ? (
+      {authBusiness && (authBusiness?.type == "Manager" || authBusiness?.type == "Superadmin") ? (
         <>
           <MyModal
             open={openModalBranch}
@@ -210,6 +385,30 @@ function Company({ company, setNewCompany, branch, setBranch }) {
                   branch={branchDetails}
                   setBranch={setBranch}
                 />
+              </>
+            }
+          />
+
+
+        <MyModal
+            open={openModalAddBranch}
+            setOpenMyModal={setOpenModalAddBranch}
+            title="Add Branch"
+            contents={
+              <>
+                <AddBranch
+                  companyDetails={company}
+                  branch={branchNew}
+                  setBranch={setBranchNew}
+                />
+              </>
+            }
+            action={
+              <>
+
+          <Button  color="primary"  onClick={handleAddBranch}  autoFocus>
+            Confirm
+          </Button>
               </>
             }
           />
@@ -248,6 +447,13 @@ function Company({ company, setNewCompany, branch, setBranch }) {
                     >
                       <EditIcon />
                     </IconButton>
+
+                    <IconButton
+                      aria-label="show more"
+                      onClick={() => setOpenModalAddBranch(true)}
+                    >
+                      <AddIcon />
+                    </IconButton>
                   </>
                 ) : (
                   <></>
@@ -277,7 +483,41 @@ function Company({ company, setNewCompany, branch, setBranch }) {
               className={classes.list}
               aria-label="contacts"
             >
-              {company.branchs.map((l) => (
+
+              {company.branchs
+              .map((ls) => (
+               <ListItem>
+                <ListItemText primary={ls.name} />
+                  <IconButton
+                    onClick={() => {
+                      setOpenCalendar(true);
+                      // pass all branch details
+                      setBranchDetails(ls);
+                    }}
+                  >
+                    <VisibilityIcon />
+                  </IconButton>
+                  {(authBusiness.type == "Manager" && ls._id == authBusiness.bid ) || (authBusiness.type == "Superadmin" )  ?
+
+                   (
+                      <IconButton
+                      onClick={() => {
+                        setOpenModalBranch(true);
+                        setBranchDetails(ls);
+                      }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                   ) :
+                      (
+                        <></>
+                      )
+                  }
+                 
+             </ListItem>
+              ))}
+              
+            {/*  {company.branchs.map((l) => (
                 <>
                   {authBusiness && authBusiness.type == "Manager" ? (
                     <>
@@ -342,12 +582,12 @@ function Company({ company, setNewCompany, branch, setBranch }) {
                         }}
                       >
                         <EditIcon />
-                      </IconButton> */}
+                      </IconButton> 
                       </ListItem>
                     </>
                   )}
                 </>
-              ))}
+              ))} */}
 
               {/* {company.branchs.map((l) => (
                 <ListItem>
@@ -382,4 +622,8 @@ function Company({ company, setNewCompany, branch, setBranch }) {
   );
 }
 
-export default Company;
+
+export default connect(null, {
+  addBranch
+})(Company);
+

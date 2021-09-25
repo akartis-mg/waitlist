@@ -318,7 +318,6 @@ function Companies({
 
       spots: {
         available: 0,
-        not_available: 0,
       },
     });
   };

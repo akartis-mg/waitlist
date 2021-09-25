@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
 function AddBranch({ branch, setBranch }) {
   const onChange = (e) => {
     setBranch({ ...branch, [e.target.id]: e.target.value });
-    //console.log("sefes", branch)
   };
 
   let phone = +23012345678;

@@ -24,7 +24,6 @@ function InputOpenClose({ jour, branch, setBranch }) {
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
-  
 
   function getBoolean(value) {
     switch (value) {
@@ -215,7 +214,6 @@ function InputOpenClose({ jour, branch, setBranch }) {
               checked={branch && branch["info"]["opening_days"][jour]["open"]}
               color="primary"
               onChange={(e) =>
-                //console.log("tes" , branch)
                 setBranch({
                   ...branch,
                   info: {
