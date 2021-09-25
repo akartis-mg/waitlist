@@ -102,7 +102,6 @@ function Company({
   modifStaff,
 }) {
   const authBusiness = useSelector((state) => state.authBusiness.userBusiness);
-  const auth = useSelector((state) => state.auth.user);
   const oneManager = useSelector((state) => state.staff);
 
   const classes = useStyles();
@@ -593,20 +592,20 @@ function Company({
               aria-label="contacts"
             >
               {company.branchs.map((ls) =>
-                authBusiness.token ? (
+                authBusiness.type == "Superadmin" ? (
                   <ListItem>
-                    {/* <IconButton
+                    <ListItemText primary={ls.name} />
+                    <IconButton
                       onClick={() => {
                         setOpenCalendar(true);
                         // pass all branch details
                         setBranchDetails(ls);
                       }}
                     >
-                      <VisibilityIcon /> 
-                    </IconButton>*/}
+                      <VisibilityIcon />
+                    </IconButton>
                     {authBusiness.type == "Superadmin" ? (
                       <>
-                        <ListItemText primary={ls.name} />
                         <IconButton
                           onClick={() => {
                             setOpenModalBranch(true);
@@ -629,7 +628,6 @@ function Company({
                     ) : authBusiness.type == "Manager" &&
                       ls._id == authBusiness.bid ? (
                       <>
-                        <ListItemText primary={ls.name} />
                         <IconButton
                           onClick={() => {
                             setOpenModalBranch(true);
@@ -653,6 +651,41 @@ function Company({
                       <></>
                     )}
                   </ListItem>
+                ) : authBusiness.type == "Manager" &&
+                  ls._id == authBusiness.bid ? (
+                  <>
+                    {authBusiness.bid.map((bauth, index) => (
+                      <>
+                        {authBusiness.bid[index] == ls._id ? (
+                          <>
+                            <ListItem>
+                              <ListItemText primary={ls.name} />
+                              <IconButton
+                                onClick={() => {
+                                  setOpenCalendar(true);
+                                  // pass all branch details
+                                  setBranchDetails(ls);
+                                }}
+                              >
+                                <VisibilityIcon />
+                              </IconButton>
+
+                              <IconButton
+                                onClick={() => {
+                                  setOpenModalBranch(true);
+                                  setBranchDetails(ls);
+                                }}
+                              >
+                                <StarIcon />
+                              </IconButton>
+                            </ListItem>
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                      </>
+                    ))}
+                  </>
                 ) : (
                   <>
                     <ListItem>

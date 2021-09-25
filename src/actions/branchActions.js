@@ -21,9 +21,10 @@ export const addBranch = (branch) => async (dispatch, getState) => {
 }
 
 // Add new brach
-export const updateBranch = (branch) => async (dispatch, getState) => {
+export const modifBranch = (branch) => async (dispatch, getState) => {
     const token = getState().authBusiness.userBusiness.token;
-    await axios.post('/api/branch/updatebranch', branch, setHeaders(token))
+    console.log("br", branch)
+    await axios.put('/api/branch/updatebranch', branch, setHeaders(token))
         .then((branch) => {
             dispatch({
                 type: "UPDATE_BRANCH",

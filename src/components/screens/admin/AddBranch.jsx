@@ -29,12 +29,12 @@ const useStyles = makeStyles((theme) => ({
 function AddBranch({ branch, setBranch }) {
   const onChange = (e) => {
     setBranch({ ...branch, [e.target.id]: e.target.value });
-    //console.log("sefes", branch)
+    console.log("sefes", branch);
   };
 
   let phone = +23012345678;
-  if(branch){
-    phone= branch.info.phone
+  if (branch) {
+    phone = branch.info.phone;
   }
   const handleSubmit = (e) => {
     e.preventDefault();

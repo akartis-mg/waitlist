@@ -6,3 +6,10 @@
 .card__details {
   padding-top: 10px !important;
 }
+.show {
+  display: block !important;
+}
+
+.hide {
+  display: none !important;
+}

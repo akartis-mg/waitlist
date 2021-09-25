@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
-import PhoneInput from 'react-phone-input-2'
+import PhoneInput from "react-phone-input-2";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import InputOpenClose from "../../inputOpenClose/InputOpenClose";
@@ -29,7 +29,7 @@ function AddManager({ manager, setManager }) {
   const onChange = (e) => {
     setManager({ ...manager, [e.target.id]: e.target.value });
   };
-
+  console.log("MANGER", manager);
   const handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -46,40 +46,52 @@ function AddManager({ manager, setManager }) {
               label="First name"
               type="text"
               required
-              defaultValue={manager.firstname}
+              value={manager?.firstname}
               fullWidth
               onChange={onChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-          <TextField
+            <TextField
               id="lastname"
               label="Last name"
               type="text"
               required
-              defaultValue={manager.lastname}
+              value={manager?.lastname}
               fullWidth
               onChange={onChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                value={manager.email}
-                onChange={onChange}
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              value={manager?.email}
+              onChange={onChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-                required
-                disabled
-                fullWidth
-                id="type"
-                label="Type"
-                value={manager.type}
+              required
+              disabled
+              fullWidth
+              id="type"
+              label="Type"
+              value={manager?.type}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
           </Grid>
         </Grid>

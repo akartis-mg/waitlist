@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -6,25 +6,58 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 function InputOpenClose({ jour, branch, setBranch }) {
-  const arrayHour = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
-  const arrayMinute = ['00', '15', '30', '45'];
+  const arrayHour = [
+    "00",
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+  ];
+  const arrayMinute = ["00", "15", "30", "45"];
 
-  const [hourOpen, setHourOpen] = useState();
-  const [minOpen, setMinOpen] = useState();
-
-  const [hourClose, setHourClose] = useState();
-  const [minClose, setMinClose] = useState();
+  const [hourOpen, setHourOpen] = useState(
+    branch.info["opening_days"][jour]["open_hour"].split(":")[0]
+  );
+  //branch.info["opening_days"][jour]["open_hour"].split(":")[0]
+  const [minOpen, setMinOpen] = useState(
+    branch.info["opening_days"][jour]["open_hour"].split(":")[1]
+  );
+  console.log("HO");
+  const [hourClose, setHourClose] = useState(
+    branch.info["opening_days"][jour]["closing_hour"].split(":")[0]
+  );
+  const [minClose, setMinClose] = useState(
+    branch.info["opening_days"][jour]["closing_hour"].split(":")[1]
+  );
 
   //console.log("BRANCH: ", branch);
 
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
-  
 
   function getBoolean(value) {
     switch (value) {
@@ -73,10 +106,10 @@ function InputOpenClose({ jour, branch, setBranch }) {
         /> */}
         <Select
           id="hour_open"
-          value={hourOpen}
+          value={hourOpen && hourOpen}
           disabled={branch && !branch["info"]["opening_days"][jour]["open"]}
           onChange={(e) => {
-            setHourOpen(e.target.value); 
+            setHourOpen(e.target.value);
             setBranch({
               ...branch,
               info: {
@@ -89,13 +122,11 @@ function InputOpenClose({ jour, branch, setBranch }) {
                   },
                 },
               },
-            })
+            });
           }}
         >
-          {arrayHour.map(a => {
-            return(
-                <MenuItem value={a}>{a}</MenuItem>
-            )
+          {arrayHour.map((a) => {
+            return <MenuItem value={a}>{a}</MenuItem>;
           })}
         </Select>
         :
@@ -117,13 +148,11 @@ function InputOpenClose({ jour, branch, setBranch }) {
                   },
                 },
               },
-            })
+            });
           }}
         >
-          {arrayMinute.map(a => {
-            return(
-                <MenuItem value={a}>{a}</MenuItem>
-            )
+          {arrayMinute.map((a) => {
+            return <MenuItem value={a}>{a}</MenuItem>;
           })}
         </Select>
       </Grid>
@@ -154,7 +183,7 @@ function InputOpenClose({ jour, branch, setBranch }) {
         <Select
           id="hour_close"
           value={hourClose}
-          disabled={ branch && !branch["info"]["opening_days"][jour]["open"]}
+          disabled={branch && !branch["info"]["opening_days"][jour]["open"]}
           onChange={(e) => {
             setHourClose(e.target.value);
             setBranch({
@@ -169,13 +198,11 @@ function InputOpenClose({ jour, branch, setBranch }) {
                   },
                 },
               },
-            })
+            });
           }}
         >
-          {arrayHour.map(a => {
-            return(
-                <MenuItem value={a}>{a}</MenuItem>
-            )
+          {arrayHour.map((a) => {
+            return <MenuItem value={a}>{a}</MenuItem>;
           })}
         </Select>
         :
@@ -197,13 +224,11 @@ function InputOpenClose({ jour, branch, setBranch }) {
                   },
                 },
               },
-            })
+            });
           }}
         >
-          {arrayMinute.map(a => {
-            return(
-                <MenuItem value={a}>{a}</MenuItem>
-            )
+          {arrayMinute.map((a) => {
+            return <MenuItem value={a}>{a}</MenuItem>;
           })}
         </Select>
       </Grid>
