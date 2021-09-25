@@ -38,7 +38,12 @@ export const getReservationByBranchId = (bid) => async (dispatch, getState) => {
 
 // Update reseravtion
 export const updateReservation = (reservation) => async (dispatch, getState) => {
-    const token = getState().authBusiness.userBusiness.token;
+    let token;
+    if (getState().authBusiness.userBusiness.token) {
+        token = getState().authBusiness.userBusiness.token;
+    } else {
+        token = getState().auth.user.token;
+    }
     await axios.put(`/api/reservation/updateReservation`, reservation, setHeaders(token))
         .then((reservation) => {
             dispatch({
@@ -53,3 +58,19 @@ export const updateReservation = (reservation) => async (dispatch, getState) => 
         })
 }
 
+// Get one reseravtion by its ID
+export const getAllReservationByUser = (uid) => async (dispatch, getState) => {
+    const token = getState().auth.user.token;
+    await axios.get(`/api/reservation/findAllReservation/${uid}/customer`, setHeaders(token))
+        .then((reservation) => {
+            dispatch({
+                type: "GET_RESERVATION_BY_USER_ID",
+                reservation: reservation.data
+            })
+        })
+        .catch(error => {
+            toast.error(error.response?.data, {
+                position: toast.POSITION.BOTTON_RIGHT
+            });
+        })
+}
