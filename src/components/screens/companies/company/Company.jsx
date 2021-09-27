@@ -15,6 +15,7 @@ import { red } from "@material-ui/core/colors";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ShareIcon from "@material-ui/icons/Share";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import FormGroup from "@material-ui/core/FormGroup";
@@ -67,6 +68,8 @@ import { Grid } from "@material-ui/core";
 import ListItemStaff from "../../../listItem";
 
 import Divider from "@material-ui/core/Divider";
+
+import AddStaffForManager from '../../admin/AddStaffForManager'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -186,6 +189,15 @@ function Company({
     },
   });
 
+  const [staffNew, setStaffNew] = useState({
+    bid: "",
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    type: "Staff",
+  });
+
   //expand branches
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -203,6 +215,7 @@ function Company({
 
   //staff
   const [openModalStaff, setOpenModalStaff] = useState(false);
+  const [openModalNewStaff, setOpenModalNewStaff] = useState(false);
 
   //reservation
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -439,6 +452,10 @@ function Company({
     //console.log("id to be deleted", id);
   };
 
+  const handleAddNewStaff = ()=>{
+
+  }
+
   return (
     <div>
       {/* modal for reservation */}
@@ -588,6 +605,23 @@ function Company({
               </>
             }
           />
+
+          {/* add new staff modal  */}
+          <MyModal
+            open={openModalNewStaff}
+            setOpenMyModal={setOpenModalNewStaff}
+            title="New Staff "
+            contents={
+              <>
+               <AddStaffForManager
+               branch={branchDetails}
+               staff={staffNew}
+               setStaffNew={setStaffNew}
+               setOpenMyModal={setOpenModalNewStaff}
+               />
+              </>
+            }
+          />
         </>
       ) : (
         <></>
@@ -705,6 +739,16 @@ function Company({
                           }}
                         >
                           <AssignmentIndIcon />
+                        </IconButton>
+
+                        <IconButton
+                          aria-label="show more"
+                          onClick={() => {
+                            setOpenModalNewStaff(true);
+                            setBranchDetails(ls);
+                          }}
+                        >
+                          <PersonAddIcon />
                         </IconButton>
                       </>
                     ) : (

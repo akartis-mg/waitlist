@@ -90,7 +90,7 @@ function SignIn({ login }) {
     useEffect(() => {
 
         if (auth.token) {
-            history.push('/companies')
+            history.push('/')
         }
 
     }, [auth])

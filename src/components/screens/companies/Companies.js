@@ -228,25 +228,31 @@ function Companies({
       let final_hours_interval = [];
       if (branch.info.opening_days[x].open) {
         let hours_interval = [];
-        let intervalStart = moment(branch.info.opening_days[x].open_hour, "HH:mm").format("HH:mm");
-        let intervalEnd = moment(branch.info.opening_days[x].closing_hour, "HH:mm").format("HH:mm");
+        let intervalStart = moment(
+          branch.info.opening_days[x].open_hour,
+          "HH:mm"
+        ).format("HH:mm");
+        let intervalEnd = moment(
+          branch.info.opening_days[x].closing_hour,
+          "HH:mm"
+        ).format("HH:mm");
 
         do {
           let start = intervalStart;
-          let end = moment(intervalStart, "HH:mm").add(30, 'minutes').format("HH:mm");
+          let end = moment(intervalStart, "HH:mm")
+            .add(30, "minutes")
+            .format("HH:mm");
 
           let newHoursInterval = {
             hours: start,
             seats_total: 100,
-            seats_available: 100
-          }
+            seats_available: 100,
+          };
 
           hours_interval.push(newHoursInterval);
 
           intervalStart = end;
-        } while (
-          intervalStart <= intervalEnd
-        );
+        } while (intervalStart <= intervalEnd);
 
         final_hours_interval.push(hours_interval);
       }
@@ -361,8 +367,8 @@ function Companies({
     getCompanies();
   }, []);
 
-  const allActiveCompanies = allCompany.filter(al => al.isActive == true);
-  const allNonActiveCompanies = allCompany.filter(al => al.isActive == false);
+  const allActiveCompanies = allCompany.filter((al) => al.isActive == true);
+  const allNonActiveCompanies = allCompany.filter((al) => al.isActive == false);
 
   // useEffect(() => {
 
@@ -383,21 +389,11 @@ function Companies({
             Add new Company
           </button>
         </div>
-      ) : authBusiness.type == "Manager" ? (
-        <div className="admin__view">
-          <button
-            className="button button"
-            onClick={() => setOpenNewStaff(true)}
-          >
-            Add Staff
-          </button>
-        </div>
       ) : (
         <></>
       )}
 
       {authBusiness.type == "Superadmin" ? (
-
         <div className="companies__container  grid">
           <h2 className="section__title">List of non active companies </h2>
 
@@ -410,15 +406,14 @@ function Companies({
                   setNewCompany={setNewCompany}
                   setBranch={setBranch}
                 />
-
               </>
             ))}
           </div>
           <span className="section__subtitle">-------------</span>
         </div>
-
-      ) : (<></>)}
-
+      ) : (
+        <></>
+      )}
 
       <div className="companies__container  grid">
         <div className="companies__list">
@@ -433,7 +428,7 @@ function Companies({
                           authBusiness.bid.map((bauth, indx) => (
                             <>
                               {allActiveCompanies[index].branchs[ind]._id ==
-                                authBusiness.bid[indx] ? (
+                              authBusiness.bid[indx] ? (
                                 <>
                                   <Company
                                     key={allActiveCompanies[index]._id}
@@ -470,7 +465,11 @@ function Companies({
         title="New Staff"
         contents={
           <>
-            <AddStaff staff={staff} setStaff={setStaff} setOpenMyModal={setOpenNewStaff} />
+            <AddStaff
+              staff={staff}
+              setStaff={setStaff}
+              setOpenMyModal={setOpenNewStaff}
+            />
           </>
         }
       />
