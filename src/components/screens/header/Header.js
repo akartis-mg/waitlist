@@ -58,7 +58,8 @@ function Header() {
 
                             <>
                             <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>Companies</Link></li>
-                            <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>My reservation</Link></li>
+                            <li><Link to="/my-reservation" onClick={() => { setOpen(true); removestyle() }}>My reservation</Link></li>
+                            <li><a>{auth.firstname}</a></li>
                             <li><Link to="/logout" onClick={() => { setOpen(true); removestyle() }}>Logout</Link></li>
                             </> :
                         

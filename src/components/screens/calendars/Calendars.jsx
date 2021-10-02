@@ -27,6 +27,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import MyModal from "../../dialog/myModal";
 
 import Register from "../register/Register";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
@@ -135,8 +138,17 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
     //console.log("OPENDAYS: ", openDays);
   }
 
-  var timesAvailable = [];
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleToggle = () => {
+    setOpen(!open);
+  };
+
+  let timesAvailable = [];
   async function getTimesAvailable(item) {
+    timesAvailable = [];
     try {
       const res = await axios
         .get(
@@ -153,20 +165,24 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
         });
 
       //console.warn(res.data)
-      await setArrayTimeAvailable(res.data);
+      //await setArrayTimeAvailable(res.data);
 
-      await console.log(arrayTimeAvailable);
+      //await console.log(arrayTimeAvailable);
     } catch (err) {
-      console.log(err);
+      //console.log(err);
+
+      toast.error(" Sorry We are not open", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      //handleClose();
     }
   }
-  const [open, setOpen] = React.useState(false);
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleToggle = () => {
-    setOpen(!open);
-  };
 
   const loadCalendar = async () => {
     const calendarEl = document.getElementById("calendar");
@@ -174,7 +190,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
       plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
       initialView: "dayGridMonth",
       height: "auto",
-      showNonCurrentDates: false,
+      showNonCurrentDates: true,
       selectable: true,
       select: function (info) {
         const currentDay = new Date().setHours(0, 0, 0, 0);
@@ -182,6 +198,20 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
 
         if (daySelected >= currentDay) {
           //getDateResaById(branch._id);
+          toast.info(
+            `Get available times for ${moment(daySelected).format(
+              "DD/MM/YYYY"
+            )}`,
+            {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            }
+          );
           setOpen(true);
           setSelected(moment(daySelected).format("DD/MM/YYYY"));
           var jour = moment(daySelected).format("dddd").toLowerCase();
@@ -218,6 +248,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
 
           setTimeout(() => {
             //Time Buttons
+
             for (var i = 0; i < timesAvailable.length; i++) {
               var timeSlot = document.createElement("div");
               timeSlot.classList.add("time-slot");
@@ -277,8 +308,9 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
                 last = this;
               });
             }
+
             setOpen(false);
-          }, 3000);
+          }, 2000);
 
           var containerDiv = document.getElementsByClassName("container")[0];
           containerDiv.classList.add("time-div-active");
@@ -331,11 +363,37 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
 
   const handleSubmit = () => {
     if (event.nb_spots === 0) {
-      alert("Aza mianiany");
+      toast.error("Seats cannot be 0", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } else if (auth.token == null) {
       setOpenRegisterModal(true);
+      toast.info("You nedd to create an account", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } else {
       createReservation(event);
+      toast.success("Reservation added ", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       window.location.reload();
     }
 
@@ -345,6 +403,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
   const classes = useStyles();
   return (
     <div>
+      <ToastContainer />
       <MyModal
         open={openRegisterModal}
         setOpenMyModal={setOpenRegisterModal}
@@ -453,25 +512,29 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
                     id="name"
                     label="Name"
                     type="text"
-                    defaultValue={event.name}
+                    value={event.name}
                     className="reservation__input"
                     onChange={(e) =>
                       setEvent({ ...event, name: e.target.value })
                     }
                     fullWidth
+                    required
                   />
 
                   <TextField
                     id="nb_spots"
                     label="Nbr Pers"
                     type="number"
-                    defaultValue={event.nb_spots}
-                    min={branch.spots.available}
+                    min={0}
+                    max={seats}
+                    value={event.nb_spots}
+                  
                     className="reservation__input"
                     onChange={(e) =>
                       setEvent({ ...event, nb_spots: Number(e.target.value) })
                     }
                     fullWidth
+                    required
                   />
 
                   <Button onClick={handleSubmit} color="primary">

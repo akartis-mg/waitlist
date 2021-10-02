@@ -10,6 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import EventIcon from "@material-ui/icons/Event";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import EventSeatIcon from "@material-ui/icons/EventSeat";
 import Header from "../header/Header";
 import moment from "moment";
@@ -19,16 +20,18 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from "@material-ui/core";
 import { connect } from "react-redux";
-import { updateReservation } from '../../../actions/reservationActions';
-import axios from 'axios'
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles } from '@material-ui/core/styles';
+import { updateReservation } from "../../../actions/reservationActions";
+import axios from "axios";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { makeStyles } from "@material-ui/core/styles";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    color: "#fff",
   },
 }));
 
@@ -107,18 +110,32 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
     return result;
   }
 
-  
-  
-
   var timesAvailable = [];
   async function getTimesAvailable(item) {
-      try {
-          const res = await axios.get('/api/dateresa/getAvailableTimes/' + item.bid + "/" + item.jour +"/" + item.daty );
-          timesAvailable= res.data;
-          //console.warn(res.data)
-      } catch (err) {
-          console.log(err)
-      }
+    timesAvailable = [];
+    try {
+      const res = await axios.get(
+        "/api/dateresa/getAvailableTimes/" +
+          item.bid +
+          "/" +
+          item.jour +
+          "/" +
+          item.daty
+      );
+      timesAvailable = res.data;
+      //console.warn(res.data)
+    } catch (err) {
+      //console.log(err)
+      toast.error(" Sorry We are not open", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   }
 
   const [open, setOpen] = React.useState(false);
@@ -128,7 +145,6 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
   const handleToggle = () => {
     setOpen(!open);
   };
-
 
   const loadCalendar = () => {
     const calendarEl = document.getElementById("calendar");
@@ -144,10 +160,24 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
 
         if (daySelected >= currentDay) {
           //getDateResaById(branch._id);
-          setOpen(true)
+          toast.info(
+            `Get available times for ${moment(daySelected).format(
+              "DD/MM/YYYY"
+            )}`,
+            {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            }
+          );
+          setOpen(true);
           setSelected(moment(daySelected).format("DD/MM/YYYY"));
           var jour = moment(daySelected).format("dddd").toLowerCase();
-         
+
           const timeDiv = document.getElementById("available-times-div");
 
           while (timeDiv.firstChild) {
@@ -170,78 +200,77 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
           let defaultTime = [];
           let intervalHours = [];
 
-          const item ={
+          const item = {
             bid: branch._id,
             jour: jour,
-            daty: daySelected
-          }
+            daty: daySelected,
+          };
 
-          getTimesAvailable(item)
+          getTimesAvailable(item);
 
           setTimeout(() => {
-          
             //Time Buttons
-          for (var i = 0; i < timesAvailable.length; i++) {
-            var timeSlot = document.createElement("div");
-            timeSlot.classList.add("time-slot");
+            for (var i = 0; i < timesAvailable.length; i++) {
+              var timeSlot = document.createElement("div");
+              timeSlot.classList.add("time-slot");
 
-            var timeBtn = document.createElement("button");
+              var timeBtn = document.createElement("button");
 
-            var btnNode = document.createTextNode(timesAvailable[i].hours);
-            timeBtn.classList.add("time-btn");
+              var btnNode = document.createTextNode(timesAvailable[i].hours);
+              timeBtn.classList.add("time-btn");
 
-            timeBtn.appendChild(btnNode);
-            timeSlot.appendChild(timeBtn);
+              timeBtn.appendChild(btnNode);
+              timeSlot.appendChild(timeBtn);
 
-            timeDiv.appendChild(timeSlot);
+              timeDiv.appendChild(timeSlot);
 
-            // When time is selected
-            var last = null;
-            timeBtn.addEventListener("click", function () {
-              if (last != null) {
-                console.log(last);
-                last.parentNode.removeChild(last.parentNode.lastChild);
-              }
-
-              //
-              var confirmBtn = document.createElement("button");
-              var confirmTxt = document.createTextNode("Confirm");
-              confirmBtn.classList.add("confirm-btn");
-              confirmBtn.appendChild(confirmTxt);
-              this.parentNode.appendChild(confirmBtn);
-              event.time = this.textContent;
-              setTimeSelected(this.textContent);
-              const seatsAvailable = timesAvailable.filter(
-                (ta) => ta.hours == event.time
-              );
-              //console.log("i lera", seatsAvailable);
-              setSeats(seatsAvailable[0].seats.toString());
-              confirmBtn.addEventListener("click", function () {
-                var month = daySelected.getMonth() + 1;
-                if (month < 10) {
-                  month = "0" + month;
+              // When time is selected
+              var last = null;
+              timeBtn.addEventListener("click", function () {
+                if (last != null) {
+                  console.log(last);
+                  last.parentNode.removeChild(last.parentNode.lastChild);
                 }
 
-                event.date_reservation =
-                  moment(daySelected).format("DD/MM/YYYY");
-                sessionStorage.setItem("eventObj", JSON.stringify(event));
-                console.log(event);
-                var placeCalendar =
-                  document.getElementsByClassName("misyCalendar")[0];
-                var placeResa = document.getElementsByClassName("misyResa")[0];
-                //history.push("/reservation");
-                placeCalendar.classList.add("afenina");
-                placeResa.classList.remove("afenina");
-                document.getElementById("calendar-section").style.lef =
-                  "-400px";
-                //console.log("averina heure", convertSeconds(event.time));
+                //
+                var confirmBtn = document.createElement("button");
+                var confirmTxt = document.createTextNode("Confirm");
+                confirmBtn.classList.add("confirm-btn");
+                confirmBtn.appendChild(confirmTxt);
+                this.parentNode.appendChild(confirmBtn);
+                event.time = this.textContent;
+                setTimeSelected(this.textContent);
+                const seatsAvailable = timesAvailable.filter(
+                  (ta) => ta.hours == event.time
+                );
+                //console.log("i lera", seatsAvailable);
+                setSeats(seatsAvailable[0].seats.toString());
+                confirmBtn.addEventListener("click", function () {
+                  var month = daySelected.getMonth() + 1;
+                  if (month < 10) {
+                    month = "0" + month;
+                  }
+
+                  event.date_reservation =
+                    moment(daySelected).format("DD/MM/YYYY");
+                  sessionStorage.setItem("eventObj", JSON.stringify(event));
+                  console.log(event);
+                  var placeCalendar =
+                    document.getElementsByClassName("misyCalendar")[0];
+                  var placeResa =
+                    document.getElementsByClassName("misyResa")[0];
+                  //history.push("/reservation");
+                  placeCalendar.classList.add("afenina");
+                  placeResa.classList.remove("afenina");
+                  document.getElementById("calendar-section").style.lef =
+                    "-400px";
+                  //console.log("averina heure", convertSeconds(event.time));
+                });
+                last = this;
               });
-              last = this;
-            });
-          }
-          setOpen(false)
+            }
+            setOpen(false);
           }, 2000);
-          
 
           var containerDiv = document.getElementsByClassName("container")[0];
           containerDiv.classList.add("time-div-active");
@@ -286,23 +315,48 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
     placeCalendar.classList.remove("afenina");
     placeResa.classList.add("afenina");
   };
+  const handleGoForward = () => {
+    var placeCalendar = document.getElementsByClassName("misyCalendar")[0];
+    var placeResa = document.getElementsByClassName("misyResa")[0];
+    placeCalendar.classList.add("afenina");
+    placeResa.classList.remove("afenina");
+  };
 
   //const [resaInfo, setResaInfo] = useState({});
 
   const handleSubmit = () => {
     if (event.nb_spots === 0) {
-      alert("Aza mianiany");
+      toast.error("Seats cannot be 0", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } else {
       updateReservation(event);
-      console.log(event);
+      toast.success("Reservation Updated", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      //console.log(event);
+      window.location.reload();
     }
-    console.log(event);
+    //console.log(event);
   };
- 
+
   const classes = useStyles();
   return (
     <div>
-        <Backdrop className={classes.backdrop} open={open}>
+      <ToastContainer />
+      <Backdrop className={classes.backdrop} open={open}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <div className="container">
@@ -325,7 +379,7 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
                 <EventSeatIcon />
               </Grid>
               <Grid item xs={10}>
-                <h4 id="event-time-stamp">{branch.spots.available} </h4>
+                <h4 id="event-time-stamp">{seats}</h4>
               </Grid>
 
               <Grid item xs={2}>
@@ -364,11 +418,17 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
         <section id="calendar-section" className="body-section">
           <div className="misyCalendar">
             <h3>Select a Date & Time</h3>
+
             <div id="schedule-div">
               <div id="available-times-div"></div>
 
               <div id="calendar"></div>
             </div>
+
+            <Button onClick={handleGoForward}>
+              Update Details
+              <ArrowForwardIcon />
+            </Button>
           </div>
 
           <div className="misyResa afenina">
@@ -400,25 +460,27 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
                     id="name"
                     label="Name"
                     type="text"
-                    defaultValue={event.name}
+                    value={event.name}
                     className="reservation__input"
                     onChange={(e) =>
                       setEvent({ ...event, name: e.target.value })
                     }
                     fullWidth
+                    required
                   />
 
                   <TextField
                     id="nb_spots"
                     label="Nbr Pers"
                     type="number"
-                    defaultValue={event.nb_spots}
-                    min={branch.spots.available}
+                    max={seats}
+                    value={event.nb_spots}
                     className="reservation__input"
                     onChange={(e) =>
                       setEvent({ ...event, nb_spots: Number(e.target.value) })
                     }
                     fullWidth
+                    required
                   />
 
                   <Button onClick={handleSubmit} color="primary">
@@ -434,4 +496,4 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
   );
 }
 
-export default connect(null, {updateReservation})(CalendarsUpdate)
+export default connect(null, { updateReservation })(CalendarsUpdate);

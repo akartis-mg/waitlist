@@ -27,11 +27,22 @@ import {
 } from "../../../actions/reservationActions";
 import { setHeaders } from "../../../api/headers";
 import axios from "axios";
+
+import { MissedVideoCall } from "@material-ui/icons";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import CloseIcon from "@material-ui/icons/Close";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
@@ -55,7 +66,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 15,
   },
   listResa: {
-    marginTop: 20,
+    padding: theme.spacing(2),
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "row",
+    marginTop: 10,
   },
   search: {
     borderRadius: 20,
@@ -91,8 +106,8 @@ function ListResaUser({
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const [search, setSearch] = useState("");
-
+  const [search, setSearch] = useState(null);
+  const [searchProgress, setSearchProgress] = useState("");
   //reservation
   const [openCalendar, setOpenCalendar] = useState(false);
 
@@ -101,6 +116,9 @@ function ListResaUser({
   const [company, setCompany] = useState();
 
   //const [listResaDummy, setListResaDummy] = useState([]);
+
+  //backdrop
+  const [open, setOpen] = React.useState(false);
 
   const listResaDummy = [
     {
@@ -138,7 +156,7 @@ function ListResaUser({
         .get("/api/branch/findOneBranch/" + bid, setHeaders(auth.token))
         .then(async (res) => {
           setBranch(res.data);
-          console.log("BRANCH", res.data);
+          //console.log("BRANCH", res.data);
           const rescompany = await axios
             .get(
               "/api/company/findOneCompany/" + res.data.cid,
@@ -146,7 +164,7 @@ function ListResaUser({
             )
             .then(async (res) => {
               setCompany(res.data);
-              console.log("COMPANY", res.data);
+              //console.log("COMPANY", res.data);
             });
         });
 
@@ -156,14 +174,29 @@ function ListResaUser({
     }
   }
 
-  const handleUpdateUser = async (data) => {
-    setResaInfo(data);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleToggle = () => {
+    setOpen(!open);
+  };
 
+  const handleUpdateUser = async (data) => {
+    await handleToggle();
+    await setResaInfo(data);
     //console.log("Tedfet", data);
     await fetchBranchDetails(data.bid);
     await setOpenCalendar(true);
   };
 
+  useEffect(() => {
+    handleClose();
+  }, [openCalendar]);
+
+  const waitingList = reservationlist.filter((opt) => opt.status == "waiting");
+  const confirmList = reservationlist.filter((opt) => opt.status == "confirm");
+
+  console.log(waitingList);
   return (
     <div className={classes.root}>
       {/* modal for reservation */}
@@ -183,7 +216,7 @@ function ListResaUser({
       />
 
       <CssBaseline />
-      <ButtonAppBar
+      {/* <ButtonAppBar
         title="Staff"
         buttons={
           <>
@@ -191,8 +224,11 @@ function ListResaUser({
             <Button color="inherit">Login</Button>
           </>
         }
-      />
+      /> */}
       <main className={classes.content}>
+        <Backdrop className={classes.backdrop} open={open}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
@@ -200,93 +236,145 @@ function ListResaUser({
             <Grid item xs={12} md={4} lg={3}>
               <Paper
                 className={fixedHeightPaper}
-                style={{ backgroundColor: "#84e3c8" }}
+                style={{ backgroundColor: "var(--input-color)" }}
               >
                 <SummaryResa title="Waiting" number={10000} />
               </Paper>
             </Grid>
 
             {/* New List resa */}
+
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={8}>
                   <Title color="primary">Wait List</Title>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <SearchBar
-                    className={classes.search}
-                    placeholder="Filter waiting list"
+                  <Autocomplete
+                    id="free-solo-demo"
+                    freeSolo
+                    options={waitingList.map((option) => option.name)}
                     value={search}
-                    onChange={(newValue) => setSearch(newValue)}
-                    //onRequestSearch={() => doSomethingWith(this.state.value)}
+                    onChange={(event, value) => setSearch(value)}
+                    closeIcon={<CloseIcon fontSize="small" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Search"
+                        margin="normal"
+                        variant="outlined"
+                      />
+                    )}
                   />
                 </Grid>
               </Grid>
 
-              <Paper
+              {/* <Paper
                 className={classes.paper}
-                style={{ backgroundColor: "#ffaaa5" }}
-              >
-                <Grid container spacing={2} className={classes.listResa}>
-                  {reservationlist
-                    .filter((opt) => opt.status == "waiting")
-                    .map((ls, i) => (
+                style={{ backgroundColor: "none" }}
+              > */}
+              <Grid container spacing={2} className={classes.listResa}>
+                {search
+                  ? waitingList
+                      .filter(
+                        (opt) => opt.name.toUpperCase() == search.toUpperCase()
+                      )
+                      .map((ls, i) => (
+                        <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+                          <CardReservation
+                            data={ls}
+                        
+                            setResaInfo={setResaInfo}
+                            handleUpdateUser={handleUpdateUser}
+                          />
+                        </Grid>
+                      ))
+                  : waitingList.map((ls, i) => (
                       <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
                         <CardReservation
                           data={ls}
+                        
                           setResaInfo={setResaInfo}
                           handleUpdateUser={handleUpdateUser}
                         />
                       </Grid>
                     ))}
 
-                  {/* <Grid item xs={12} md={4} lg={3}>
+                {/* <Grid item xs={12} md={4} lg={3}>
                     <CardReservation setOpenCalendar={setOpenCalendar} />
                   </Grid> */}
-                </Grid>
-              </Paper>
+              </Grid>
+              {/* </Paper> */}
             </Grid>
 
             {/* reservation in progress */}
-            <Grid item xs={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={8}>
-                  <Title color="primary">Inprogress List</Title>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <SearchBar
+            {confirmList.length != 0 ? (
+              <>
+                <Grid item xs={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={8}>
+                      <Title color="primary">Inprogress List</Title>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      {/* <SearchBar
                     className={classes.search}
                     placeholder="Filter inprogress list"
-                    value={search}
-                    onChange={(newValue) => setSearch(newValue)}
+                    value={searchProgress}
+                    onChange={(newValue) => setSearchProgress(newValue)}
                     //onRequestSearch={() => doSomethingWith(this.state.value)}
-                  />
-                </Grid>
-              </Grid>
+                  /> */}
 
-              <Paper
-                className={classes.paper}
-                style={{ backgroundColor: "#a8e6cf" }}
-              >
-                <Grid container spacing={2} className={classes.listResa}>
-                  {reservationlist
-                    .filter((opt) => opt.status == "confirm")
-                    .map((ls, i) => (
-                      <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
-                        <CardReservation
-                          data={ls}
-                          setResaInfo={setResaInfo}
-                          handleUpdateUser={handleUpdateUser}
-                        />
-                      </Grid>
-                    ))}
+                      <Autocomplete
+                        id="free-solo-demo"
+                        freeSolo
+                        options={confirmList.map((option) => option.name)}
+                        value={searchProgress}
+                        onChange={(event, value) => setSearchProgress(value)}
+                        closeIcon={<CloseIcon fontSize="small" />}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Search"
+                            margin="normal"
+                            variant="outlined"
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
 
-                  {/* <Grid item xs={12} md={4} lg={3}>
+                  <Paper
+                    className={classes.paper}
+                    style={{ backgroundColor: "#a8e6cf" }}
+                  >
+                    <Grid container spacing={2} className={classes.listResa}>
+                      {searchProgress
+                        ? confirmList.map((ls, i) => (
+                            <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+                              <CardReservation
+                                data={ls}
+                                setResaInfo={setResaInfo}
+                                handleUpdateUser={handleUpdateUser}
+                              />
+                            </Grid>
+                          ))
+                        : confirmList.map((ls, i) => (
+                            <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+                              <CardReservation
+                                data={ls}
+                                setResaInfo={setResaInfo}
+                                handleUpdateUser={handleUpdateUser}
+                              />
+                            </Grid>
+                          ))}
+                      {/* <Grid item xs={12} md={4} lg={3}>
                     <CardReservation setOpenCalendar={setOpenCalendar} />
                   </Grid> */}
+                    </Grid>
+                  </Paper>
                 </Grid>
-              </Paper>
-            </Grid>
+              </>
+            ) : null}
           </Grid>
           <Box pt={4}></Box>
         </Container>

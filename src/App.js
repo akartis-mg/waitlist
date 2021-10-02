@@ -47,6 +47,7 @@ function App() {
       <Router>
         <Switch>
           <Route path="/my-reservation">
+          <Header />
             <ListResaUser />
           </Route>
           <Route path="/list">
