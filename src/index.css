@@ -138,7 +138,7 @@ img {
 /*==================== REUSABLE CSS CLASSES ====================*/
 
 .section {
-  padding: 2rem 0 4rem;
+  padding: 6rem 0 4rem;
 }
 
 .section__title {
@@ -333,6 +333,7 @@ img {
   padding: 1rem !important;
   border-radius: 0.5rem !important;
   font-weight: var(--font-medium) !important;
+  cursor: pointer !important;
 }
 .button:hover {
   background-color: var(--first-color-alt) !important;

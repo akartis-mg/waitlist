@@ -385,35 +385,11 @@ function Companies({
 
       {authBusiness.type == "Superadmin" ? (
         <div className="admin__view">
-          <button className="button button" onClick={handleClickOpen}>
+          <button className="button" onClick={handleClickOpen}>
             Add new Company
           </button>
         </div>
-      ) : (
-        <></>
-      )}
-
-      {authBusiness.type == "Superadmin" ? (
-        <div className="companies__container  grid">
-          <h2 className="section__title">List of non active companies </h2>
-
-          <div className="companies__list">
-            {allNonActiveCompanies.map((c, index) => (
-              <>
-                <Company
-                  key={c._id}
-                  company={c}
-                  setNewCompany={setNewCompany}
-                  setBranch={setBranch}
-                />
-              </>
-            ))}
-          </div>
-          <span className="section__subtitle">-------------</span>
-        </div>
-      ) : (
-        <></>
-      )}
+      ) : null}
 
       <div className="companies__container  grid">
         <div className="companies__list">
@@ -456,6 +432,29 @@ function Companies({
             </>
           ))}
         </div>
+
+        {authBusiness.type == "Superadmin" ? (
+          <div className="companies__container  grid">
+            {allNonActiveCompanies.length != 0 ? (
+              <h2 className="section__subtitle">
+                List of non active companies{" "}
+              </h2>
+            ) : null}
+
+            <div className="companies__list">
+              {allNonActiveCompanies.map((c, index) => (
+                <>
+                  <Company
+                    key={c._id}
+                    company={c}
+                    setNewCompany={setNewCompany}
+                    setBranch={setBranch}
+                  />
+                </>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {/* modal for add staff */}
@@ -475,7 +474,7 @@ function Companies({
       />
 
       {/* dialog */}
-      <div>
+      <>
         <Dialog
           open={openNewCompany}
           onClose={handleClose}
@@ -574,7 +573,7 @@ function Companies({
             </div>
           </DialogContent>
         </Dialog>
-      </div>
+      </>
     </div>
   );
 }

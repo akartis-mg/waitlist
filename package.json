@@ -1,7 +1,7 @@
 {
   "name": "waitlist",
   "version": "0.1.0",
-  "proxy": "http://localhost:7000",
+  "proxy": "http://192.168.100.98:7000",
   "private": true,
   "dependencies": {
     "@fullcalendar/core": "^5.9.0",

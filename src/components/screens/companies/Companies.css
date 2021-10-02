@@ -5,3 +5,8 @@
   flex-wrap: wrap;
   grid-gap: 1rem;
 }
+.admin__view {
+  position: absolute;
+  bottom: 4rem;
+  right: 2rem;
+}
