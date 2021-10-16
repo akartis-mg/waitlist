@@ -22,6 +22,10 @@ import { connect } from "react-redux";
 import { getCompanies } from "../../../actions/companyActions";
 import { getDateResaById } from "../../../actions/dateResaActions";
 import { getReservationByBranchId } from "../../../actions/reservationActions";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import CloseIcon from "@material-ui/icons/Close";
+import TextField from "@material-ui/core/TextField";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -82,7 +86,9 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   const [search, setSearch] = useState("");
-
+  const [searchConfirm, setSearchConfirm] = useState(null);
+  const [searchDone, setSearchDone] = useState(null);
+  const [searchDisable, setSearchDisable] = useState(null);
   //reservation
   const [openCalendar, setOpenCalendar] = useState(false);
 
@@ -170,7 +176,10 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
   //     console.log(err);
   //   }
   // }
-
+  const waitingList = reservationlist.filter((opt) => opt.status == "waiting");
+  const confirmList = reservationlist.filter((opt) => opt.status == "confirm");
+  const doneList = reservationlist.filter((opt) => opt.status == "done");
+  const disableList = reservationlist.filter((opt) => opt.status == "disable");
   return (
     <div className={classes.root}>
       {/* modal for reservation */}
@@ -249,12 +258,21 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
                   <Title color="primary">Wait List</Title>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <SearchBar
-                    className={classes.search}
-                    placeholder="Filter waiting list"
+                  <Autocomplete
+                    id="free-solo-demo"
+                    freeSolo
+                    options={waitingList.map((option) => option.name)}
                     value={search}
-                    onChange={(newValue) => setSearch(newValue)}
-                    //onRequestSearch={() => doSomethingWith(this.state.value)}
+                    onChange={(event, value) => setSearch(value)}
+                    closeIcon={<CloseIcon fontSize="small" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Search"
+                        margin="normal"
+                        variant="outlined"
+                      />
+                    )}
                   />
                 </Grid>
               </Grid>
@@ -264,12 +282,18 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
                 style={{ backgroundColor: "#ffaaa5" }}
               >
                 <Grid container spacing={2} className={classes.listResa}>
-                  {reservationlist
-                    .filter((opt) => opt.status == "waiting")
+                  {waitingList
+                    .filter((opt) =>
+                      search
+                        ? opt.name.toUpperCase() == search.toUpperCase()
+                        : []
+                    )
                     .map((ls, i) => (
                       <Grid item xs={12} md={4} lg={3} key={i}>
                         <CardReservation
                           data={ls}
+                          company={company}
+                          branch={branch}
                           setResaInfo={setResaInfo}
                           setOpenCalendar={setOpenCalendar}
                         />
@@ -290,12 +314,21 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
                   <Title color="primary">Inprogress List</Title>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <SearchBar
-                    className={classes.search}
-                    placeholder="Filter inprogress list"
-                    value={search}
-                    onChange={(newValue) => setSearch(newValue)}
-                    //onRequestSearch={() => doSomethingWith(this.state.value)}
+                  <Autocomplete
+                    id="free-solo-demo"
+                    freeSolo
+                    options={confirmList.map((option) => option.name)}
+                    value={searchConfirm}
+                    onChange={(event, value) => setSearchConfirm(value)}
+                    closeIcon={<CloseIcon fontSize="small" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Search"
+                        margin="normal"
+                        variant="outlined"
+                      />
+                    )}
                   />
                 </Grid>
               </Grid>
@@ -305,8 +338,12 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
                 style={{ backgroundColor: "#a8e6cf" }}
               >
                 <Grid container spacing={2} className={classes.listResa}>
-                  {reservationlist
-                    .filter((opt) => opt.status == "confirm")
+                  {confirmList
+                    .filter((opt) =>
+                      searchConfirm
+                        ? opt.name.toUpperCase() == searchConfirm.toUpperCase()
+                        : []
+                    )
                     .map((ls, i) => (
                       <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
                         <CardReservation
@@ -331,12 +368,21 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
                   <Title color="primary">Done List</Title>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <SearchBar
-                    className={classes.search}
-                    placeholder="Filter done list"
-                    value={search}
-                    onChange={(newValue) => setSearch(newValue)}
-                    //onRequestSearch={() => doSomethingWith(this.state.value)}
+                  <Autocomplete
+                    id="free-solo-demo"
+                    freeSolo
+                    options={doneList.map((option) => option.name)}
+                    value={searchDone}
+                    onChange={(event, value) => setSearchDone(value)}
+                    closeIcon={<CloseIcon fontSize="small" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Search"
+                        margin="normal"
+                        variant="outlined"
+                      />
+                    )}
                   />
                 </Grid>
               </Grid>
@@ -346,8 +392,12 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
                 style={{ backgroundColor: "#dcedc1" }}
               >
                 <Grid container spacing={2} className={classes.listResa}>
-                  {reservationlist
-                    .filter((opt) => opt.status == "done")
+                  {doneList
+                    .filter((opt) =>
+                      searchDone
+                        ? opt.name.toUpperCase() == searchDone.toUpperCase()
+                        : []
+                    )
                     .map((ls, i) => (
                       <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
                         <CardReservation
@@ -372,12 +422,21 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
                   <Title color="primary">Disable List</Title>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <SearchBar
-                    className={classes.search}
-                    placeholder="Filter disable list"
-                    value={search}
-                    onChange={(newValue) => setSearch(newValue)}
-                    //onRequestSearch={() => doSomethingWith(this.state.value)}
+                  <Autocomplete
+                    id="free-solo-demo"
+                    freeSolo
+                    options={disableList.map((option) => option.name)}
+                    value={searchDisable}
+                    onChange={(event, value) => setSearchDisable(value)}
+                    closeIcon={<CloseIcon fontSize="small" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Search"
+                        margin="normal"
+                        variant="outlined"
+                      />
+                    )}
                   />
                 </Grid>
               </Grid>
@@ -387,8 +446,12 @@ function ListResa({ getCompanies, getDateResaById, getReservationByBranchId }) {
                 style={{ backgroundColor: "#ffaaa5" }}
               >
                 <Grid container spacing={2} className={classes.listResa}>
-                  {reservationlist
-                    .filter((opt) => opt.status == "disable")
+                  {disableList
+                    .filter((opt) =>
+                      searchDisable
+                        ? opt.name.toUpperCase() == searchDisable.toUpperCase()
+                        : []
+                    )
                     .map((ls, i) => (
                       <Grid item xs={12} md={4} lg={3} key={i}>
                         <CardReservation

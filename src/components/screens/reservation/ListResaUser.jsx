@@ -196,7 +196,7 @@ function ListResaUser({
   const waitingList = reservationlist.filter((opt) => opt.status == "waiting");
   const confirmList = reservationlist.filter((opt) => opt.status == "confirm");
 
-  console.log(waitingList);
+  //console.log(waitingList);
   return (
     <div className={classes.root}>
       {/* modal for reservation */}
