@@ -370,13 +370,11 @@ function Companies({
   const allActiveCompanies = allCompany.filter((al) => al.isActive == true);
   const allNonActiveCompanies = allCompany.filter((al) => al.isActive == false);
 
-  // useEffect(() => {
-
-  //   if (!authBusiness.token) {
-  //     history.push('/login-business')
-  //   }
-
-  // }, [authBusiness])
+  useEffect(() => {
+    if (authBusiness.type == "Staff") {
+      history.push("/list");
+    }
+  }, [authBusiness]);
 
   return (
     <div className="companies section">
@@ -395,7 +393,8 @@ function Companies({
         <div className="companies__list">
           {allActiveCompanies.map((c, index) => (
             <>
-              {authBusiness.type == "Manager" ? (
+              {authBusiness.type == "Manager" ||
+              authBusiness.type == "Staff" ? (
                 <>
                   {allActiveCompanies[index].branchs &&
                     allActiveCompanies[index].branchs.map((b, ind) => (
