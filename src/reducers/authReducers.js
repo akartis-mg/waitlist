@@ -33,6 +33,7 @@ const authReducer = (state = initialState, action) => {
                 }
             };
         case "LOGOUT":
+            console.log("REDUCERS")
             return {
                 user: {
                     token: null,
