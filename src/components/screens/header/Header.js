@@ -2,38 +2,43 @@ import React, { useState, useEffect } from 'react'
 import './Header.css'
 import logo from './177838.png'
 import {
-
     Link
 } from "react-router-dom";
+
 //translation
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
 
-function Header() {
+import { useSelector } from "react-redux";
+import { connect } from "react-redux";
+import { useHistory } from 'react-router-dom';
+
+//action
+import { logout } from '../../../actions/authActions';
+import { logoutBusiness } from '../../../actions/authBusinessActions';
+
+function Header({ logout, logoutBusiness }) {
+    let history = useHistory();
 
     const { t, i18n } = useTranslation("");
     const [open, setOpen] = useState(true);
-
 
     const body = document.querySelector("body");
 
     function bodystyle(e) {
         document.body.classList.add('disabled');
-
     }
 
     function removestyle(e) {
         document.body.classList.remove('disabled');
-
     }
 
-    // useEffect(() => {
-    //     const navbar = document.querySelector(".navbars");
-    //     window.addEventListener("scroll", () => {
-    //         // setScroll(window.scrollY > 20);
-    //         window.scrollY > 20 ? navbar.classList.add("sticky") : navbar.classList.remove("sticky");
-    //     });
-    // }, [])
+    const logoutHandler = () => {
+        logout(history);
+    }
+
+    const logoutBusinessHandler = () => {
+        logoutBusiness(history);
+    }
 
     //get auth
     const auth = useSelector((state) => state.auth.user);
@@ -53,44 +58,43 @@ function Header() {
                         <div className={open ? "icon cancel-btn hide " : "icon cancel-btn"} onClick={() => { setOpen(!open); removestyle() }}>
                             <i className="fas fa-times"></i>
                         </div>
-                        
-                        {auth && auth.token?
 
-                            <>
-                            <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>Companies</Link></li>
-                            <li><Link to="/my-reservation" onClick={() => { setOpen(true); removestyle() }}>My reservation</Link></li>
-                            <li><a>{auth.firstname}</a></li>
-                            <li><Link to="/logout" onClick={() => { setOpen(true); removestyle() }}>Logout</Link></li>
-                            </> :
-                        
-                        authBusiness.token && authBusiness.type === "Superadmin" ? 
+                        {auth && auth.token ?
                             <>
                                 <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>Companies</Link></li>
-                                <li><Link to="/logout" onClick={() => { setOpen(true); removestyle() }}>Logout</Link></li>
-                            </> : 
+                                <li><Link to="/my-reservation" onClick={() => { setOpen(true); removestyle() }}>My reservation</Link></li>
+                                <li><a>{auth.firstname}</a></li>
+                                <li><Link onClick={logoutHandler}>Logout</Link></li>
+                            </> :
 
-                        authBusiness.token && authBusiness.type === "Manager" ? 
-                            
-                            <>
-                            <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>My branches</Link></li>
-                            <li><Link to="/list" onClick={() => { setOpen(true); removestyle() }}>Reservation list</Link></li>
-                            <li><Link to="/logout" onClick={() => { setOpen(true); removestyle() }}>Logout</Link></li>
-                            </> : 
+                            authBusiness.token && authBusiness.type === "Superadmin" ?
+                                <>
+                                    <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>Companies</Link></li>
+                                    {/* <li><Link to="/logout" onClick={() => { setOpen(true); removestyle() }}>Logout</Link></li> */}
+                                    <li><Link onClick={logoutBusinessHandler}>Logout</Link></li>
+                                </> :
 
-                        authBusiness.token && authBusiness.type === "Staff" ? 
-                            <>
-                            <li><Link to="/list" onClick={() => { setOpen(true); removestyle() }}>Reservation list</Link></li>
-                            <li><Link to="/logout" onClick={() => { setOpen(true); removestyle() }}>Logout</Link></li>
-                            </> :  
+                                authBusiness.token && authBusiness.type === "Manager" ?
+                                    <>
+                                        <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>My branches</Link></li>
+                                        <li><Link to="/list" onClick={() => { setOpen(true); removestyle() }}>Reservation list</Link></li>
+                                        <li><Link onClick={logoutBusinessHandler}>Logout</Link></li>
+                                    </> :
 
-                            <>
-                            <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>Companies</Link></li>
-                            <li><Link to="/login" onClick={() => { setOpen(true); removestyle() }}>Login</Link></li>
-                            </> 
+                                    authBusiness.token && authBusiness.type === "Staff" ?
+                                        <>
+                                            <li><Link to="/list" onClick={() => { setOpen(true); removestyle() }}>Reservation list</Link></li>
+                                            <li><Link onClick={logoutBusinessHandler}>Logout</Link></li>
+                                        </> :
+
+                                        <>
+                                            <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>Companies</Link></li>
+                                            <li><Link to="/login" onClick={() => { setOpen(true); removestyle() }}>Login</Link></li>
+                                        </>
 
                         }
-                     
-{/* 
+
+                        {/* 
                         <li><Link to="/" onClick={() => { setOpen(true); removestyle() }}>{t("header.menu.home")}</Link></li>
                         <li><a href="#">Menu </a></li>
                         <li><a href="#">{t("header.menu.features")}</a></li>
@@ -111,4 +115,4 @@ function Header() {
     )
 }
 
-export default Header
+export default connect(null, { logout, logoutBusiness })(Header)

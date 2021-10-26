@@ -40,12 +40,14 @@ export const registerBusiness = (user) => async (dispatch) => {
         })
 }
 
-
 // Logout
-export const logoutBusiness = () => {
+export const logoutBusiness = (history) => {
     return (dispatch) => {
         dispatch({
             type: "LOGOUT_BUSINESS",
         })
+
+        history.push("/");
     }
 }
+
