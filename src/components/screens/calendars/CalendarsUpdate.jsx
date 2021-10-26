@@ -372,7 +372,7 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
                 <h4 id="scheduler">{company?.name}</h4>
               </Grid>
 
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <h3 id="event">{branch.name}</h3>
               </Grid>
               <Grid item xs={2}>
@@ -380,7 +380,7 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
               </Grid>
               <Grid item xs={10}>
                 <h4 id="event-time-stamp">{seats}</h4>
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={2}>
                 <EventIcon />
@@ -469,7 +469,7 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
                     required
                   />
 
-                  <TextField
+                  {/* <TextField
                     id="nb_spots"
                     label="Nbr Pers"
                     type="number"
@@ -481,7 +481,7 @@ function CalendarsUpdate({ company, branch, resaInfo, updateReservation }) {
                     }
                     fullWidth
                     required
-                  />
+                  /> */}
 
                   <Button onClick={handleSubmit} color="primary">
                     Confirm

@@ -273,7 +273,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
 
                 //
                 var confirmBtn = document.createElement("button");
-                var confirmTxt = document.createTextNode("Confirm");
+                var confirmTxt = document.createTextNode("Next");
                 confirmBtn.classList.add("confirm-btn");
                 confirmBtn.appendChild(confirmTxt);
                 this.parentNode.appendChild(confirmBtn);
@@ -422,7 +422,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
           <hgroup>
             <Grid
               container
-              spacing={1}
+              spacing={3}
               alignContent="space-between"
               alignItems="center"
             >
@@ -433,18 +433,18 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
               <Grid item xs={12}>
                 <h3 id="event">{branch.name}</h3>
               </Grid>
-              <Grid item xs={2}>
+              {/* <Grid item xs={2}>
                 <EventSeatIcon />
               </Grid>
               <Grid item xs={10}>
                 <h4 id="vent-time-stamp">{seats} </h4>
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={2}>
                 <EventIcon />
               </Grid>
               <Grid item xs={10}>
-                <h4 id="vent-time-stamp">{dateSelected} </h4>
+                <h4 id="event-time-stamp">{dateSelected} </h4>
               </Grid>
 
               <Grid item xs={2}>
@@ -469,13 +469,13 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
             </div> */}
           </hgroup>
           <p id="description">
-            Our team will meet with you to review pricing options.
+            {/* Our team will meet with you to review pricing options. */}
           </p>
         </section>
         <div className="divider"></div>
         <section id="calendar-section" className="body-section">
           <div className="misyCalendar">
-            <h3>Select a Date & Time</h3>
+            <h3>Choose a date & time</h3>
             <div id="schedule-div">
               <div id="available-times-div"></div>
 
@@ -521,7 +521,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
                     required
                   />
 
-                  <TextField
+                  {/* <TextField
                     id="nb_spots"
                     label="Nbr Pers"
                     type="number"
@@ -535,7 +535,7 @@ function Calendars({ company, branch, createReservation, getDateResaById }) {
                     }
                     fullWidth
                     required
-                  />
+                  /> */}
 
                   <Button onClick={handleSubmit} color="primary">
                     Confirm

@@ -12,10 +12,11 @@ h4 {
 p {
   font-weight: 300;
 } 
+dodgerblue
 */
 button {
   height: 100%;
-  background-color: dodgerblue;
+  background-color: var(--first-color);
   color: white;
   font-size: 1rem;
   font-weight: 500;
@@ -78,7 +79,7 @@ input {
 }
 
 .container {
-  background-color: white;
+  background-color: var(--container-color);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -87,7 +88,7 @@ input {
   -ms-flex-pack: center;
   justify-content: center;
   border-radius: 10px;
-  height: 525px;
+  height: 100%;
   max-width: 800px;
 }
 
@@ -125,7 +126,7 @@ hgroup {
 
 #event {
   font-weight: 700;
-  color: darkslategray;
+  color: var(--first-color);
 }
 
 #scheduler,
@@ -138,7 +139,7 @@ hgroup {
   margin: 0;
   margin-left: 5px;
   font-weight: 400;
-  color: mediumseagreen;
+  color: var(--title-color);
   line-height: 1.3;
 }
 
@@ -188,13 +189,13 @@ hgroup {
   }
   .divider {
     height: auto;
-    border-top: solid 0.5px whitesmoke;
+    border-top: solid 0.5px var(--first-color);
   }
 }
 
 @media (max-width: 645px) {
   body {
-    background-color: white;
+    background-color: var(--body-color);
   }
   .container {
     background-color: none;
@@ -244,9 +245,9 @@ hgroup {
 
 #calendar-section .fc-prev-button,
 #calendar-section .fc-next-button {
-  color: dodgerblue;
-  background-color: white;
-  border-color: white;
+  color: var(--first-color);
+  background-color: transparent;
+  border-color: transparent;
   outline: none;
 }
 
@@ -267,14 +268,18 @@ hgroup {
 
 #calendar-section .fc-daygrid-day-events {
   margin: 0;
+  display: none;
 }
 
 #calendar-section .fc-daygrid-day-number {
   margin: auto;
+  padding: var(--mb-1);
 }
 
 #calendar-section .fc-day-today {
-  background-color: ghostwhite;
+  background-color: var(--first-color-lighter);
+  color: var(--text-color);
+  border-radius: 5px;
 }
 
 #calendar-section .fc-day-disabled {
@@ -298,6 +303,7 @@ hgroup {
   height: 400px;
   margin-left: 10px;
   overflow-y: scroll;
+  font-size: var(--small-font-size);
 }
 
 .time-slot {
@@ -310,8 +316,8 @@ hgroup {
   -webkit-box-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  border: 1px solid lightblue;
-  color: dodgerblue;
+  border: 1px solid var(--first-color-lighter);
+  color: var(--text-color);
   background-color: white;
   width: 100%;
   font-weight: 600;
@@ -320,7 +326,7 @@ hgroup {
 
 .time-btn:hover {
   border-width: 2px;
-  border-color: dodgerblue;
+  border-color: var(--first-color);
 }
 
 .time-btn:focus {
